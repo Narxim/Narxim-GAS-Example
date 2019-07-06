@@ -11,7 +11,7 @@ What is has:
 
 How to use:
 
-Create / reparent your CharacterBP form "CharacterBase"
+Create / reparent your CharacterBP from "CharacterBase"
 Create / reparent your PlayerStateBP from "PlayerStateBase"
 
 Add abilities to your Character in the PlayerStateBP you created under Ability 1 and Ability 2.

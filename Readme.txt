@@ -6,8 +6,10 @@ What is has:
 
 - Ability system component in PlayerState
 - Health attribute
+- Stamina attribute
 - Ability bindings for 2 abilities
 - Helper functions for use in BP
+- Give Gameplay Ability function in BP 
 
 How to use:
 

@@ -1,3 +1,5 @@
+// Free to use / modify 2019 Narxim
+
 
 #pragma once
 

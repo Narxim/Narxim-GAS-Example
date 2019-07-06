@@ -1,3 +1,5 @@
+// Free to use / modify 2019 Narxim
+
 
 #include "CharacterBase.h"
 #include "PlayerStateBase.h"

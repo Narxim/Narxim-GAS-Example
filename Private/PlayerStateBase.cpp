@@ -1,6 +1,9 @@
+// Free to use / modify 2019 Narxim
+
 
 #include "PlayerStateBase.h"
 #include "AttributeSetBase.h"
+
 
 APlayerStateBase::APlayerStateBase()
 {
@@ -11,7 +14,11 @@ APlayerStateBase::APlayerStateBase()
 void APlayerStateBase::BeginPlay()
 {
 	Super::BeginPlay();
-	GiveDefaults();
+
+	if(HasAuthority())
+	{
+		GiveAbilities();
+	}
 }
 
 // Returns our ability system component.
@@ -20,13 +27,14 @@ UAbilitySystemComponent* APlayerStateBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+// Returns our attribute set.
 UAttributeSetBase* APlayerStateBase::GetAttributeSet() const
 {
 	return AttributeSet;
 }
 
 // Checks to see if Ability1 and Ability 2 are valid and gives them to the ability system component.
-void APlayerStateBase::GiveDefaults_Implementation()
+void APlayerStateBase::GiveAbilities_Implementation()
 {
 	if(IsValid(AbilitySystemComponent))
 	{
@@ -41,7 +49,21 @@ void APlayerStateBase::GiveDefaults_Implementation()
 	}
 }
 
-bool APlayerStateBase::GiveDefaults_Validate()
+bool APlayerStateBase::GiveAbilities_Validate()
+{
+	return true;
+}
+
+// Checks to make sure we have authority and an ability then gives the specified ability.
+void APlayerStateBase::GiveGameplayAbility_Implementation(TSubclassOf<UGameplayAbility> AbilityToGive)
+{
+	if(HasAuthority() && AbilityToGive)
+	{
+		AbilitySystemComponent->GiveAbility(AbilityToGive);
+	}
+}
+
+bool APlayerStateBase::GiveGameplayAbility_Validate(TSubclassOf<UGameplayAbility> AbilityToGive)
 {
 	return true;
 }

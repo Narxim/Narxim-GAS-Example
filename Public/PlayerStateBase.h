@@ -1,3 +1,5 @@
+// Free to use / modify 2019 Narxim
+
 
 #pragma once
 
@@ -44,7 +46,11 @@ public:
 
 	// Gives out ability system component the designated abilities in slots 1 and 2.
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Player State Base | Ability System Component")
-		void GiveDefaults();
+		void GiveAbilities();
+
+	// Gives us the functionality to add abilities via BP. (These will need to be activated via "Try activate Ability by Class" in BP)
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Player State Base | Ability System Component")
+		void GiveGameplayAbility(TSubclassOf<UGameplayAbility> AbilityToGive);
 
 private:
 	// Called when the game starts or when spawned.

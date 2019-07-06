@@ -18,4 +18,4 @@ Create / reparent your PlayerStateBP from "PlayerStateBase"
 
 Add abilities to your Character in the PlayerStateBP you created under Ability 1 and Ability 2.
 
-Message me on Discord Narxim#7457 if you have any questions.
+Check out the Unreal Slackers Discord if you have any questions!

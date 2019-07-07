@@ -17,5 +17,7 @@ Create / reparent your CharacterBP from "CharacterBase"
 Create / reparent your PlayerStateBP from "PlayerStateBase"
 
 Add abilities to your Character in the PlayerStateBP you created under Ability 1 and Ability 2.
+Bind "Ability1" and "Ability2" in editor to activate your abilities.
+
 
 Check out the Unreal Slackers Discord if you have any questions!

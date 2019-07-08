@@ -29,11 +29,11 @@ public:
 		class UAttributeSetBase* AttributeSet;
 
 	// The ability in our "Ability 1" slot.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability System | Ability 2")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability System | Ability 1")
 		class TSubclassOf<UGameplayAbility> Ability1;
 
 	// The ability in our "Ability 2" slot.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability System | Ability 1")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability System | Ability 2")
 		class TSubclassOf<UGameplayAbility> Ability2;
 
 	// Helper function to get our ability system component (Used by the IAbilitySystemInterface).
@@ -44,7 +44,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Player State Base | Attribute Set")
 		UAttributeSetBase* GetAttributeSet() const;
 
-	// Gives out ability system component the designated abilities in slots 1 and 2.
+	// Gives our ability system component the designated abilities in slots 1 and 2.
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Player State Base | Ability System Component")
 		void GiveAbilities();
 

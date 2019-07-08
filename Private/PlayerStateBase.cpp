@@ -33,7 +33,7 @@ UAttributeSetBase* APlayerStateBase::GetAttributeSet() const
 	return AttributeSet;
 }
 
-// Checks to see if Ability1 and Ability 2 are valid and gives them to the ability system component.
+// Checks to see if Ability1 and Ability2 are valid and gives them to the ability system component.
 void APlayerStateBase::GiveAbilities_Implementation()
 {
 	if(IsValid(AbilitySystemComponent))
@@ -43,7 +43,7 @@ void APlayerStateBase::GiveAbilities_Implementation()
 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability1.GetDefaultObject(), 1, 0));
 		}
 		if (IsValid(Ability2))
-		{
+		{	
 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability2.GetDefaultObject(), 1, 1));
 		}
 	}

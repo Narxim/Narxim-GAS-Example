@@ -1,6 +1,6 @@
 Created by Narxim 7/6/19 with UE4 version 4.22.3
 
-This is the basic set up of my GAS system using PlayerState. I have kept this super minimal so it is easy to understand / expand.
+This is a basic set-up for GAS using PlayerState. I have kept the code minimal so it is easy to understand / expand.
 
 What is has:
 
@@ -9,15 +9,19 @@ What is has:
 - Stamina attribute
 - Ability bindings for 2 abilities
 - Helper functions for use in BP
-- Give Gameplay Ability function in BP 
+- Give Gameplay Ability function in BP
+- Commented code
 
 How to use:
 
 Create / reparent your CharacterBP from "CharacterBase"
 Create / reparent your PlayerStateBP from "PlayerStateBase"
 
-Add abilities to your Character in the PlayerStateBP you created under Ability 1 and Ability 2.
-Bind "Ability1" and "Ability2" in editor to activate your abilities.
+Add abilities to your Character in the PlayerStateBP you created under "Ability 1" and "Ability 2".
+KeyBind "Ability1" and "Ability2" in editor to activate your abilities.
 
 
 Check out the Unreal Slackers Discord if you have any questions!
+
+Note: Your PlayerState NetUpdateFrequency needs to be the increased to avoid lag in a multiplayer situation. 
+Setting it the same as the default settings for "Character" seems to work well in most situations.

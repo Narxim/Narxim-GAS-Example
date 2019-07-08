@@ -23,5 +23,5 @@ KeyBind "Ability1" and "Ability2" in editor to activate your abilities.
 
 Check out the Unreal Slackers Discord if you have any questions!
 
-Note: Your PlayerState NetUpdateFrequency needs to be the increased to avoid lag in a multiplayer situation. 
-Setting it the same as the default settings for "Character" seems to work well in most situations.
+Note: Your PlayerState NetUpdateFrequency needs to be the increased to avoid lag in a multiplayer environment. 
+Setting it the same as the default settings for "Character" seems to work well in most cases.

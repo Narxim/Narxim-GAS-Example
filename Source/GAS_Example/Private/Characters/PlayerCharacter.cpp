@@ -67,6 +67,8 @@ void APlayerCharacter::InitializeAbilityBindings()
 		return;
 	}
 
+	// Binds GA input to the Input component.
+	// These input bindings can be edited in "GameplayAbilityBindings.h" (Do not remove "None", "Confirm", or "Cancel")
 	AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, FGameplayAbilityInputBinds(FString("ConfirmTarget"), FString("CancelTarget"), FString("EGameplayAbilityBindings"), static_cast<int32>(EGameplayAbilityBindings::Confirm), static_cast<int32>(EGameplayAbilityBindings::Cancel)));
 
 	AbilityBindingsInitialized = true;

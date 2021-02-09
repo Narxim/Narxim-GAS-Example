@@ -11,6 +11,7 @@ What is has:
 - Stamina Attribute Set
 - Ability bindings
 - GA Jump example with stamina cost
+- Player Character and Non Player Character classes
 - Generic NPC GA use example (Jump)
 - Stamina regen example (Based on Stamina Regeneration Attribute)
 - Helper functions for use in BP

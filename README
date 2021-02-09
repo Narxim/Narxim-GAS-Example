@@ -6,10 +6,13 @@ This is a basic set-up for GAS using PlayerState. I have kept the code minimal s
 
 What is has:
 
-- Ability system component in PlayerState
+- Ability System Component in PlayerState
 - Health Attribute Set (With Damage / Healing)
 - Stamina Attribute Set
 - Ability bindings
+- GA Jump example with stamina cost
+- Generic NPC GA use example (Jump)
+- Stamina regen example (Based on Stamina Regeneration Attribute)
 - Helper functions for use in BP
 - Give Gameplay Ability function in BP
 - Commented code

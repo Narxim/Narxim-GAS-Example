@@ -9,7 +9,7 @@ What is has:
 - Ability system component in PlayerState
 - Health Attribute Set (With Damage / Healing)
 - Stamina Attribute Set
-- Ability bindings for 2 Abilities
+- Ability bindings
 - Helper functions for use in BP
 - Give Gameplay Ability function in BP
 - Commented code

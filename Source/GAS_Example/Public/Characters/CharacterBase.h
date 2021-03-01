@@ -43,7 +43,7 @@ protected:
 	// Non Player Characters will set this in its constructor.
 	TWeakObjectPtr<UHealthAttributeSet> HealthAttributes;
 
-	// Creates a pointer to the Health Attribute Set associated with this Character.
+	// Creates a pointer to the Stamina Attribute Set associated with this Character.
 	// Player Characters will set this in OnRep_PlayerState() locally, and in OnPossessed() server side.
 	// Non Player Characters will set this in its constructor.
 	TWeakObjectPtr<UStaminaAttributeSet> StaminaAttributes;

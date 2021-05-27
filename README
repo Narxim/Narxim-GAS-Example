@@ -10,7 +10,7 @@ What is has:
 - Health Attribute Set (With Damage / Healing)
 - Stamina Attribute Set
 - Ability bindings
-- Attribute modifiers for gameplay Abilities
+- Attribute modifiers for Gameplay Abilities
 - GA Jump example with stamina cost
 - Player Character and Non Player Character classes
 - Generic NPC GA use example (Jump)

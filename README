@@ -1,6 +1,6 @@
-Updated by Narxim 2/9/21, made with UE4 version 4.26.1
+Updated by Narxim 5/26/21, made with UE4 version 4.26.2
 
-Version 2.0! This updated version represents the knowledge I have acquired over the past couple of years using GAS.
+Version 2.1! This updated version represents the knowledge I have acquired over the past couple of years using GAS.
 
 This is a basic set-up for GAS using PlayerState. I have kept the code minimal so it is easy to understand / expand.
 
@@ -10,6 +10,7 @@ What is has:
 - Health Attribute Set (With Damage / Healing)
 - Stamina Attribute Set
 - Ability bindings
+- Attribute modifiers for gameplay Abilities
 - GA Jump example with stamina cost
 - Player Character and Non Player Character classes
 - Generic NPC GA use example (Jump)

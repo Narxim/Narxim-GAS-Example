@@ -60,14 +60,14 @@ protected:
 public:
 
 	// Applies the Gameplay Effect to the owner of this Ability.
-	UFUNCTION(BlueprintCallable, Category = "Siege Gameplay Ability")
+	UFUNCTION(BlueprintCallable, Category = "Custom Gameplay Ability")
 	void ApplyGameplayEffectToOwner(TSubclassOf<class UGameplayEffect> EffectToAdd, float EffectLevel);
 
 	// Applies the Gameplay Effect to the supplied Actor.
-	UFUNCTION(BlueprintCallable, Category = "Siege Gameplay Ability")
+	UFUNCTION(BlueprintCallable, Category = "Custom Gameplay Ability")
 	void ApplyGameplayEffectToTarget(TSubclassOf<class UGameplayEffect> EffectToAdd, AActor* Target, float EffectLevel);
 	
 	// Returns the strength of this Ability after all modifiers have been calculated.
-	UFUNCTION(BlueprintCallable, Category = "Siege Gameplay Ability|Modifiers")
+	UFUNCTION(BlueprintCallable, Category = "Custom Gameplay Ability|Modifiers")
 	float GetModifiedAbilityStrength();
 };

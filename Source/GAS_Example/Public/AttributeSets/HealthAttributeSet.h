@@ -24,9 +24,6 @@
 //
 // Damage - A meta Attribute that negatively changes the value of Health.
 // Healing - A meta Attribute that positively changes the value of Health.
-//
-// Damage Multiplier - Increases or decreases the amount of incoming Damage.
-// Healing Multiplier - Increases or decreases the amount of incoming Healing.
 
 UCLASS()
 class GAS_EXAMPLE_API UHealthAttributeSet : public UAttributeSet
@@ -69,24 +66,6 @@ public:
 	FGameplayAttributeData HealthRegeneration;
 	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, HealthRegeneration)
 
-	// Used to increase or decrease incoming Damage.
-	// - Examples -
-	// @  0 - Takes 100% less Damage
-	// @  1 - No Change
-	// @  2 - Takes 100% more Damage
-	UPROPERTY(BlueprintReadOnly, Category = "Health Attribute Set", ReplicatedUsing = OnRep_DamageMultiplier)
-	FGameplayAttributeData DamageMultiplier;
-	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, DamageMultiplier)
-
-	// Used to increase or decrease incoming Healing.
-	// - Examples -
-	// @  0 - Receives 100% less Healing
-	// @  1 - No Change
-	// @  2 - Receives 100% more Healing
-	UPROPERTY(BlueprintReadOnly, Category = "Health Attribute Set", ReplicatedUsing = OnRep_HealingMultiplier)
-	FGameplayAttributeData HealingMultiplier;
-	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, HealingMultiplier)
-	
 protected:
 
 	void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const;
@@ -99,10 +78,4 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_HealthRegeneration(const FGameplayAttributeData& OldValue);
-
-	UFUNCTION()
-	virtual void OnRep_DamageMultiplier(const FGameplayAttributeData& OldValue);
-
-	UFUNCTION()
-	virtual void OnRep_HealingMultiplier(const FGameplayAttributeData& OldValue);
 };

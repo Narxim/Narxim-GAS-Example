@@ -3,6 +3,7 @@
 
 #include "AttributeSets/HealthAttributeSet.h"
 #include "GameplayEffectExtension.h"
+#include "Characters/CharacterBase.h"
 #include "Net/UnrealNetwork.h"
 
 UHealthAttributeSet::UHealthAttributeSet()
@@ -10,8 +11,6 @@ UHealthAttributeSet::UHealthAttributeSet()
 	MaximumHealth = 0.0f;
 	CurrentHealth = 0.0f;
 	HealthRegeneration = 0.0f;
-	DamageMultiplier = 1.0f;
-	HealingMultiplier = 1.0f;
 }
 
 void UHealthAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -31,7 +30,7 @@ void UHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
 		// Store a local copy of the amount of Damage done and clear the Damage attribute.
-		const float LocalDamageDone = GetDamage() * GetDamageMultiplier();
+		const float LocalDamageDone = GetDamage();
 
 		SetDamage(0.f);
 	
@@ -47,7 +46,7 @@ void UHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	else if (Data.EvaluatedData.Attribute == GetHealingAttribute())
 	{
 		// Store a local copy of the amount of Healing done and clear the Healing attribute.
-		const float LocalHealingDone = GetHealing() * GetHealingMultiplier();
+		const float LocalHealingDone = GetHealing();
 
 		SetHealing(0.f);
 	
@@ -63,6 +62,17 @@ void UHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{
 		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.0f, GetMaximumHealth()));
+
+		if (GetCurrentHealth() <=0)
+		{
+			ACharacterBase* AvatarCharacter = Cast<ACharacterBase>(Data.Target.GetAvatarActor());
+
+			if (AvatarCharacter)
+			{
+				// Empty function from Character Base that logic can be added to.
+				AvatarCharacter->On_Death();
+			}
+		}
 	}
 
 	else if (Data.EvaluatedData.Attribute == GetHealthRegenerationAttribute())
@@ -78,8 +88,6 @@ void UHealthAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_CONDITION_NOTIFY(UHealthAttributeSet, CurrentHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UHealthAttributeSet, MaximumHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UHealthAttributeSet, HealthRegeneration, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UHealthAttributeSet, DamageMultiplier, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UHealthAttributeSet, HealingMultiplier, COND_None, REPNOTIFY_Always);
 }
 
 void UHealthAttributeSet::AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, const float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const
@@ -111,14 +119,4 @@ void UHealthAttributeSet::OnRep_MaximumHealth(const FGameplayAttributeData& OldV
 void UHealthAttributeSet::OnRep_HealthRegeneration(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UHealthAttributeSet, HealthRegeneration, OldValue);
-}
-
-void UHealthAttributeSet::OnRep_DamageMultiplier(const FGameplayAttributeData& OldValue)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UHealthAttributeSet, DamageMultiplier, OldValue);
-}
-
-void UHealthAttributeSet::OnRep_HealingMultiplier(const FGameplayAttributeData& OldValue)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UHealthAttributeSet, HealingMultiplier, OldValue);
 }

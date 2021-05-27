@@ -5,9 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
-#include "AttributeSets/HealthAttributeSet.h"
-#include "AttributeSets/StaminaAttributeSet.h"
-#include "GameplayAbility/CustomGameplayAbility.h"
 #include "CharacterBase.generated.h"
 
 // Character Base is a template class that contains all shared logic for "Player Characters" and "Non Player Characters".
@@ -22,6 +19,9 @@ public:
 
 	// Sets default values for this character's properties
 	ACharacterBase();
+
+	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component)
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	// The default Abilities this Character has access to.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System")
@@ -41,15 +41,12 @@ protected:
 	// Creates a pointer to the Health Attribute Set associated with this Character.
 	// Player Characters will set this in OnRep_PlayerState() locally, and in OnPossessed() server side.
 	// Non Player Characters will set this in its constructor.
-	TWeakObjectPtr<UHealthAttributeSet> HealthAttributes;
+	TWeakObjectPtr<class UHealthAttributeSet> HealthAttributes;
 
 	// Creates a pointer to the Stamina Attribute Set associated with this Character.
 	// Player Characters will set this in OnRep_PlayerState() locally, and in OnPossessed() server side.
 	// Non Player Characters will set this in its constructor.
-	TWeakObjectPtr<UStaminaAttributeSet> StaminaAttributes;
-
-	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component)
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	TWeakObjectPtr<class UStaminaAttributeSet> StaminaAttributes;
 
 	// Called to give the Character it's Default Abilities from the "Default Abilities" array.
 	void GiveDefaultAbilities();
@@ -58,6 +55,10 @@ protected:
 	void ApplyDefaultEffects();
 
 public:
+
+	// Add logic here that applies when the Character reaches 0 health.
+	UFUNCTION(BlueprintNativeEvent, Category = "Character Base")
+	void On_Death();
 
 	// Gives the supplied Ability to this Character.
 	// Should be called on the Server!

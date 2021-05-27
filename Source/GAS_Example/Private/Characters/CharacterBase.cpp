@@ -3,6 +3,7 @@
 
 #include "Characters/CharacterBase.h"
 #include "AbilitySystemComponent/CustomAbilitySystemComponent.h"
+#include "GameplayAbility/CustomGameplayAbility.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -56,6 +57,11 @@ void ACharacterBase::ApplyDefaultEffects()
 	}	
 
 	AbilitySystemComponent->DefaultEffectsApplied = true;
+}
+
+void ACharacterBase::On_Death_Implementation()
+{
+	// Add On Death logic here!
 }
 
 void ACharacterBase::GiveGameplayAbility_Implementation(TSubclassOf<UCustomGameplayAbility> AbilityToGive)

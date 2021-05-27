@@ -23,10 +23,10 @@ public:
 	class UCustomAbilitySystemComponent* NPC_AbilitySystemComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
-	UHealthAttributeSet* NPC_HealthAttributes;
+	class UHealthAttributeSet* NPC_HealthAttributes;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
-	UStaminaAttributeSet* NPC_StaminaAttributes;
+	class UStaminaAttributeSet* NPC_StaminaAttributes;
 
 protected:
 

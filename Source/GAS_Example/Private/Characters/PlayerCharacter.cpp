@@ -3,6 +3,10 @@
 
 #include "Characters/PlayerCharacter.h"
 #include "Player/PlayerStateBase.h"
+#include "AbilitySystemComponent/CustomAbilitySystemComponent.h"
+#include "GameplayAbility/GameplayAbilityBindings.h"
+#include "AttributeSets/HealthAttributeSet.h"
+#include "AttributeSets/StaminaAttributeSet.h"
 
 void APlayerCharacter::PossessedBy(AController* NewController)
 {

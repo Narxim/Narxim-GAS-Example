@@ -56,6 +56,30 @@ void UCustomGameplayAbility::ApplyGameplayEffectToTarget(TSubclassOf<UGameplayEf
 	}
 }
 
+void UCustomGameplayAbility::ApplySetByCallerGameplayEffect(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffect, float EffectLevel, FGameplayTag SetByCallerTag, float SetByCallerAmount)
+{
+	UAbilitySystemComponent* OwningAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
+
+	FGameplayEffectContextHandle EffectContextHandle = OwningAbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle GameplayEffectSpecHandle = OwningAbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, EffectLevel, EffectContextHandle);
+	
+	if (GameplayEffectSpecHandle.IsValid())
+	{
+		const bool ImplementsInterface = UKismetSystemLibrary::DoesImplementInterface(Target, UAbilitySystemInterface::StaticClass());
+
+		if (ImplementsInterface)
+		{
+			IAbilitySystemInterface* Interface = Cast<IAbilitySystemInterface>(Target);
+			
+			GameplayEffectSpecHandle.Data->SetSetByCallerMagnitude(SetByCallerTag, SetByCallerAmount);
+
+			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), Interface->GetAbilitySystemComponent());
+		}
+	}	
+}
+
 float UCustomGameplayAbility::GetModifiedAbilityStrength()
 {
 	float BaseStrength = BaseAbilityStrength.GetValueAtLevel(GetAbilityLevel());

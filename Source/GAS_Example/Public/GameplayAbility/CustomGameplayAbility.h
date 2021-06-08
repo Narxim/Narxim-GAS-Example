@@ -67,7 +67,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Custom Gameplay Ability")
 	void ApplyGameplayEffectToTarget(TSubclassOf<class UGameplayEffect> EffectToAdd, AActor* Target, float EffectLevel);
 
-	// Applies the Gameplay Effect with a Set by Caller Value to the Target using the Gameplay Effect class, Effect Level and Set By Caller Tag and Amount.
+	// Applies the Gameplay Effect with a Set by Caller Value to the Target using the Gameplay Effect class, Effect Level, Set By Caller Tag and Amount.
 	UFUNCTION(BlueprintCallable, Category = "Custom Gameplay Ability")
 	void ApplySetByCallerGameplayEffect(AActor* Target, TSubclassOf<class UGameplayEffect> GameplayEffect, float EffectLevel, FGameplayTag SetByCallerTag, float SetByCallerAmount);
 	

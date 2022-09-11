@@ -1,5 +1,5 @@
-# Narxim-GAS-Example
-## A bare-bones Gameplay Ability System (GAS) template to help you get started.
+# Narxim's GAS Example
+### A bare-bones Gameplay Ability System (GAS) template to help you get started.
 
 <br>
 
@@ -10,7 +10,7 @@
 
 <br>
 
-# Features
+## Features
 
 ### Ability System Component on the PlayerState (Player Only)
 ___
@@ -18,9 +18,7 @@ ___
 This is also helpful if you Possess different pawns and still need a reference to the main character's stats and ability states.
 The main drawback of this setup is the need to increase the PlayerState's NetUpdateFrequency so that updates from the servers version arent too delayed, which usually isnt a problem at all.</P>
 
-<br>
-
-### Other Features include:
+#### Other Features include:
 - Thoroughly Commented code
 - Health Attribute Set (With Damage / Healing)
 - Stamina Attribute Set
@@ -33,8 +31,6 @@ The main drawback of this setup is the need to increase the PlayerState's NetUpd
 - Helper functions for use in Blueprint
 - Blueprint exposed "Give Gameplay Ability" function
 
-<br>
+[**Dan's (Tranek) GAS Documentation**](https://github.com/tranek/GASDocumentation) covers all of these concepts and goes into much more detail on how GAS works as a whole. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestable setup example. 
 
-[Dan's (Tranek) GAS Documentation](https://github.com/tranek/GASDocumentation) covers all of these concepts and goes into much more detail on how GAS works as a whole. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestable setup example. 
-
-### Check out the **[Unreal Slackers Discord](https://discord.gg/unreal-slackers)** if you have any questions!
+#### Check out the **[Unreal Slackers Discord](https://discord.gg/unreal-slackers)** if you have any questions!

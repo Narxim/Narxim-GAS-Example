@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2021 Joseph "Narxim" Thigpen.
 
 #include "GAS_Example.h"
 #include "Modules/ModuleManager.h"

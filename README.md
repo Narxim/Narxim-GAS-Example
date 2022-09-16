@@ -6,7 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/Narxim/Narxim-GAS-Example?style=flat-square)
 ![Unreal](https://img.shields.io/badge/Unreal_Engine_Version-(4.26)_(4.27)_(5.0)_(5.1)-informational?style=flat-square)
 
-![ExampleImage](https://i.imgur.com/Hzshuny.png)
+![ExampleImage](https://i.imgur.com/4XLuHTa.png)
 
 ## Features
 

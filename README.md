@@ -4,9 +4,9 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/Narxim/Narxim-GAS-Example?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Narxim/Narxim-GAS-Tutorial?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/Narxim/Narxim-GAS-Example?style=flat-square)
-![Unreal](https://img.shields.io/badge/Unreal_Engine_Version-4.26_4.27_5.0_5.1-informational?style=flat-square)
+![Unreal](https://img.shields.io/badge/Unreal_Engine_Version-(4.26)_(4.27)_(5.0)_(5.1)-informational?style=flat-square)
 
-![Imgur](https://i.imgur.com/Hzshuny.png)
+![ExampleImage](https://i.imgur.com/Hzshuny.png)
 
 ## Features
 
@@ -40,3 +40,13 @@ ___
 ___
 
 #### Check out the **[Unreal Slackers Discord](https://discord.gg/unreal-slackers)** if you have any questions!
+
+___
+
+<p>If you are feeling generous and would like to support me please consider pledging to me on Patreon!
+Your contributions are truly appreciated and will help me keep producing community content.</p>
+
+[![Patreon][1]][2]
+
+[1]:  https://i.imgur.com/HmGB34j.png
+[2]:  https://www.patreon.com/Narxim "Support me on Patreon"

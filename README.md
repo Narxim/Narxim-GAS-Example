@@ -12,9 +12,9 @@
 
 ### Ability System Component on the PlayerState (Player Only)
 ___
-<p>Having the Ability System Component on the PlayerState allows it's data to be persistent if you plan on deleting your player pawn during gameplay.
-This is also helpful if you Possess different pawns and still need a reference to the main character's stats and ability states.
-The main drawback of this setup is the need to increase the PlayerState's NetUpdateFrequency so that updates from the servers version arent too delayed, which usually isnt a problem at all.</P>
+<p>Having the Ability System Component on the PlayerState allows data to be persistent if you plan on deleting your player pawn during gameplay.
+This is also helpful if you possess different pawns and still need a reference to the main character's stats and ability states.
+The main drawback of this setup is the need to increase the PlayerState's NetUpdateFrequency so that updates from the servers version arent too delayed. - Which really isn't a problem at all.</P>
 
 ___
 
@@ -22,14 +22,16 @@ ___
 - Thoroughly Commented code
 - Health Attribute Set (With Damage / Healing)
 - Stamina Attribute Set
-- Stamina regen example (Based on Stamina Regeneration Attribute)
-- Ability bindings
-- Attribute modifiers for Gameplay Abilities
-- GA Jump example with stamina cost
-- Player Character and Non Player Character classes
-- Generic NPC GA use example (Jump)
+- Stamina Regeneration example (Based on Stamina Regeneration attribute)
+- Ability bindings (*Will be replaced with Enhanced Input in a future version*)
+- **Updated** Attribute modifiers for Gameplay Abilities
+- GA Jump example with Stamina cost
+- Player Character and Non Player Character class examples
+- Generic NPC Gameplay Ability use example (Jump)
 - Helper functions for use in Blueprint
 - Blueprint exposed "Give Gameplay Ability" function
+- **New** Example UI with Ability System Bindings (In Game UI and Nameplate)
+- **New** Example Effects based on stats (Damage and Healing Volumes)
 
 ___
 

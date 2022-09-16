@@ -8,10 +8,7 @@
 			"Name": "GAS_Example",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"GameplayAbilities"
-			]
+			"AdditionalDependencies": [ "Engine", "GameplayAbilities"]
 		}
 	],
 	"Plugins": [

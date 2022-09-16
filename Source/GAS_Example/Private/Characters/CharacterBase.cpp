@@ -59,22 +59,8 @@ void ACharacterBase::ApplyDefaultEffects()
 	AbilitySystemComponent->DefaultEffectsApplied = true;
 }
 
-void ACharacterBase::On_Death_Implementation()
+void ACharacterBase::OnDeath()
 {
-	// Add On Death logic here!
-}
-
-void ACharacterBase::GiveGameplayAbility_Implementation(TSubclassOf<UCustomGameplayAbility> AbilityToGive)
-{
-	if (GetLocalRole() != ROLE_Authority || !AbilityToGive || !AbilitySystemComponent.Get())
-	{
-		return;
-	}
-
-	AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(AbilityToGive, 1, static_cast<int32>(AbilityToGive.GetDefaultObject()->InputBinding), this));
-}
-
-bool ACharacterBase::GiveGameplayAbility_Validate(TSubclassOf<UCustomGameplayAbility> AbilityToGive)
-{
-	return true;
+	// Call "Event On Death" in Blueprint.
+	On_Death();
 }

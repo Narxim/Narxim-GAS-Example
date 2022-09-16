@@ -11,15 +11,8 @@
 void APlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
-	if (!GetPlayerState() || GetLocalRole() != ROLE_Authority)
-	{
-		return;
-	}
-
-	APlayerStateBase* PlayerStateBase = Cast<APlayerStateBase>(GetPlayerState());
-
-	if (PlayerStateBase)
+	
+	if (APlayerStateBase* PlayerStateBase = Cast<APlayerStateBase>(GetPlayerState()))
 	{
 		AbilitySystemComponent = PlayerStateBase->AbilitySystemComponent;
 
@@ -39,10 +32,8 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 void APlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-
-	APlayerStateBase* PlayerStateBase = Cast<APlayerStateBase>(GetPlayerState());
-
-	if (PlayerStateBase)
+	
+	if (APlayerStateBase* PlayerStateBase = Cast<APlayerStateBase>(GetPlayerState()))
 	{
 		AbilitySystemComponent = PlayerStateBase->AbilitySystemComponent;
 

@@ -10,7 +10,7 @@
 ANonPlayerCharacter::ANonPlayerCharacter()
 {
 	// Create the Non Player Character Ability System Component sub-object.
-	NPC_AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>(FName("Ability System Component"));
+	NPC_AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>("Ability System Component");
 
 	// Explicitly set the Ability System Component to replicate.
 	NPC_AbilitySystemComponent->SetIsReplicated(true);
@@ -22,13 +22,13 @@ ANonPlayerCharacter::ANonPlayerCharacter()
 	AbilitySystemComponent = NPC_AbilitySystemComponent;
 	
 	// Create the Health Attribute Set sub-object.
-	NPC_HealthAttributes = CreateDefaultSubobject<UHealthAttributeSet>(FName("Health Attributes"));
+	NPC_HealthAttributes = CreateDefaultSubobject<UHealthAttributeSet>("Health Attributes");
 
 	// Set the TWeakObjectPtr from Character Base to the newly created Health Attribute Set sub-object.
 	HealthAttributes = NPC_HealthAttributes;
 	
 	// Create the Stamina Attribute Set sub-object.
-	NPC_StaminaAttributes = CreateDefaultSubobject<UStaminaAttributeSet>(FName("Stamina Attributes"));
+	NPC_StaminaAttributes = CreateDefaultSubobject<UStaminaAttributeSet>("Stamina Attributes");
 
 	// Set the TWeakObjectPtr from Character Base to the newly created Stamina Attribute Set sub-object.
 	StaminaAttributes = NPC_StaminaAttributes;
@@ -36,15 +36,11 @@ ANonPlayerCharacter::ANonPlayerCharacter()
 
 void ANonPlayerCharacter::BeginPlay()
 {
+	// Set the Owner and Avatar actor for the Ability System Component.
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	GiveDefaultAbilities();
+	ApplyDefaultEffects();
+	
 	Super::BeginPlay();
-
-	if (AbilitySystemComponent.IsValid())
-	{
-		// Set the Owner and Avatar actor for the Ability System Component.
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
-		GiveDefaultAbilities();
-
-		ApplyDefaultEffects();
-	}
 }

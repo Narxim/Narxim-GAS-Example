@@ -5,18 +5,26 @@
 #include "CoreMinimal.h"
 #include "GameplayAbilityBindings.h"
 #include "Abilities/GameplayAbility.h"
+#include "Data/AbilitySystemData.h"
 #include "CustomGameplayAbility.generated.h"
 
+enum class EAttributeSearchType : uint8;
 
-// Used to modify the strength of the Ability based off of Attributes.
+// Used to modify the strength of the Ability based on Attribute values.
 USTRUCT(BlueprintType)
 struct FAbilityModifierStruct
 {
 	GENERATED_BODY()
 
+	// The Attribute to get values from.
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FGameplayAttribute BackingAttribute;
 
+	// How to get for the value of the Backing Attribute.
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	EAttributeSearchType AttributeSearchType = EAttributeSearchType::BaseValue;
+	
+	// How much the specified attribute affects the modifier. (EX: "0" is 0% while "1" is 100% etc)
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	float AttributeModifier = 1;
 };
@@ -50,28 +58,14 @@ public:
 	// The Attribute based modifiers this ability has.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Modifiers")
 	TArray<FAbilityModifierStruct> AbilityModifiers;
+
+	// Returns the strength of this Ability after all modifiers have been calculated.
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Custom Gameplay Ability|Modifiers")
+	float GetModifiedAbilityStrength();
 	
 protected:
 
 	// Think of this as "BeginPlay".
 	// Add logic here that should run when the Ability is first initialized.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
-
-public:
-
-	// Applies the Gameplay Effect to the owner of this Ability.
-	UFUNCTION(BlueprintCallable, Category = "Custom Gameplay Ability")
-	void ApplyGameplayEffectToOwner(TSubclassOf<class UGameplayEffect> EffectToAdd, float EffectLevel);
-
-	// Applies the Gameplay Effect to the supplied Actor.
-	UFUNCTION(BlueprintCallable, Category = "Custom Gameplay Ability")
-	void ApplyGameplayEffectToTarget(TSubclassOf<class UGameplayEffect> EffectToAdd, AActor* Target, float EffectLevel);
-
-	// Applies the Gameplay Effect with a Set by Caller Value to the Target using the Gameplay Effect class, Effect Level, Set By Caller Tag and Amount.
-	UFUNCTION(BlueprintCallable, Category = "Custom Gameplay Ability")
-	void ApplySetByCallerGameplayEffect(AActor* Target, TSubclassOf<class UGameplayEffect> GameplayEffect, float EffectLevel, FGameplayTag SetByCallerTag, float SetByCallerAmount);
-	
-	// Returns the strength of this Ability after all modifiers have been calculated.
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Custom Gameplay Ability|Modifiers")
-	float GetModifiedAbilityStrength();
 };

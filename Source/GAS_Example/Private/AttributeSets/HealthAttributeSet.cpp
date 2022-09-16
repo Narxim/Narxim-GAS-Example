@@ -40,6 +40,15 @@ void UHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 			const float NewHealth = GetCurrentHealth() - LocalDamageDone;
 
 			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaximumHealth()));
+
+			if (GetCurrentHealth() <=0)
+			{
+				if (ACharacterBase* AvatarCharacter = Cast<ACharacterBase>(Data.Target.GetAvatarActor()))
+				{
+					// Sends an event to the owning Character.
+					AvatarCharacter->OnDeath();
+				}
+			}
 		}
 	}
 
@@ -62,17 +71,6 @@ void UHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{
 		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.0f, GetMaximumHealth()));
-
-		if (GetCurrentHealth() <=0)
-		{
-			ACharacterBase* AvatarCharacter = Cast<ACharacterBase>(Data.Target.GetAvatarActor());
-
-			if (AvatarCharacter)
-			{
-				// Empty function from Character Base that logic can be added to.
-				AvatarCharacter->On_Death();
-			}
-		}
 	}
 
 	else if (Data.EvaluatedData.Attribute == GetHealthRegenerationAttribute())

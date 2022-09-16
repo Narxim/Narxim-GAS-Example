@@ -3,8 +3,7 @@
 
 #include "GameplayAbility/CustomGameplayAbility.h"
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemInterface.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "FunctionLibrary/AbilitySystemFunctionLibrary.h"
 
 UCustomGameplayAbility::UCustomGameplayAbility()
 {
@@ -18,80 +17,24 @@ void UCustomGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorI
 
 	if (ActivateAbilityOnGranted)
 	{
-		bool ActivatedAbility = ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
+		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
 	}
-}
-
-void UCustomGameplayAbility::ApplyGameplayEffectToOwner(TSubclassOf<UGameplayEffect> EffectToAdd, float EffectLevel)
-{
-	FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponentFromActorInfo()->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(this);
-
-	const FGameplayEffectSpecHandle GameplayEffectSpecHandle = GetAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(EffectToAdd, EffectLevel, EffectContextHandle);
-
-	if (GameplayEffectSpecHandle.IsValid())
-	{
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), GetAbilitySystemComponentFromActorInfo());
-	}
-}
-
-void UCustomGameplayAbility::ApplyGameplayEffectToTarget(TSubclassOf<UGameplayEffect> EffectToAdd, AActor* Target, float EffectLevel)
-{
-	FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponentFromActorInfo()->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(this);
-
-	const FGameplayEffectSpecHandle GameplayEffectSpecHandle = GetAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(EffectToAdd, EffectLevel, EffectContextHandle);
-
-	
-	if (GameplayEffectSpecHandle.IsValid())
-	{
-		const bool ImplementsInterface = UKismetSystemLibrary::DoesImplementInterface(Target, UAbilitySystemInterface::StaticClass());
-
-		if (ImplementsInterface)
-		{
-			IAbilitySystemInterface* Interface = Cast<IAbilitySystemInterface>(Target);
-		
-			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), Interface->GetAbilitySystemComponent());
-		}
-	}
-}
-
-void UCustomGameplayAbility::ApplySetByCallerGameplayEffect(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffect, float EffectLevel, FGameplayTag SetByCallerTag, float SetByCallerAmount)
-{
-	UAbilitySystemComponent* OwningAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
-
-	FGameplayEffectContextHandle EffectContextHandle = OwningAbilitySystemComponent->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(this);
-
-	FGameplayEffectSpecHandle GameplayEffectSpecHandle = OwningAbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, EffectLevel, EffectContextHandle);
-	
-	if (GameplayEffectSpecHandle.IsValid())
-	{
-		const bool ImplementsInterface = UKismetSystemLibrary::DoesImplementInterface(Target, UAbilitySystemInterface::StaticClass());
-
-		if (ImplementsInterface)
-		{
-			IAbilitySystemInterface* Interface = Cast<IAbilitySystemInterface>(Target);
-			
-			GameplayEffectSpecHandle.Data->SetSetByCallerMagnitude(SetByCallerTag, SetByCallerAmount);
-
-			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), Interface->GetAbilitySystemComponent());
-		}
-	}	
 }
 
 float UCustomGameplayAbility::GetModifiedAbilityStrength()
 {
 	float BaseStrength = BaseAbilityStrength.GetValueAtLevel(GetAbilityLevel());
 
-	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
-	
-	for (FAbilityModifierStruct Modifier : AbilityModifiers)
+	if (const UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActorInfo())
 	{
-		const float AttributeValue = AbilitySystemComponent->GetNumericAttribute(Modifier.BackingAttribute);
-
-		BaseStrength += AttributeValue * Modifier.AttributeModifier;
+		for (const FAbilityModifierStruct Modifier : AbilityModifiers)
+		{
+			if (const float AttributeValue = UAbilitySystemFunctionLibrary::GetAttributeValueFromAbilitySystem(AbilitySystemComponent, Modifier.BackingAttribute, Modifier.AttributeSearchType) != -1.0f)
+			{
+				BaseStrength += AttributeValue * Modifier.AttributeModifier;
+			}
+		}
 	}
-
-	return BaseStrength;	
+	
+	return BaseStrength;
 }

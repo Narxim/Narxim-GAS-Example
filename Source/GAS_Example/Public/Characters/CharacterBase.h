@@ -8,7 +8,7 @@
 #include "CharacterBase.generated.h"
 
 // Character Base is a template class that contains all shared logic for "Player Characters" and "Non Player Characters".
-// This Class is Abstract and should not be used directly! (Non-Blueprintable)
+// This Class is Abstract and should not be used directly! (Not-Blueprintable)
 
 UCLASS(Abstract, NotBlueprintable)
 class GAS_EXAMPLE_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -30,6 +30,14 @@ public:
 	// The default gameplay Effects this Character has when spawned.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System")
 	TArray<TSubclassOf<class UGameplayEffect>> DefaultEffects;
+
+	// Called automatically by the Health Attribute Set when "Current Health" reaches zero.
+	void OnDeath();
+	
+	// Event called when the the Current Health attribute reaches zero.
+	// Note: This will only be called with Authority.
+	UFUNCTION(BlueprintImplementableEvent, Category = "Character Base")
+	void On_Death();
 
 protected:
 
@@ -53,15 +61,4 @@ protected:
 
 	// Called to apply the Gameplay Effects in the "Default Effects" array.
 	void ApplyDefaultEffects();
-
-public:
-
-	// Add logic here that applies when the Character reaches 0 health.
-	UFUNCTION(BlueprintNativeEvent, Category = "Character Base")
-	void On_Death();
-
-	// Gives the supplied Ability to this Character.
-	// Should be called on the Server!
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Server, Reliable, WithValidation, Category = "Character Base|Ability System")
-	void GiveGameplayAbility(TSubclassOf<UCustomGameplayAbility> AbilityToGive);
 };

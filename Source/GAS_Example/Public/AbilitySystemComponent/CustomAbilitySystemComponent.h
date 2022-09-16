@@ -6,8 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "CustomAbilitySystemComponent.generated.h"
 
-//
-
 UCLASS()
 class GAS_EXAMPLE_API UCustomAbilitySystemComponent : public UAbilitySystemComponent
 {
@@ -16,7 +14,7 @@ class GAS_EXAMPLE_API UCustomAbilitySystemComponent : public UAbilitySystemCompo
 public:
 
 	UCustomAbilitySystemComponent();
-
+	
 	// Have the owning Character's Default Abilities been given yet?
 	bool DefaultAbilitiesGiven = false;
 

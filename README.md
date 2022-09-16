@@ -24,14 +24,14 @@ ___
 - Stamina Attribute Set
 - Stamina Regeneration example (Based on Stamina Regeneration attribute)
 - Ability bindings (*Will be replaced with Enhanced Input in a future version*)
-- **Updated** Attribute modifiers for Gameplay Abilities
+- (**Updated**) Attribute modifiers for Gameplay Abilities
 - GA Jump example with Stamina cost
 - Player Character and Non Player Character class examples
 - Generic NPC Gameplay Ability use example (Jump)
 - Helper functions for use in Blueprint
 - Blueprint exposed "Give Gameplay Ability" function
-- **New** Example UI with Ability System Bindings (In Game UI and Nameplate)
-- **New** Example Effects based on stats (Damage and Healing Volumes)
+- (**New**) Example UI with Ability System Bindings (In Game UI and Nameplate)
+- (**New**) Example Effects based on stats (Damage and Healing Volumes)
 
 ___
 

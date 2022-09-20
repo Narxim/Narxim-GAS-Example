@@ -40,13 +40,3 @@ ___
 ___
 
 #### Check out the **[Unreal Slackers Discord](https://discord.gg/unreal-slackers)** if you have any questions!
-
-___
-
-<p>If you are feeling generous and would like to support me please consider pledging to me on Patreon!
-Your contributions are truly appreciated and will help me keep producing community content.</p>
-
-[![Patreon][1]][2]
-
-[1]:  https://i.imgur.com/HmGB34j.png
-[2]:  https://www.patreon.com/Narxim "Support me on Patreon"

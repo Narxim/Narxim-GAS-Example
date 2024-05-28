@@ -8,7 +8,7 @@ public class GAS_ExampleTarget : TargetRules
 	public GAS_ExampleTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
 
 		ExtraModuleNames.AddRange( new string[] { "GAS_Example" } );
 	}

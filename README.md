@@ -1,42 +1,49 @@
 # Narxim's GAS Example
-### A bare-bones Gameplay Ability System (GAS) template to help you get started.
+### A bare-bones Gameplay Ability System (GAS) example project to help you get started
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/Narxim/Narxim-GAS-Example?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Narxim/Narxim-GAS-Tutorial?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/Narxim/Narxim-GAS-Example?style=flat-square)
-![Unreal](https://img.shields.io/badge/Unreal_Engine_Version-(4.26)_(4.27)_(5.0)_(5.1)-informational?style=flat-square)
+![Unreal](https://img.shields.io/badge/Unreal_Engine_Versions-_(4.26+)_(5.0+)_Current_Version_(5.4)_-informational?style=flat-square)
 
-![ExampleImage](https://i.imgur.com/4XLuHTa.png)
+![Preview Image](https://i.imgur.com/4XLuHTa.png)
 
 ## Features
 
-### Ability System Component on the PlayerState (Player Only)
+### A fully-setup example project!
 ___
-<p>Having the Ability System Component on the PlayerState allows data to be persistent if you plan on deleting your player pawn during gameplay.
-This is also helpful if you possess different pawns and still need a reference to the main character's stats and ability states.
-The main drawback of this setup is the need to increase the PlayerState's NetUpdateFrequency so that updates from the servers version arent too delayed. - Which really isn't a problem at all.</P>
+
+GAS has a lot of moving parts and can be quite daunting to wrap your head around at first glance. I am providing this example project as a basis for learning how to properly set up your project to utilize all of its components. There are obviously many ways to set up your project, but I believe this example provides a simple, versatile base to build upon.
+
+---
+
+<p>Note: The 5.4 update of this project has introduced significant changes in an attempt to simplify the setup and add some commonly used / requested features!</p>
 
 ___
 
 #### Other Features include:
-- Thoroughly Commented code
-- Health Attribute Set (With Damage / Healing)
+- Thoroughly commented C++ code
+- Example Blueprints
+- Health Attribute Set (Includes Damage / Healing)
 - Stamina Attribute Set
-- Stamina Regeneration example (Based on Stamina Regeneration attribute)
-- Ability bindings (*Will be replaced with Enhanced Input in a future version*)
-- (**Updated**) Attribute modifiers for Gameplay Abilities
+- Stamina Regeneration example (Based on Stamina Regeneration Attribute)
+- (**New**) "Ability System Initialization Data" structure for initializing the Ability System Component
+- (**New**) Ability Trigger / Release bindings tied directly to Enhanced Input (Not Gameplay Tag Based... yuck!)
+- (**New**) Commonly used example Ability Tasks (Wait Enhanced Input Event / On Tick Event)
+- (**New**) Native Gameplay Tags example (NativeGameplayTags.h)
+- (**New**) Health Regeneration block after damage (3 seconds - Damage Volume)
+- (**Updated**) Example UI elements with Attribute event bindings (In Game UI / Nameplate)
 - GA Jump example with Stamina cost
 - Player Character and Non Player Character class examples
-- Generic NPC Gameplay Ability use example (Jump)
-- Helper functions for use in Blueprint
-- Blueprint exposed "Give Gameplay Ability" function
-- (**New**) Example UI with Ability System Bindings (In Game UI and Nameplate)
-- (**New**) Example Effects based on stats (Damage and Healing Volumes)
+- Example external Gameplay Effect application (Damage / Healing Volumes)
+---
+Ability System Initialization Data can be found in the Character class Blueprints.
+
+![Ability System Initialization Data](https://i.imgur.com/GJ5iSVy.png)
+___
+
+[**Dan's (Tranek) GAS Documentation**](https://github.com/tranek/GASDocumentation) covers all of these concepts and provides a great breakdown of GAS overall. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestible setup example. Cheers!
 
 ___
 
-[**Dan's (Tranek) GAS Documentation**](https://github.com/tranek/GASDocumentation) covers all of these concepts and goes into much more detail on how GAS works as a whole. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestable setup example. 
-
-___
-
-#### Check out the **[Unreal Slackers Discord](https://discord.gg/unreal-slackers)** if you have any questions!
+#### Check out the **[Unreal Source Discord](https://discord.gg/unreal-slackers)** if you have any questions!

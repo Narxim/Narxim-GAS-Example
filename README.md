@@ -46,4 +46,4 @@ ___
 
 ___
 
-#### Check out the **[Unreal Source Discord](https://discord.gg/unreal-slackers)** if you have any questions!
+#### Check out the **[Unreal Source Discord](https://discord.gg/unrealsource)** if you have any questions!

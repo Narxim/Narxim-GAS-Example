@@ -65,15 +65,10 @@ protected:
 	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	
 	FDelegateHandle MaximumHealthChangeDelegate;
-	
 	FDelegateHandle CurrentHealthChangeDelegate;
-	
 	FDelegateHandle HealthRegenerationChangeDelegate;
-	
 	FDelegateHandle MaximumStaminaChangeDelegate;
-	
 	FDelegateHandle CurrentStaminaChangeDelegate;
-	
 	FDelegateHandle StaminaRegenerationChangeDelegate;
 	
 	void MaximumHealthChanged(const FOnAttributeChangeData& Data);
@@ -87,4 +82,6 @@ protected:
 	void CurrentStaminaChanged(const FOnAttributeChangeData& Data);
 	
 	void StaminaRegenerationChanged(const FOnAttributeChangeData& Data);
+
+	static void ResetDelegateHandle(FDelegateHandle DelegateHandle, UAbilitySystemComponent* OldAbilitySystemComponent, const FGameplayAttribute& Attribute);
 };

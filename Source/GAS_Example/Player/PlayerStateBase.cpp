@@ -11,7 +11,7 @@ APlayerStateBase::APlayerStateBase()
 	NetUpdateFrequency = 100.0f;
 
 	// Create the Ability System Component sub-object.
-	AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>("Ability System Component");
+	AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 }
 
 UAbilitySystemComponent* APlayerStateBase::GetAbilitySystemComponent() const

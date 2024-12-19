@@ -35,6 +35,10 @@ public:
 	// Returns the Owner's Ability System Component.  
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UAbilitySystemComponent* GetOwnerAbilitySystemComponent() const;
+
+	// Event called when the Current level changes.
+	UFUNCTION(BlueprintImplementableEvent, Category = "Ability System")
+	void On_LevelChanged(const float NewValue, const float OldValue);
 	
 	// Event called when the Maximum Health attribute value changes.
 	UFUNCTION(BlueprintImplementableEvent, Category = "Ability System")
@@ -70,6 +74,9 @@ protected:
 	FDelegateHandle MaximumStaminaChangeDelegate;
 	FDelegateHandle CurrentStaminaChangeDelegate;
 	FDelegateHandle StaminaRegenerationChangeDelegate;
+	FDelegateHandle LevelChangeDelegate;
+
+	void CurrentLevelChanged(const FOnAttributeChangeData& Data);
 	
 	void MaximumHealthChanged(const FOnAttributeChangeData& Data);
 	

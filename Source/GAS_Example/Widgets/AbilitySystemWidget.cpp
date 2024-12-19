@@ -3,6 +3,7 @@
 #include "AbilitySystemWidget.h"
 #include "AbilitySystemGlobals.h"
 #include "GAS_Example/AbilitySystem/AttributeSets/HealthAttributeSet.h"
+#include "GAS_Example/AbilitySystem/AttributeSets/LevelAttributeSet.h"
 #include "GAS_Example/AbilitySystem/AttributeSets/StaminaAttributeSet.h"
 
 
@@ -32,55 +33,60 @@ bool UAbilitySystemWidget::InitializeAbilitySystemWidget(UAbilitySystemComponent
 		ResetDelegateHandle(MaximumStaminaChangeDelegate, OldAbilitySystemComponent, UStaminaAttributeSet::GetMaximumStaminaAttribute());
 		ResetDelegateHandle(CurrentStaminaChangeDelegate, OldAbilitySystemComponent, UStaminaAttributeSet::GetCurrentStaminaAttribute());
 		ResetDelegateHandle(StaminaRegenerationChangeDelegate, OldAbilitySystemComponent, UStaminaAttributeSet::GetStaminaRegenerationAttribute());
+		ResetDelegateHandle(LevelChangeDelegate, OldAbilitySystemComponent, ULevelAttributeSet::GetCurrentLevelAttribute());
 	}
+
+	bool bBindingDone = false;
 	
 	// Bind Health attribute delegates if the Ability System Component has the required Attribute Set -and- we are listening for Health attributes.
-	if (ListenForHealthAttributeSetChanges)
+	if (ListenForHealthAttributeSetChanges && AbilitySystemComponent->HasAttributeSetForAttribute(UHealthAttributeSet::GetMaximumHealthAttribute()))
 	{
-		if (AbilitySystemComponent->HasAttributeSetForAttribute(UHealthAttributeSet::GetMaximumHealthAttribute()))
-		{
-			MaximumHealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetMaximumHealthAttribute()).AddUObject(this, &UAbilitySystemWidget::MaximumHealthChanged);
-			CurrentHealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetCurrentHealthAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentHealthChanged);
-			HealthRegenerationChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetHealthRegenerationAttribute()).AddUObject(this, &UAbilitySystemWidget::HealthRegenerationChanged);
-
-			const float MaxHealth = AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetMaximumHealthAttribute());
-			const float CurrentHealth = AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetCurrentHealthAttribute());
-				
-			// Call the Blueprint Events to initialize the values.
-			On_MaximumHealthChanged(MaxHealth, 0.0f, CurrentHealth / MaxHealth);
-			On_CurrentHealthChanged(CurrentHealth, 0.0f, CurrentHealth / MaxHealth);
-			On_HealthRegenerationChanged(AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetHealthRegenerationAttribute()), 0.0f);
-		}
-		else
-		{
-			return false;
-		}
+		bBindingDone = true;
+		
+		MaximumHealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetMaximumHealthAttribute()).AddUObject(this, &UAbilitySystemWidget::MaximumHealthChanged);
+		CurrentHealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetCurrentHealthAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentHealthChanged);
+		HealthRegenerationChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetHealthRegenerationAttribute()).AddUObject(this, &UAbilitySystemWidget::HealthRegenerationChanged);
+		
+		const float MaxHealth = AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetMaximumHealthAttribute());
+		const float CurrentHealth = AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetCurrentHealthAttribute());
+			
+		// Call the Blueprint Events to initialize the values.
+		On_MaximumHealthChanged(MaxHealth, 0.0f, CurrentHealth / MaxHealth);
+		On_CurrentHealthChanged(CurrentHealth, 0.0f, CurrentHealth / MaxHealth);
+		On_HealthRegenerationChanged(AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetHealthRegenerationAttribute()), 0.0f);
 	}
 	
 	// Bind Stamina attribute delegates if the Ability System Component has the required Attribute Set -and- we are listening for Stamina attributes.
-	if (ListenForStaminaAttributeSetChanges)
+	if (ListenForStaminaAttributeSetChanges && AbilitySystemComponent->HasAttributeSetForAttribute(UStaminaAttributeSet::GetMaximumStaminaAttribute()))
 	{
-		if (AbilitySystemComponent->HasAttributeSetForAttribute(UStaminaAttributeSet::GetMaximumStaminaAttribute()))
-		{
-			MaximumStaminaChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetMaximumStaminaAttribute()).AddUObject(this, &UAbilitySystemWidget::MaximumStaminaChanged);
-			CurrentStaminaChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetCurrentStaminaAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentStaminaChanged);
-			StaminaRegenerationChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetStaminaRegenerationAttribute()).AddUObject(this, &UAbilitySystemWidget::StaminaRegenerationChanged);
-
-			const float MaxStamina = AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetMaximumStaminaAttribute());
-			const float CurrentStamina = AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetCurrentStaminaAttribute());
+		bBindingDone = true;
 		
-			// Call the Blueprint Events to initialize the values.
-			On_MaximumStaminaChanged(MaxStamina, 0.0f, CurrentStamina / MaxStamina);
-			On_CurrentStaminaChanged(CurrentStamina, 0.0f, CurrentStamina / MaxStamina);
-			On_StaminaRegenerationChanged(AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetStaminaRegenerationAttribute()), 0.0f);
-		}
-		else
-		{
-			return false;
-		}
+		MaximumStaminaChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetMaximumStaminaAttribute()).AddUObject(this, &UAbilitySystemWidget::MaximumStaminaChanged);
+		CurrentStaminaChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetCurrentStaminaAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentStaminaChanged);
+		StaminaRegenerationChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetStaminaRegenerationAttribute()).AddUObject(this, &UAbilitySystemWidget::StaminaRegenerationChanged);
+
+		const float MaxStamina = AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetMaximumStaminaAttribute());
+		const float CurrentStamina = AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetCurrentStaminaAttribute());
+	
+		// Call the Blueprint Events to initialize the values.
+		On_MaximumStaminaChanged(MaxStamina, 0.0f, CurrentStamina / MaxStamina);
+		On_CurrentStaminaChanged(CurrentStamina, 0.0f, CurrentStamina / MaxStamina);
+		On_StaminaRegenerationChanged(AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetStaminaRegenerationAttribute()), 0.0f);
+	}
+
+	if (AbilitySystemComponent->HasAttributeSetForAttribute(ULevelAttributeSet::GetMaximumLevelAttribute()))
+	{
+		LevelChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ULevelAttributeSet::GetCurrentLevelAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentLevelChanged);
+		const float CurrentLevel = AbilitySystemComponent->GetNumericAttribute(ULevelAttributeSet::GetCurrentLevelAttribute());
+		On_LevelChanged(CurrentLevel, 0.f);
 	}
 	
-	return true;
+	return bBindingDone;
+}
+
+void UAbilitySystemWidget::CurrentLevelChanged(const FOnAttributeChangeData& Data)
+{
+	On_LevelChanged(Data.NewValue, Data.OldValue);
 }
 
 void UAbilitySystemWidget::MaximumHealthChanged(const FOnAttributeChangeData& Data)

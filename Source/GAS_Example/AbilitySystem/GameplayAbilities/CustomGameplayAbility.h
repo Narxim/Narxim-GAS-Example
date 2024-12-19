@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "Abilities/GameplayAbility.h"
 #include "CustomGameplayAbility.generated.h"
 
+class ACharacterBase;
 // Custom Gameplay Ability extends the functionality of its base class.
 UCLASS()
 class GAS_EXAMPLE_API UCustomGameplayAbility : public UGameplayAbility
@@ -19,11 +21,11 @@ public:
 	
 	// Tells an ability to activate immediately when it's granted. (Useful for passive abilities and abilities forced on others)
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Custom Gameplay Ability")
-	bool ActivateAbilityOnGranted = false;
+	bool bActivateAbilityOnGranted = false;
 
 	// Which Input Action to bind the activation event to.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
-	UInputAction* ActivationInputAction = nullptr;
+	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
 	// What Input Action trigger type to listen to for input pressed events.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
@@ -36,12 +38,12 @@ public:
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	ACharacter* GetAvatarCharacter() const { return AvatarCharacter.Get(); }
+	ACharacterBase* GetAvatarCharacter() const { return AvatarCharacter.Get(); }
 
 protected:
 
 	// Keep a pointer to "Avatar Character" so we don't have to cast to Character in instanced abilities owned by a Character derived class.
-	TWeakObjectPtr<ACharacter> AvatarCharacter = nullptr;
+	TObjectPtr<ACharacterBase> AvatarCharacter = nullptr;
 	
 	// Think of this as "BeginPlay".
 	// Add logic here that should run when the Ability is first initialized.

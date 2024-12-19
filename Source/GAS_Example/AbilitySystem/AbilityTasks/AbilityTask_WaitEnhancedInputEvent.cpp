@@ -24,17 +24,19 @@ void UAbilityTask_WaitEnhancedInputEvent::Activate()
 		return;
 	}
 
-	if (const APawn* AvatarPawn = Cast<APawn>(Ability->GetAvatarActorFromActorInfo()))
+	const APawn* const AvatarPawn = Cast<APawn>(Ability->GetAvatarActorFromActorInfo());
+	const APlayerController* const PlayerController = AvatarPawn ? Cast<APlayerController>(AvatarPawn->GetController()) : nullptr;
+	
+	if (!PlayerController)
 	{
-		if (const APlayerController* PlayerController = Cast<APlayerController>(AvatarPawn->GetController()))
-		{
-			EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
+		return;
+	}
+
+	EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
 			
-			if (IsValid(EnhancedInputComponent.Get()))
-			{
-				EnhancedInputComponent->BindAction(InputAction.Get(), EventType, this, &UAbilityTask_WaitEnhancedInputEvent::EventReceived);
-			}
-		}
+	if (IsValid(EnhancedInputComponent.Get()))
+	{
+		EnhancedInputComponent->BindAction(InputAction.Get(), EventType, this, &UAbilityTask_WaitEnhancedInputEvent::EventReceived);
 	}
 }
 

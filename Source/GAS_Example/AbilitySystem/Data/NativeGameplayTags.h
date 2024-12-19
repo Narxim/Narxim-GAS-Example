@@ -12,5 +12,6 @@ namespace NativeGameplayTags
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Character_Type_PC);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Character_Type_NPC);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Character_State_BlockHealthRegen);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Effect_NoLevel);
 	}
 }

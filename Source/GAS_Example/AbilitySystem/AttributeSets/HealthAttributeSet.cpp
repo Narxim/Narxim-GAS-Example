@@ -8,8 +8,8 @@
 
 UHealthAttributeSet::UHealthAttributeSet()
 {
-	MaximumHealth = 0.0f;
-	CurrentHealth = 0.0f;
+	MaximumHealth = 1.0f;
+	CurrentHealth = 1.0f;
 	HealthRegeneration = 0.0f;
 }
 
@@ -17,9 +17,17 @@ void UHealthAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(UHealthAttributeSet, CurrentHealth, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UHealthAttributeSet, MaximumHealth, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UHealthAttributeSet, HealthRegeneration, COND_None, REPNOTIFY_Always);
+	FDoRepLifetimeParams Params{};
+	Params.bIsPushBased = true;
+	Params.Condition = COND_None;
+
+	// Replicated to all
+	DOREPLIFETIME_WITH_PARAMS_FAST(UHealthAttributeSet, CurrentHealth, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(UHealthAttributeSet, MaximumHealth, Params);
+
+	// Only Owner
+	Params.Condition = COND_OwnerOnly;
+	DOREPLIFETIME_WITH_PARAMS_FAST(UHealthAttributeSet, HealthRegeneration, Params);
 }
 
 void UHealthAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

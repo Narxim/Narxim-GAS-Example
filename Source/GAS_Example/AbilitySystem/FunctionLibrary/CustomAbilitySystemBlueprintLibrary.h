@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AttributeSet.h"
-#include "AbilitySystemFunctionLibrary.generated.h"
+#include "CustomAbilitySystemBlueprintLibrary.generated.h"
 
 class UAbilitySystemComponent;
 class UGameplayAbility;
@@ -15,7 +16,7 @@ enum class EAttributeSearchType : uint8;
 
 // Contains helper functions that make interacting with the Gameplay Abilities System easier.
 UCLASS()
-class GAS_EXAMPLE_API UAbilitySystemFunctionLibrary : public UBlueprintFunctionLibrary
+class GAS_EXAMPLE_API UCustomAbilitySystemBlueprintLibrary : public UAbilitySystemBlueprintLibrary
 {
 	GENERATED_BODY()
 
@@ -24,13 +25,13 @@ public:
 	// Tries to find the Actor's Ability System Component using the IAbilitySystemInterface.
 	// If the Ability System Component is found; attempts to find the value of the Attribute supplied.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ability System")
-	static float GetAttributeValueFromActor(const AActor* Actor, const FGameplayAttribute Attribute, const EAttributeSearchType SearchType);
+	static float GetAttributeValueFromActor(const AActor* const Actor, const FGameplayAttribute Attribute, const EAttributeSearchType SearchType);
 	
 	// Attempts to find the value of the Attribute supplied.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ability System")
-	static float GetAttributeValueFromAbilitySystem(const UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute Attribute, const EAttributeSearchType SearchType);
+	static float GetAttributeValueFromAbilitySystem(const UAbilitySystemComponent* const AbilitySystemComponent, const FGameplayAttribute Attribute, const EAttributeSearchType SearchType);
 
 private:
 
-	static void GetAttributeValue(const UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const EAttributeSearchType SearchType, float& ReturnValue);
+	static void GetAttributeValue(const UAbilitySystemComponent* const AbilitySystemComponent, const FGameplayAttribute& Attribute, const EAttributeSearchType SearchType, OUT float& ReturnValue);
 };

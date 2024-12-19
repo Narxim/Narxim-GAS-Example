@@ -9,6 +9,8 @@ public class GAS_ExampleTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
+		
+		bWithPushModel = true;
 
 		ExtraModuleNames.AddRange( new string[] { "GAS_Example" } );
 	}

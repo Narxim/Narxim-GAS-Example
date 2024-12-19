@@ -9,6 +9,8 @@ public class GAS_ExampleEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
+		
+		bWithPushModel = true;
 
 		ExtraModuleNames.AddRange( new string[] { "GAS_Example" } );
 	}

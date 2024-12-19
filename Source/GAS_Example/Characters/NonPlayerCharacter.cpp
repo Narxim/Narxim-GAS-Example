@@ -8,15 +8,15 @@
 ANonPlayerCharacter::ANonPlayerCharacter()
 {
 	// Set the pointer from Character Base to the Ability System Component sub-object.
-	AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>("Ability System Component");
+	AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 }
 
 void ANonPlayerCharacter::BeginPlay()
 {
-	if (UCustomAbilitySystemComponent* CustomAbilitySystemComponent = Cast<UCustomAbilitySystemComponent>(AbilitySystemComponent))
+	if (AbilitySystemComponent)
 	{
 		// Call the function on "Custom Ability System Component" to set up references and Init data. (Client and Server)
-		CustomAbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
+		AbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
 
 		PostInitializeAbilitySystem();
 	}

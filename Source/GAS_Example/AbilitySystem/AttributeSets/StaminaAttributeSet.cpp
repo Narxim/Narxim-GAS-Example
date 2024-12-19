@@ -41,9 +41,17 @@ void UStaminaAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(UStaminaAttributeSet, CurrentStamina, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UStaminaAttributeSet, MaximumStamina, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UStaminaAttributeSet, StaminaRegeneration, COND_None, REPNOTIFY_Always);
+	FDoRepLifetimeParams Params{};
+	Params.bIsPushBased = true;
+	Params.Condition = COND_None;
+
+	// Replicated to all
+	DOREPLIFETIME_WITH_PARAMS_FAST(UStaminaAttributeSet, CurrentStamina, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(UStaminaAttributeSet, MaximumStamina, Params);
+
+	// Owner Only
+	Params.Condition = COND_OwnerOnly;
+	DOREPLIFETIME_WITH_PARAMS_FAST(UStaminaAttributeSet, StaminaRegeneration, Params);
 }
 
 void UStaminaAttributeSet::OnRep_CurrentStamina(const FGameplayAttributeData& OldValue)

@@ -7,6 +7,23 @@
 #include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomAbilitySystemComponent.h"
 
 
+void APlayerCharacter::InitializeAbilitySystem()
+{
+	// Set the Ability System Component pointer using Ability System Globals (IAbilitySystemInterface) with the Player State as a reference.
+	AbilitySystemComponent =  Cast<UCustomAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
+
+	if (!AbilitySystemComponent)
+	{
+		// Shouldn't happen, but if it is, return an error.
+		return;
+	}
+	
+	// Call the function on "Custom Ability System Component" to set up references and Init data. (Client)
+	AbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
+
+	PostInitializeAbilitySystem();
+}
+
 void APlayerCharacter::HandleMovementInput(const float InputX, const float InputY)
 {
 	const FRotator Rotation = GetControlRotation();
@@ -29,30 +46,14 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	// Set the Ability System Component pointer using Ability System Globals (IAbilitySystemInterface) with the Player State as a reference.
-	AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState());
-
-	if (UCustomAbilitySystemComponent* CustomAbilitySystemComponent = Cast<UCustomAbilitySystemComponent>(AbilitySystemComponent))
-	{
-		// Call the function on "Custom Ability System Component" to set up references and Init data. (Server)
-		CustomAbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
-
-		PostInitializeAbilitySystem();
-	}
+	// Server side
+	InitializeAbilitySystem();
 }
 
 void APlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	
-	// Set the Ability System Component pointer using Ability System Globals (IAbilitySystemInterface) with the Player State as a reference.
-	AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState());
-	
-	if (UCustomAbilitySystemComponent* CustomAbilitySystemComponent = Cast<UCustomAbilitySystemComponent>(AbilitySystemComponent))
-	{
-		// Call the function on "Custom Ability System Component" to set up references and Init data. (Client)
-		CustomAbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
 
-		PostInitializeAbilitySystem();
-	}
+	// Client side
+	InitializeAbilitySystem();
 }

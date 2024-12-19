@@ -5,11 +5,23 @@
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "GameplayTagContainer.h"
+#include "ScalableFloat.h"
 #include "AbilitySystemData.generated.h"
 
+
+struct FCustomAttributeInitializer;
 class UAttributeSet;
 class UGameplayAbility;
 class UGameplayEffect;
+
+USTRUCT(Blueprintable)
+struct FCustomAttributeInitializer
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FScalableFloat Value;
+};
 
 // Contains data used to initialize an Ability System Component.
 USTRUCT(BlueprintType)
@@ -19,19 +31,19 @@ struct FAbilitySystemInitializationData
 
 	// An array of Attribute Sets to create.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<TSubclassOf<UAttributeSet>> AttributeSets;
+	TSet<TSubclassOf<UAttributeSet>> AttributeSets;
 
 	// A map of Attributes / float used to set base values.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TMap<FGameplayAttribute, float> AttributeBaseValues;
+	TMap<FGameplayAttribute, FCustomAttributeInitializer> AttributeBaseValues;
 
 	// An Array of Gameplay Abilities to give.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<TSubclassOf<UGameplayAbility>> GameplayAbilities;
+	TSet<TSubclassOf<UGameplayAbility>> GameplayAbilities;
 
 	// An array of Gameplay Effects to apply.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<TSubclassOf<UGameplayEffect>> GameplayEffects;
+	TSet<TSubclassOf<UGameplayEffect>> GameplayEffects;
 
 	// A container of GameplayTags to apply.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)

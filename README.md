@@ -8,9 +8,7 @@
 
 ![Preview Image](https://i.imgur.com/4XLuHTa.png)
 
-## Features
-
-### A fully-setup example project!
+## A fully-setup example project!
 ___
 
 GAS has a lot of moving parts and can be quite daunting to wrap your head around at first glance. I am providing this example project as a basis for learning how to properly set up your project to utilize all of its components. There are obviously many ways to set up your project, but I believe this example provides a simple, versatile base to build upon.
@@ -18,10 +16,9 @@ GAS has a lot of moving parts and can be quite daunting to wrap your head around
 ---
 
 <p>Note: The 5.4 update of this project has introduced significant changes in an attempt to simplify the setup and add some commonly used / requested features!</p>
-
 ___
 
-#### Other Features include:
+### Other Features include:
 - Thoroughly commented C++ code
 - Example Blueprints
 - Health Attribute Set (Includes Damage / Healing), Stamina Attribute Set and (**New**) Leveling Attribute set
@@ -35,20 +32,31 @@ ___
 - GA Jump example with Stamina cost
 - Player Character and Non Player Character class examples
 - Example external Gameplay Effect application (Damage / Healing Volumes)
+___
+
+#### Check out the **[Unreal Source Discord](https://discord.gg/unrealsource)** if you have any questions!
+___
+
+#### [**Dan's (Tranek) GAS Documentation**](https://github.com/tranek/GASDocumentation) covers all of these concepts and provides a great breakdown of GAS overall. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestible setup example. Cheers!
 ---
-Ability System Initialization Data can be found in the Character class Blueprints.
+## Features
+### Ability System Initialization Data can be found in the Character class Blueprints.
 ![image](https://github.com/user-attachments/assets/af28429d-fac8-4efa-97d2-9fcce0b4aef5)
+
 You can specify:
 - Which attribute sets to grant
 - Initialize each attribute from a hard coded value or a Curve Float table ("CSV")
 - Starting Gameplay Abilities
 - Starting Gameplay effects
 
-___
-[**Dan's (Tranek) GAS Documentation**](https://github.com/tranek/GASDocumentation) covers all of these concepts and provides a great breakdown of GAS overall. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestible setup example. Cheers!
-___
+### Leveling System
+Press NumPad -/+ to Level up your character.
+This will reevaluate all Attribute initializers and adjust the Maximum atttributes.
 
-#### Check out the **[Unreal Source Discord](https://discord.gg/unrealsource)** if you have any questions!
+All GAs and GEs will also have their levels updated.
+
+GEs using Curve tables with multiple levels in them will now use the right leveled value.
+
 ___
 ## ChangeLog:
 ### 2024/12/19:

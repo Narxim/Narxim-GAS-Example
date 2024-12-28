@@ -59,6 +59,19 @@ GEs using Curve tables with multiple levels in them will now use the right level
 
 ___
 ## ChangeLog:
+### 2024/12/28:
+```- Using one Resistance Attribute for all "Armors".
+- Introduced Fire Damage, with a simple calculation exec
+Simple: Simple Exec, no fancy things, everything handled with tags on GE "Base Kaos style"
+Advanced: can specify more than one damage at the same time while retaining the same feature, and Damage GE doesn't have to have any specific tags
+- Introduced Attribute Maxed out tag, to be able to drive regen (stop if already at max), or be able to do some other type of action if Maxed out (Like: Damage is increased if target has nax health ?)
+- Reworked some C++ functions
+- Created BP Implenentation of all Attribute sets (Best practice: never use the C++ class directly in other objects)
+- Created a Base Custom Ability
+- Renamed Volumes and GEs associated with them
+- Introduced new Resistance UI (showing off how you can get the right value for each resistance with only ONE attribute)
+- Added some Gameplay cues for Damage / Armor / Fire / Bleeding```
+
 ### 2024/12/19:
 ```General:
 - Adjusted C++ (removing Pyramids, refactoring some methods)

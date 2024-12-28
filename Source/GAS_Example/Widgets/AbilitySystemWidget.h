@@ -63,6 +63,14 @@ public:
 	// Event called when the Stamina Regeneration attribute value changes.
 	UFUNCTION(BlueprintImplementableEvent, Category = "Ability System")
 	void On_StaminaRegenerationChanged(const float NewValue, const float OldValue);
+
+	// Event called when the Armor attribute value changes.
+	UFUNCTION(BlueprintImplementableEvent, Category = "Ability System")
+	void On_ResistanceChanged(const float NewBase, const float NewMagnitude);
+
+	// Event called when the Bleeding attribute value changes.
+	UFUNCTION(BlueprintImplementableEvent, Category = "Ability System")
+	void On_BleedingChanged(const float NewValue, const float NewHealPerSecond, const float NewRemainingDuration);
 	
 protected:
 
@@ -75,6 +83,9 @@ protected:
 	FDelegateHandle CurrentStaminaChangeDelegate;
 	FDelegateHandle StaminaRegenerationChangeDelegate;
 	FDelegateHandle LevelChangeDelegate;
+	FDelegateHandle ResistanceChangeDelegate;
+	FDelegateHandle BleedingChangeDelegate;
+	FDelegateHandle BleedHealChangeDelegate;
 
 	void CurrentLevelChanged(const FOnAttributeChangeData& Data);
 	
@@ -84,11 +95,15 @@ protected:
 	
 	void HealthRegenerationChanged(const FOnAttributeChangeData& Data);
 	
+	void ResistanceChanged(const FOnAttributeChangeData& Data);
+
 	void MaximumStaminaChanged(const FOnAttributeChangeData& Data);
 	
 	void CurrentStaminaChanged(const FOnAttributeChangeData& Data);
 	
 	void StaminaRegenerationChanged(const FOnAttributeChangeData& Data);
+	
+	void BleedingChanged(const FOnAttributeChangeData& Data);
 
 	static void ResetDelegateHandle(FDelegateHandle DelegateHandle, UAbilitySystemComponent* OldAbilitySystemComponent, const FGameplayAttribute& Attribute);
 };

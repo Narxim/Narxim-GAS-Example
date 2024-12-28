@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "AttributeSetBase.h"
+#include "GAS_Example/AbilitySystem/Data/AbilitySystemData.h"
 #include "HealthAttributeSet.generated.h"
 
 // Contains Attributes related to Health. Any Character that takes damage will need this Attribute Set.
@@ -17,18 +18,21 @@
 //
 // Damage - A meta Attribute that negatively changes the value of Health.
 // Healing - A meta Attribute that positively changes the value of Health.
+
 UCLASS()
 class GAS_EXAMPLE_API UHealthAttributeSet : public UAttributeSetBase
 {
 	GENERATED_BODY()
 
 public:
-	
 	UHealthAttributeSet();
-
+	
 	// Attribute Set Overrides.
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
+	virtual void PostAttributeBaseChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) const override;
 
 	// Set Attributes to replicate.
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -42,6 +46,16 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Health Attribute Set", meta = (HideFromLevelInfos))
 	FGameplayAttributeData Healing;
 	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, Healing)
+
+	// Used to create a local copy of Bleed which is then added to Bleeding.
+	UPROPERTY(BlueprintReadOnly, Category = "Health Attribute Set", meta = (HideFromLevelInfos))
+	FGameplayAttributeData ReceivedBleed;
+	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, ReceivedBleed)
+
+	// Used to create a local copy of Direct Damage which is then added to Current Health.
+	UPROPERTY(BlueprintReadOnly, Category = "Health Attribute Set", meta = (HideFromLevelInfos))
+	FGameplayAttributeData ReceivedDirectDamage;
+	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, ReceivedDirectDamage)
 	
 	// Holds the current value for Health.
 	UPROPERTY(BlueprintReadOnly, Category = "Health Attribute Set", ReplicatedUsing = OnRep_CurrentHealth)
@@ -58,7 +72,20 @@ public:
 	FGameplayAttributeData HealthRegeneration;
 	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, HealthRegeneration)
 
+	// Holds the current bleeding amount
+	UPROPERTY(BlueprintReadOnly, Category = "Health Attribute Set", ReplicatedUsing = OnRep_Bleeding)
+	FGameplayAttributeData Bleeding;
+	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, Bleeding)
+
+	// Holds the current bleed healing rate
+	UPROPERTY(BlueprintReadOnly, Category = "Health Attribute Set", ReplicatedUsing = OnRep_BleedHealing)
+	FGameplayAttributeData BleedHealing;
+	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, BleedHealing)
+
 protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TMap<FGameplayAttribute, FCustomAttributeMaxValue> AttributeMaxValue;
 	
 	UFUNCTION()
 	virtual void OnRep_CurrentHealth(const FGameplayAttributeData& OldValue);
@@ -68,4 +95,10 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_HealthRegeneration(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_Bleeding(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_BleedHealing(const FGameplayAttributeData& OldValue);
 };

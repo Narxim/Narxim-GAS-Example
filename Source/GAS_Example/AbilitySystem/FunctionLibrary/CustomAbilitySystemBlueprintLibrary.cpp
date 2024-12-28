@@ -4,6 +4,8 @@
 #include "CustomAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "GAS_Example/AbilitySystem/AttributeSets/HealthAttributeSet.h"
+#include "GAS_Example/AbilitySystem/AttributeSets/ResistanceAttributeSet.h"
 #include "GAS_Example/AbilitySystem/Data/AbilitySystemData.h"
 
 
@@ -29,6 +31,14 @@ float UCustomAbilitySystemBlueprintLibrary::GetAttributeValueFromAbilitySystem(c
 	GetAttributeValue(AbilitySystemComponent, Attribute, SearchType, ReturnValue);
 
 	return ReturnValue;
+}
+
+float UCustomAbilitySystemBlueprintLibrary::CalculateEffectiveResistance(const float CurrentArmor)
+{
+	const float CurrentArmorTmp = FMath::Clamp(CurrentArmor, UResistanceAttributeSet::RESISTANCE_MIN, UResistanceAttributeSet::RESISTANCE_MAX);
+	
+	const float ArmorDenominator = UResistanceAttributeSet::RESISTANCE_BASE + CurrentArmorTmp;
+	return UResistanceAttributeSet::RESISTANCE_BASE > 0.f && ArmorDenominator > 0.f ? UResistanceAttributeSet::RESISTANCE_BASE / ArmorDenominator : 1.f;
 }
 
 void UCustomAbilitySystemBlueprintLibrary::GetAttributeValue(const UAbilitySystemComponent* const AbilitySystemComponent, const FGameplayAttribute& Attribute, const EAttributeSearchType SearchType, OUT float& ReturnValue)

@@ -3,6 +3,7 @@
 
 #include "StaminaAttributeSet.h"
 #include "GameplayEffectExtension.h"
+#include "GAS_Example/AbilitySystem/Data/NativeGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 
 UStaminaAttributeSet::UStaminaAttributeSet()
@@ -15,11 +16,6 @@ UStaminaAttributeSet::UStaminaAttributeSet()
 void UStaminaAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
-
-	if (Attribute == GetMaximumStaminaAttribute())
-	{
-		AdjustAttributeForMaxChange(CurrentStamina, MaximumStamina, NewValue, GetCurrentStaminaAttribute());
-	}
 }
 
 void UStaminaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -28,12 +24,32 @@ void UStaminaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 
 	if (Data.EvaluatedData.Attribute == GetCurrentStaminaAttribute())
 	{
+		// This should be removed in favor of another method, as we're modifying 2 times the current stamina. (One right before post, one right after (here).
 		SetCurrentStamina(FMath::Clamp(GetCurrentStamina(), 0.0f, GetMaximumStamina()));
+		return;
 	}
 
-	else if (Data.EvaluatedData.Attribute == GetStaminaRegenerationAttribute())
+	if (Data.EvaluatedData.Attribute == GetStaminaRegenerationAttribute())
 	{
 		SetStaminaRegeneration(FMath::Clamp(GetStaminaRegeneration(), 0.0f, GetMaximumStamina()));
+		return;
+	}
+}
+
+void UStaminaAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue,	float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+	
+	if (Attribute == GetCurrentStaminaAttribute())
+	{
+		CheckMaxReachedForAttribute(MaximumStamina, NativeGameplayTags::State::TAG_State_Max_Stamina.GetTag(), NewValue);
+		return;
+	}
+
+	if (Attribute == GetMaximumStaminaAttribute())
+	{
+		AdjustAttributeForMaxChange(GetCurrentStaminaAttribute(), OldValue, NewValue);
+		return;
 	}
 }
 

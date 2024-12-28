@@ -13,6 +13,7 @@
 		GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 		GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+struct FGameplayTag;
 // Base class for Attribute Sets. Includes Macros and helper functions.
 UCLASS()
 class GAS_EXAMPLE_API UAttributeSetBase : public UAttributeSet
@@ -20,6 +21,8 @@ class GAS_EXAMPLE_API UAttributeSetBase : public UAttributeSet
 	GENERATED_BODY()
 
 protected:
+	void AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, const float OldMaxValue, const float NewMaxValue) const;
 
-	void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const;
+	void CheckMaxReachedForAttribute(const FGameplayAttributeData& MaxAttribute, const FGameplayTag& MaxTag, const float& NewValue) const;
+	void CheckStatusTagForAttribute(const FGameplayTag& StatusTag, const float& NewValue, const float& OldValue) const;
 };

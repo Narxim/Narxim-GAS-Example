@@ -66,7 +66,7 @@ void UCustomAbilitySystemComponent::ChangeLevel_Implementation(const float Desir
 
 	// Do not change the level of any GE with the NoLevel tag.
 	FGameplayEffectQuery Query{};
-	Query.EffectTagQuery.MakeQuery_MatchNoTags(NativeGameplayTags::CharacterTags::TAG_Effect_NoLevel.GetTag().GetSingleTagContainer());
+	Query.EffectTagQuery.MakeQuery_MatchNoTags(NativeGameplayTags::TAG_Effect_NoLevel.GetTag().GetSingleTagContainer());
 	
 	// Note: Floats could be used, but need to create a new method.
 	// Note 2: This method performance could be improved (Loop of Loops)
@@ -87,6 +87,14 @@ void UCustomAbilitySystemComponent::ChangeLevel_Implementation(const float Desir
 ACharacterBase* UCustomAbilitySystemComponent::GetCharacterBaseAvatar() const
 {
 	return Cast<ACharacterBase>(GetAvatarActor_Direct());
+}
+
+float UCustomAbilitySystemComponent::GetFilteredAttribute(
+	const FGameplayAttribute Attribute,
+	const FGameplayTagRequirements SourceTags,
+	const FGameplayTagContainer TargetTags)
+{
+	return GetFilteredAttributeValue(Attribute, SourceTags, TargetTags);
 }
 
 void UCustomAbilitySystemComponent::InitializeAbilitySystemData(const FAbilitySystemInitializationData& InitializationData, AActor* InOwningActor, AActor* InAvatarActor)

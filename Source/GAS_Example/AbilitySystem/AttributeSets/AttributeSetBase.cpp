@@ -5,16 +5,72 @@
 #include "AbilitySystemComponent.h"
 
 
-void UAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, const float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const
+void UAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, const float OldMaxValue, const float NewMaxValue) const
 {
-	UAbilitySystemComponent* AbilitySystemComponent = GetOwningAbilitySystemComponent();
-
-	if (const float CurrentMaxValue = MaxAttribute.GetCurrentValue(); !FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilitySystemComponent)
+	UAbilitySystemComponent* const ASC = GetOwningAbilitySystemComponent();
+	if (!ASC)
 	{
-		// Change current value to maintain the Current Value / Maximum Value percentage.
-		const float CurrentValue = AffectedAttribute.GetCurrentValue();
-		const float NewDelta = CurrentMaxValue > 0.f ? CurrentValue * NewMaxValue / CurrentMaxValue - CurrentValue : NewMaxValue;
+		return;
+	}
+	
+	if (OldMaxValue <= 0.f || FMath::IsNearlyEqual(OldMaxValue, NewMaxValue, 0.f))
+	{
+		return;
+	}
+	
+	// Change current value to maintain the Current Value / Maximum Value percentage.
+	ASC->SetNumericAttributeBase(AffectedAttribute, ASC->GetNumericAttributeBase(AffectedAttribute) * NewMaxValue / OldMaxValue);
+}
 
-		AbilitySystemComponent->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
+void UAttributeSetBase::CheckMaxReachedForAttribute(const FGameplayAttributeData& MaxAttribute, const FGameplayTag& MaxTag, const float& NewValue) const
+{
+	UAbilitySystemComponent* const ASC = GetOwningAbilitySystemComponent();
+	if (!ASC)
+	{
+		return;
+	}
+
+	const float MaxHealth = MaxAttribute.GetCurrentValue();
+	const bool bHasTag = GetOwningAbilitySystemComponent()->HasMatchingGameplayTag(MaxTag);
+
+	int32 Count = -1;
+	if (NewValue < MaxHealth && bHasTag)
+	{
+		Count = 0;
+	} else if (NewValue >= MaxHealth && !bHasTag)
+	{
+		Count = 1;
+	}
+
+	if (Count >= 0)
+	{
+		ASC->SetLooseGameplayTagCount(MaxTag, Count);
+		ASC->SetReplicatedLooseGameplayTagCount(MaxTag, Count);
+	}
+}
+
+void UAttributeSetBase::CheckStatusTagForAttribute(const FGameplayTag& StatusTag, const float& NewValue, const float& OldValue) const
+{
+	UAbilitySystemComponent* const ASC = GetOwningAbilitySystemComponent();
+	if (!ASC)
+	{
+		return;
+	}
+	
+	int32 Count = -1;
+		
+	if (NewValue <= 0.f && OldValue > 0.f)
+	{
+		Count = 0;
+	}
+	else if (NewValue > 0.f && OldValue <= 0.f)
+	{
+		Count = 1;
+	}
+
+	if (Count >= 0)
+	{
+		ASC->SetLooseGameplayTagCount(StatusTag, Count);
+		ASC->SetReplicatedLooseGameplayTagCount(StatusTag, Count);
 	}
 }

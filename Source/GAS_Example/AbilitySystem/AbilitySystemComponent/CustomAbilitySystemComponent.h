@@ -42,4 +42,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSet<FGameplayAttribute> NoLevelAttribute{};
+
+public:
+	/** Returns an attribute value, after applying tag filters */
+	UFUNCTION(BlueprintPure)
+	float GetFilteredAttribute(const FGameplayAttribute Attribute, const FGameplayTagRequirements SourceTags, const FGameplayTagContainer TargetTags);
 };

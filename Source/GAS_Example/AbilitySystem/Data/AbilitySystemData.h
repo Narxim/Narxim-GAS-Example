@@ -15,6 +15,18 @@ class UGameplayAbility;
 class UGameplayEffect;
 
 USTRUCT(Blueprintable)
+struct FCustomAttributeMaxValue
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FScalableFloat MaxFloat{0};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayAttribute MaxAttribute{};
+};
+
+USTRUCT(Blueprintable)
 struct FCustomAttributeInitializer
 {
 	GENERATED_BODY()

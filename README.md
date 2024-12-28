@@ -70,7 +70,8 @@ Advanced: can specify more than one damage at the same time while retaining the 
 - Created a Base Custom Ability
 - Renamed Volumes and GEs associated with them
 - Introduced new Resistance UI (showing off how you can get the right value for each resistance with only ONE attribute)
-- Added some Gameplay cues for Damage / Armor / Fire / Bleeding```
+- Added some Gameplay cues for Damage / Armor / Fire / Bleeding
+```
 
 ### 2024/12/19:
 ```General:

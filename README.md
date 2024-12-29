@@ -11,27 +11,31 @@
 ## A fully-setup example project!
 ___
 
-GAS has a lot of moving parts and can be quite daunting to wrap your head around at first glance. I am providing this example project as a basis for learning how to properly set up your project to utilize all of its components. There are obviously many ways to set up your project, but I believe this example provides a simple, versatile base to build upon.
+GAS has a lot of moving parts and can be quite daunting to wrap your head around at first glance.
+I am providing this example project as a basis for learning how to properly set up your project to utilize all of its components.
+
+There are obviously many ways to set up your project, but I believe this example provides a simple, versatile base to build upon, and especially to understand GAS as a whole.
+
+This project is currently being updated, same for the documentation. Please be patient :)
 
 ---
 
 <p>Note: The 5.4 update of this project has introduced significant changes in an attempt to simplify the setup and add some commonly used / requested features!</p>
 ___
 
-### Other Features include:
+### Includes:
 - Thoroughly commented C++ code
 - Example Blueprints
-- Health Attribute Set (Includes Damage / Healing), Stamina Attribute Set and (**New**) Leveling Attribute set
+- Sample Attribute sets: Health (Includes Damage / Healing), Stamina,  Leveling and Resistance
 - Stamina / Health Regeneration example (Based on Regeneration Attribute)
-- (**New**) "Ability System Initialization Data" structure for initializing the Ability System Component
-- (**New**) Ability Trigger / Release bindings tied directly to Enhanced Input (Not Gameplay Tag Based... yuck!)
-- (**New**) Commonly used example Ability Tasks (Wait Enhanced Input Event / On Tick Event)
-- (**New**) Native Gameplay Tags example (NativeGameplayTags.h)
-- (**New**) Health Regeneration block after damage (3 seconds - Damage Volume)
-- (**Updated**) Example UI elements with Attribute event bindings (In Game UI / Nameplate)
-- GA Jump example with Stamina cost
+- "Ability System Initialization Data" structure for initializing the Ability System Component
+- Ability Trigger / Release bindings tied directly to Enhanced Input (example)
+- Commonly used example Ability Tasks
+- Native Gameplay Tags example (NativeGameplayTags.h)
+- Example UI elements with Attribute event bindings (In Game UI / Nameplate)
+- Sample abilities
 - Player Character and Non Player Character class examples
-- Example external Gameplay Effect application (Damage / Healing Volumes)
+- Effect samples (Damage, armor buff/debuff, fire armor/damage, bleed status ...)
 ___
 
 #### Check out the **[Unreal Source Discord](https://discord.gg/unrealsource)** if you have any questions!
@@ -40,6 +44,9 @@ ___
 #### [**Dan's (Tranek) GAS Documentation**](https://github.com/tranek/GASDocumentation) covers all of these concepts and provides a great breakdown of GAS overall. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestible setup example. Cheers!
 ---
 ## Features
+### Native gameplay tags
+[Gameplay tags defined in C++](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Data/NativeGameplayTags.h) only, without the need to declare them in DefaultGameplayTag.ini
+
 ### Ability System Initialization Data can be found in the Character class Blueprints.
 ![image](https://github.com/user-attachments/assets/af28429d-fac8-4efa-97d2-9fcce0b4aef5)
 
@@ -49,13 +56,94 @@ You can specify:
 - Starting Gameplay Abilities
 - Starting Gameplay effects
 
-### Leveling System
-Press NumPad -/+ to Level up your character.
-This will reevaluate all Attribute initializers and adjust the Maximum atttributes.
+### Attribute Sets
+We are providing different attribute sets, with a BP implementation for each.
 
-All GAs and GEs will also have their levels updated.
+That's a best practice (Based on working experience), that's not only for ATs, but for any C++ class that might get reference by another object.
+
+If you have a BP implementation, and for example, you add some config variable on your C++ class, you'll be able to adjust them in the editor without even changing the reference from the C++ class to the new BP.
+
+#### Health
+---
+This attribute set comes with:
+- Current Health
+- Maximum Health
+- Health Regeneration
+
+Current cannot go over Max, and will be proportionnaly adjusted if the Maximum is changing (down or up).
+
+Adjustments are done using a convenience method on the Base attribute set, called in PostAttributeChange (which is called whenever an attribute is changing, from both temporary and base adjustments).
+
+Health Regenration is used by an infinite GE, granting health back per second.
+
+Once Current Health attains the Maximum, we'll add a 
+
+#### Stamina
+---
+Stamina is implemented in the same way as Health (Current / Max), with proportional adjustments, and regeneration.
+
+#### Leveling System
+---
+Press NumPad -/+ (or Up/Down) to Level up your character.
+This will reevaluate all Attribute initializers and adjust the Maximum atttributes, adjusting the Current values that might be linked.
+
+All GAs and GEs will also have their levels updated (Except if they have the Effect.NoLevel tag).
 
 GEs using Curve tables with multiple levels in them will now use the right leveled value.
+
+#### Resistance
+---
+We've implemented LoL (League of Legends) Armor system:
+- Resistance is based on 100
+- Resistance attribute can go from -75 to +200
+- Damage reduction is calculated as 100 / (100 - Resistance attribute)
+- More armor will yield less return, while less that 100 will increase the damage.
+
+We provide one Attribute set with one attribute: Resistance.
+And with this one attribute, every type of damage can have their own resistance.
+See [KaosSpectrum's idea of Armor / Resistance](https://www.thegames.dev/?p=165) for more information.
+
+### Damage
+The project comes with:
+- Basic Direct Damage (Physical damage)
+- Fire Damage
+- Bleed Damage (Damage over Time / DoT)
+
+### Resistance and Damage handling
+All damage _should_ be applied server authoritative, through an execution, if possible.
+The reason is simple: a game should avoid rubber-banding death. That's not something you can get away with.
+
+We're providing multiple Gameplay Effects damage examples, all using [GameplayEffectExecutionCalculations](https://github.com/tranek/GASDocumentation?tab=readme-ov-file#4512-gameplay-effect-execution-calculation) (or called Execution, Exec cals) in 2 flavors:
+- Simple version
+- Advanced version
+
+Any of those Exec can access:
+- Source and Target Ability System Component
+- Source and Target actors
+- Source and Target tags
+- GE's context and spec
+
+#### Simple damage calculation
+That's the [boiler plate implementation](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Calculations/SimpleDamageGameplayEffectExecutionCalculation.cpp) for our project, using:
+- One meta attribute called "Damage" that will be applied as "real damage" to Current Health.
+
+The "Resistance" we talked about earlier is actually implemeted exactly as KaosSpectrum explained.
+This version has a small downside though: You cannot applied more than one type of damage per Gameplay effect.
+The reason: GE's asset tag will be used to calculate the right Resistance.
+
+That's how our "Fire" Damage is implemented:
+- Simple execution
+- GE and some tags
+
+#### Advanced damage calculation
+This ["Advanced"](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Calculations/DamageGameplayEffectExecutionCalculation.cpp) one allows for more than one damage type while retaining the ability.
+
+The Exec will capture 2 damage attributes (Damage and ReceivedBleeding).
+Inside the exec, the "same code" from the simple version will be ran, for each type of damage, but the Tags will be provided dynamically in there.
+
+The GE doesn't have to provide any tags, all is handled in the Exec.
+
+We also think it would be possible to handle multiple damage type using only one meta attribute, but for the sack of simplicity, 2 are used here.
 
 ___
 ## ChangeLog:
@@ -66,7 +154,7 @@ Simple: Simple Exec, no fancy things, everything handled with tags on GE "Base K
 Advanced: can specify more than one damage at the same time while retaining the same feature, and Damage GE doesn't have to have any specific tags
 - Introduced Attribute Maxed out tag, to be able to drive regen (stop if already at max), or be able to do some other type of action if Maxed out (Like: Damage is increased if target has nax health ?)
 - Reworked some C++ functions
-- Created BP Implenentation of all Attribute sets (Best practice: never use the C++ class directly in other objects)
+- Created BP Implementation of all Attribute sets (Best practice: never use the C++ class directly in other objects)
 - Created a Base Custom Ability
 - Renamed Volumes and GEs associated with them
 - Introduced new Resistance UI (showing off how you can get the right value for each resistance with only ONE attribute)

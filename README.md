@@ -6,7 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/Narxim/Narxim-GAS-Example?style=flat-square)
 ![Unreal](https://img.shields.io/badge/Unreal_Engine_Versions-_(4.26+)_(5.0+)_Current_Version_(5.4)_-informational?style=flat-square)
 
-![Preview Image](https://i.imgur.com/4XLuHTa.png)
+![image](https://github.com/user-attachments/assets/c4fd3351-4e7b-48d3-99b6-95964237808a)
 
 ## A fully-setup example project!
 ___
@@ -47,17 +47,10 @@ ___
 ### Native gameplay tags
 [Gameplay tags defined in C++](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Data/NativeGameplayTags.h) only, without the need to declare them in DefaultGameplayTag.ini
 
-### Ability System Initialization Data can be found in the Character class Blueprints.
-![image](https://github.com/user-attachments/assets/af28429d-fac8-4efa-97d2-9fcce0b4aef5)
-
-You can specify:
-- Which attribute sets to grant
-- Initialize each attribute from a hard coded value or a Curve Float table ("CSV")
-- Starting Gameplay Abilities
-- Starting Gameplay effects
-
 ### Attribute Sets
 We are providing different attribute sets, with a BP implementation for each.
+
+![image](https://github.com/user-attachments/assets/7b7146fd-9e43-4921-a85c-7064595d0f2b)
 
 That's a best practice (Based on working experience), that's not only for ATs, but for any C++ class that might get reference by another object.
 
@@ -81,6 +74,10 @@ Once Current Health attains the Maximum, we'll add a
 #### Stamina
 ---
 Stamina is implemented in the same way as Health (Current / Max), with proportional adjustments, and regeneration.
+Example for Stamina Regen:
+
+![image](https://github.com/user-attachments/assets/7357ef50-10a3-4a04-a0cd-088ccf3dc02a)
+
 
 #### Leveling System
 ---
@@ -103,6 +100,24 @@ We provide one Attribute set with one attribute: Resistance.
 And with this one attribute, every type of damage can have their own resistance.
 See [KaosSpectrum's idea of Armor / Resistance](https://www.thegames.dev/?p=165) for more information.
 
+The UI will showcase how to access each resistance individually, with the in-game effect, live:
+
+![image](https://github.com/user-attachments/assets/b30e03a3-745b-450d-8237-1d825c7c9fa1)
+
+Middle is the current Resistance magnitude (0 - 25).
+Top, showing the effective resistance, calculated with the previous formula.
+
+The slider will show if it is good or bad, with the min/max.
+
+### Ability System Initialization Data can be found in the Character class Blueprints.
+![image](https://github.com/user-attachments/assets/af28429d-fac8-4efa-97d2-9fcce0b4aef5)
+
+You can specify:
+- Which attribute sets to grant
+- Initialize each attribute from a hard coded value or a Curve Float table ("CSV")
+- Starting Gameplay Abilities
+- Starting Gameplay effects
+
 ### Damage
 The project comes with:
 - Basic Direct Damage (Physical damage)
@@ -122,6 +137,8 @@ Any of those Exec can access:
 - Source and Target actors
 - Source and Target tags
 - GE's context and spec
+
+![image](https://github.com/user-attachments/assets/3965911e-3d25-417e-9e1c-83cab978476a)
 
 #### Simple damage calculation
 That's the [boiler plate implementation](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Calculations/SimpleDamageGameplayEffectExecutionCalculation.cpp) for our project, using:

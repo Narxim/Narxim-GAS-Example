@@ -6,7 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/Narxim/Narxim-GAS-Example?style=flat-square)
 ![Unreal](https://img.shields.io/badge/Unreal_Engine_Versions-_(4.26+)_(5.0+)_Current_Version_(5.4)_-informational?style=flat-square)
 
-![image](https://github.com/user-attachments/assets/c4fd3351-4e7b-48d3-99b6-95964237808a)
+![image](https://github.com/user-attachments/assets/2518ffc8-ef3b-4bbf-bcce-48d00338237a)
 
 ## A fully-setup example project!
 ___
@@ -161,6 +161,31 @@ Inside the exec, the "same code" from the simple version will be ran, for each t
 The GE doesn't have to provide any tags, all is handled in the Exec.
 
 We also think it would be possible to handle multiple damage type using only one meta attribute, but for the sack of simplicity, 2 are used here.
+
+### Test Volumes
+This project provides several test volumes that are applying each different gameplay effects.
+
+Feel free to have a look at the video
+[![image](https://github.com/user-attachments/assets/baedccee-45bb-43bd-a761-1966ca614c1d)](https://www.youtube.com/watch?v=QW6GwY8DV94)
+
+
+#### Healing Volumes
+![image](https://github.com/user-attachments/assets/4ae4cd95-e493-4f0e-af67-b70cd82b114d)
+
+#### Armor and Damage volumes
+![image](https://github.com/user-attachments/assets/4a4495b8-c876-4e01-a575-1bc8764822fc)
+
+We are using only one Resistance Attribute.
+
+#### Bleed Status (DoT)
+![image](https://github.com/user-attachments/assets/f1727235-cf66-4805-a1b8-6bc7b2bf9bff)
+
+We are using only one Resistance Attribute.
+
+#### Fire Damage and Fire Resistance
+![image](https://github.com/user-attachments/assets/66a1dd44-dbc7-4b2c-8468-36d7a2b28013)
+
+We are using only one Resistance Attribute.
 
 ___
 ## ChangeLog:

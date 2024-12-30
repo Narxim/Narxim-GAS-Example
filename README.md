@@ -44,9 +44,10 @@ ___
 #### [**Dan's (Tranek) GAS Documentation**](https://github.com/tranek/GASDocumentation) covers all of these concepts and provides a great breakdown of GAS overall. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestible setup example. Cheers!
 ---
 ## Features
+---
 ### Native gameplay tags
 [Gameplay tags defined in C++](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Data/NativeGameplayTags.h) only, without the need to declare them in DefaultGameplayTag.ini
-
+___
 ### Attribute Sets
 We are providing different attribute sets, with a BP implementation for each.
 
@@ -55,9 +56,8 @@ We are providing different attribute sets, with a BP implementation for each.
 That's a best practice (Based on working experience), that's not only for ATs, but for any C++ class that might get reference by another object.
 
 If you have a BP implementation, and for example, you add some config variable on your C++ class, you'll be able to adjust them in the editor without even changing the reference from the C++ class to the new BP.
-
+___
 #### Health
----
 This attribute set comes with:
 - Current Health
 - Maximum Health
@@ -70,26 +70,26 @@ Adjustments are done using a convenience method on the Base attribute set, calle
 Health Regenration is used by an infinite GE, granting health back per second.
 
 Once Current Health attains the Maximum, we'll add a 
-
+___
 #### Stamina
----
+
 Stamina is implemented in the same way as Health (Current / Max), with proportional adjustments, and regeneration.
 Example for Stamina Regen:
 
 ![image](https://github.com/user-attachments/assets/7357ef50-10a3-4a04-a0cd-088ccf3dc02a)
 
-
+___
 #### Leveling System
----
+
 Press NumPad -/+ (or Up/Down) to Level up your character.
 This will reevaluate all Attribute initializers and adjust the Maximum atttributes, adjusting the Current values that might be linked.
 
 All GAs and GEs will also have their levels updated (Except if they have the Effect.NoLevel tag).
 
 GEs using Curve tables with multiple levels in them will now use the right leveled value.
-
+___
 #### Resistance
----
+
 We've implemented LoL (League of Legends) Armor system:
 - Resistance is based on 100
 - Resistance attribute can go from -75 to +200
@@ -108,8 +108,9 @@ Middle is the current Resistance magnitude (0 - 25).
 Top, showing the effective resistance, calculated with the previous formula.
 
 The slider will show if it is good or bad, with the min/max.
-
+___
 ### Ability System Initialization Data can be found in the Character class Blueprints.
+
 ![image](https://github.com/user-attachments/assets/af28429d-fac8-4efa-97d2-9fcce0b4aef5)
 
 You can specify:
@@ -117,14 +118,16 @@ You can specify:
 - Initialize each attribute from a hard coded value or a Curve Float table ("CSV")
 - Starting Gameplay Abilities
 - Starting Gameplay effects
-
+___
 ### Damage
+
 The project comes with:
 - Basic Direct Damage (Physical damage)
 - Fire Damage
 - Bleed Damage (Damage over Time / DoT)
-
+___
 ### Resistance and Damage handling
+
 All damage _should_ be applied server authoritative, through an execution, if possible.
 The reason is simple: a game should avoid rubber-banding death. That's not something you can get away with.
 
@@ -139,8 +142,9 @@ Any of those Exec can access:
 - GE's context and spec
 
 ![image](https://github.com/user-attachments/assets/3965911e-3d25-417e-9e1c-83cab978476a)
-
+___
 #### Simple damage calculation
+
 That's the [boiler plate implementation](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Calculations/SimpleDamageGameplayEffectExecutionCalculation.cpp) for our project, using:
 - One meta attribute called "Damage" that will be applied as "real damage" to Current Health.
 
@@ -151,8 +155,9 @@ The reason: GE's asset tag will be used to calculate the right Resistance.
 That's how our "Fire" Damage is implemented:
 - Simple execution
 - GE and some tags
-
+___
 #### Advanced damage calculation
+
 This ["Advanced"](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Calculations/DamageGameplayEffectExecutionCalculation.cpp) one allows for more than one damage type while retaining the ability.
 
 The Exec will capture 2 damage attributes (Damage and ReceivedBleeding).
@@ -161,8 +166,9 @@ Inside the exec, the "same code" from the simple version will be ran, for each t
 The GE doesn't have to provide any tags, all is handled in the Exec.
 
 We also think it would be possible to handle multiple damage type using only one meta attribute, but for the sack of simplicity, 2 are used here.
-
+___
 ### Test Volumes
+
 This project provides several test volumes that are applying each different gameplay effects.
 
 Feel free to have a look at the video

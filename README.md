@@ -195,6 +195,15 @@ We are using only one Resistance Attribute.
 
 ___
 ## ChangeLog:
+### 2025/01/05:
+```
+- Now shows Effects on the UI as long as a Custom UI Component has been added.
+- Shows Title, Desc, Duration (updated) and stack count
+- Inhibition is not yet shown
+- Added a bunch of free icons (see Licence in Content/UI/Icons)
+- Added a new Widget Effect Bar + Effect Widget + Effect Widget Controller. Have to add some more example.
+```
+
 ### 2024/12/28:
 ```- Using one Resistance Attribute for all "Armors".
 - Introduced Fire Damage, with a simple calculation exec

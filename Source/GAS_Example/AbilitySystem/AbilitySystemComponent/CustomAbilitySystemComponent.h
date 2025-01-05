@@ -9,6 +9,15 @@
 
 class ACharacterBase;
 
+UENUM(BlueprintType)
+enum class ECustomEffectEventType: uint8
+{
+	Added,
+	Removed
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCustomGameplayEffectEventDelegate, const ECustomEffectEventType, EventType, const FActiveGameplayEffect&, Effect);
+
 UCLASS()
 class GAS_EXAMPLE_API UCustomAbilitySystemComponent : public UAbilitySystemComponent
 {
@@ -17,7 +26,7 @@ class GAS_EXAMPLE_API UCustomAbilitySystemComponent : public UAbilitySystemCompo
 public:
 
 	UCustomAbilitySystemComponent();
-
+	
 	// Called to initialize an Ability System Component with the supplied data. (Can be found in "AbilitySystemData.h")
 	// Call this on the Server and Client to properly init references / values.
 	UFUNCTION(BlueprintCallable)
@@ -43,8 +52,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSet<FGameplayAttribute> NoLevelAttribute{};
 
+	// Callback functions where a GE is added, inhibited or removed.
+	virtual void OnGameplayEffectAddedCallback(UAbilitySystemComponent* const ASC, const FGameplayEffectSpec& Spec, FActiveGameplayEffectHandle Handle);
+	virtual void OnGameplayEffectRemovedCallback(const FActiveGameplayEffect& ActiveGameplayEffect);
+
 public:
 	/** Returns an attribute value, after applying tag filters */
 	UFUNCTION(BlueprintPure)
 	float GetFilteredAttribute(const FGameplayAttribute Attribute, const FGameplayTagRequirements SourceTags, const FGameplayTagContainer TargetTags);
+	
+	FOnCustomGameplayEffectEventDelegate OnCustomGameplayEffectEventDelegate;
 };

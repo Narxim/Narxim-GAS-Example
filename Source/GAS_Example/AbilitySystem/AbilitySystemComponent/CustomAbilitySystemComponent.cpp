@@ -15,6 +15,21 @@ UCustomAbilitySystemComponent::UCustomAbilitySystemComponent()
 	SetIsReplicatedByDefault(true);
 }
 
+void UCustomAbilitySystemComponent::OnGameplayEffectAddedCallback(UAbilitySystemComponent* const ASC, const FGameplayEffectSpec& Spec, FActiveGameplayEffectHandle Handle)
+{
+	// Getting the Effect information, if they exist (which should work) and broadast them as "Added"
+	if (const FActiveGameplayEffect* ActiveEffect = GetActiveGameplayEffect(Handle))
+	{
+		OnCustomGameplayEffectEventDelegate.Broadcast(ECustomEffectEventType::Added, *ActiveEffect);
+	}
+}
+
+void UCustomAbilitySystemComponent::OnGameplayEffectRemovedCallback(const FActiveGameplayEffect& ActiveGameplayEffect)
+{
+	// Broadcast the removal of this effect with the CustomEffectEventType::Removed.
+	OnCustomGameplayEffectEventDelegate.Broadcast(ECustomEffectEventType::Removed, ActiveGameplayEffect);
+}
+
 const UAttributeSet* UCustomAbilitySystemComponent::GetOrCreateAttributeSet(const TSubclassOf<UAttributeSet>& InAttributeSet)
 {
 	return GetOrCreateAttributeSubobject(InAttributeSet);
@@ -114,6 +129,14 @@ void UCustomAbilitySystemComponent::InitializeAbilitySystemData(const FAbilitySy
 	{
 		AddLooseGameplayTags(InitializationData.GameplayTags);
 	}
+
+	/** This is our entry point for other component to react to gameplay effect added and removed.
+	 * Changes to the gameplay effects are handled differently (using their own delegate sets)
+	 * -> FActiveGameplayEffectEvents* EventSet = ASC->GetActiveEffectEventSet(Handle);
+	 * (See EffectWidgetControllerBase::InitializeController_Implementation)
+	 */
+	OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &UCustomAbilitySystemComponent::OnGameplayEffectAddedCallback);
+	ActiveGameplayEffects.OnActiveGameplayEffectRemovedDelegate.AddUObject(this, &UCustomAbilitySystemComponent::OnGameplayEffectRemovedCallback);
 	
 	// Check to see if we have authority. (Attribute Sets / Attribute Base Values / Gameplay Abilities / Gameplay Effects should only be added -or- set on authority and will be replicated to the client automatically.)
 	if (!GetOwnerActor()->HasAuthority())

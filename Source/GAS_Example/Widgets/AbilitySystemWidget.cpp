@@ -2,6 +2,8 @@
 
 #include "AbilitySystemWidget.h"
 #include "AbilitySystemGlobals.h"
+#include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomAbilitySystemComponent.h"
+#include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomGameplayEffectUIData.h"
 #include "GAS_Example/AbilitySystem/AttributeSets/HealthAttributeSet.h"
 #include "GAS_Example/AbilitySystem/AttributeSets/LevelAttributeSet.h"
 #include "GAS_Example/AbilitySystem/AttributeSets/ResistanceAttributeSet.h"
@@ -13,11 +15,32 @@ UAbilitySystemComponent* UAbilitySystemWidget::GetOwnerAbilitySystemComponent() 
 	return AbilitySystemComponent.Get();
 }
 
+void UAbilitySystemWidget::OnGameplayEffectEventCallback(const ECustomEffectEventType EventType, const FActiveGameplayEffect& Effect)
+{
+	if (!AbilitySystemComponent.IsValid())
+	{
+		return;
+	}
+
+	if (!UCustomGameplayEffectUIData::GetCustomGameplayEffectUIDataFromActiveEffect(Effect))
+	{
+		return;
+	}
+
+	FCustomEffectEventInfo Info{};
+	Info.bIsInhibited = Effect.bIsInhibited;
+	Info.Spec = Effect.Spec;
+	Info.Def = Effect.Spec.Def;
+	Info.ActiveEffect = Effect;
+	
+	K2_OnGameplayEffectEventCallback(AbilitySystemComponent.Get(), EventType, Effect.Handle, Info);
+}
+
 bool UAbilitySystemWidget::InitializeAbilitySystemWidget(UAbilitySystemComponent* InOwnerAbilitySystemComponent)
 {
 	UAbilitySystemComponent* OldAbilitySystemComponent = AbilitySystemComponent.Get();
 	
-	AbilitySystemComponent = InOwnerAbilitySystemComponent;
+	AbilitySystemComponent = Cast<UCustomAbilitySystemComponent>(InOwnerAbilitySystemComponent);
 	
 	// The Ability System Component is invalid. Stop here and return false. 
 	if (!GetOwnerAbilitySystemComponent())
@@ -43,52 +66,62 @@ bool UAbilitySystemWidget::InitializeAbilitySystemWidget(UAbilitySystemComponent
 	bool bBindingDone = false;
 	
 	// Bind Health attribute delegates if the Ability System Component has the required Attribute Set -and- we are listening for Health attributes.
-	if (ListenForHealthAttributeSetChanges && AbilitySystemComponent->HasAttributeSetForAttribute(UHealthAttributeSet::GetMaximumHealthAttribute()))
+	if (bListenForAttributeChanges)
 	{
-		bBindingDone = true;
+		if (AbilitySystemComponent->HasAttributeSetForAttribute(UHealthAttributeSet::GetMaximumHealthAttribute()))
+		{
+			bBindingDone = true;
 		
-		MaximumHealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetMaximumHealthAttribute()).AddUObject(this, &UAbilitySystemWidget::MaximumHealthChanged);
-		CurrentHealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetCurrentHealthAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentHealthChanged);
-		HealthRegenerationChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetHealthRegenerationAttribute()).AddUObject(this, &UAbilitySystemWidget::HealthRegenerationChanged);
-		ResistanceChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UResistanceAttributeSet::GetResistanceAttribute()).AddUObject(this, &UAbilitySystemWidget::ResistanceChanged);
-		BleedingChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetBleedingAttribute()).AddUObject(this, &UAbilitySystemWidget::BleedingChanged);
-		BleedHealChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetBleedHealingAttribute()).AddUObject(this, &UAbilitySystemWidget::BleedingChanged);
+			MaximumHealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetMaximumHealthAttribute()).AddUObject(this, &UAbilitySystemWidget::MaximumHealthChanged);
+			CurrentHealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetCurrentHealthAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentHealthChanged);
+			HealthRegenerationChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetHealthRegenerationAttribute()).AddUObject(this, &UAbilitySystemWidget::HealthRegenerationChanged);
+			ResistanceChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UResistanceAttributeSet::GetResistanceAttribute()).AddUObject(this, &UAbilitySystemWidget::ResistanceChanged);
+			BleedingChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetBleedingAttribute()).AddUObject(this, &UAbilitySystemWidget::BleedingChanged);
+			BleedHealChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthAttributeSet::GetBleedHealingAttribute()).AddUObject(this, &UAbilitySystemWidget::BleedingChanged);
 		
-		const float MaxHealth = AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetMaximumHealthAttribute());
-		const float CurrentHealth = AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetCurrentHealthAttribute());
+			const float MaxHealth = AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetMaximumHealthAttribute());
+			const float CurrentHealth = AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetCurrentHealthAttribute());
 			
-		// Call the Blueprint Events to initialize the values.
-		On_MaximumHealthChanged(MaxHealth, 0.0f, CurrentHealth / MaxHealth);
-		On_CurrentHealthChanged(CurrentHealth, 0.0f, CurrentHealth / MaxHealth);
-		On_HealthRegenerationChanged(AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetHealthRegenerationAttribute()), 0.0f);
+			// Call the Blueprint Events to initialize the values.
+			On_MaximumHealthChanged(MaxHealth, 0.0f, CurrentHealth / MaxHealth);
+			On_CurrentHealthChanged(CurrentHealth, 0.0f, CurrentHealth / MaxHealth);
+			On_HealthRegenerationChanged(AbilitySystemComponent->GetNumericAttribute(UHealthAttributeSet::GetHealthRegenerationAttribute()), 0.0f);
 		
-		BleedingChanged(FOnAttributeChangeData());
-	}
+			BleedingChanged(FOnAttributeChangeData());
+		}
+
+		if (AbilitySystemComponent->HasAttributeSetForAttribute(UStaminaAttributeSet::GetMaximumStaminaAttribute()))
+		{
+			bBindingDone = true;
+		
+			MaximumStaminaChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetMaximumStaminaAttribute()).AddUObject(this, &UAbilitySystemWidget::MaximumStaminaChanged);
+			CurrentStaminaChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetCurrentStaminaAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentStaminaChanged);
+			StaminaRegenerationChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetStaminaRegenerationAttribute()).AddUObject(this, &UAbilitySystemWidget::StaminaRegenerationChanged);
+
+			const float MaxStamina = AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetMaximumStaminaAttribute());
+			const float CurrentStamina = AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetCurrentStaminaAttribute());
 	
-	// Bind Stamina attribute delegates if the Ability System Component has the required Attribute Set -and- we are listening for Stamina attributes.
-	if (ListenForStaminaAttributeSetChanges && AbilitySystemComponent->HasAttributeSetForAttribute(UStaminaAttributeSet::GetMaximumStaminaAttribute()))
+			// Call the Blueprint Events to initialize the values.
+			On_MaximumStaminaChanged(MaxStamina, 0.0f, CurrentStamina / MaxStamina);
+			On_CurrentStaminaChanged(CurrentStamina, 0.0f, CurrentStamina / MaxStamina);
+			On_StaminaRegenerationChanged(AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetStaminaRegenerationAttribute()), 0.0f);
+		}
+
+		if (AbilitySystemComponent->HasAttributeSetForAttribute(ULevelAttributeSet::GetMaximumLevelAttribute()))
+		{
+			LevelChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ULevelAttributeSet::GetCurrentLevelAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentLevelChanged);
+			const float CurrentLevel = AbilitySystemComponent->GetNumericAttribute(ULevelAttributeSet::GetCurrentLevelAttribute());
+			On_LevelChanged(CurrentLevel, 0.f);
+		}
+	}
+
+	if (bListenForEffectEvents && AbilitySystemComponent.IsValid())
 	{
 		bBindingDone = true;
-		
-		MaximumStaminaChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetMaximumStaminaAttribute()).AddUObject(this, &UAbilitySystemWidget::MaximumStaminaChanged);
-		CurrentStaminaChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetCurrentStaminaAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentStaminaChanged);
-		StaminaRegenerationChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UStaminaAttributeSet::GetStaminaRegenerationAttribute()).AddUObject(this, &UAbilitySystemWidget::StaminaRegenerationChanged);
-
-		const float MaxStamina = AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetMaximumStaminaAttribute());
-		const float CurrentStamina = AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetCurrentStaminaAttribute());
-	
-		// Call the Blueprint Events to initialize the values.
-		On_MaximumStaminaChanged(MaxStamina, 0.0f, CurrentStamina / MaxStamina);
-		On_CurrentStaminaChanged(CurrentStamina, 0.0f, CurrentStamina / MaxStamina);
-		On_StaminaRegenerationChanged(AbilitySystemComponent->GetNumericAttribute(UStaminaAttributeSet::GetStaminaRegenerationAttribute()), 0.0f);
+		AbilitySystemComponent->OnCustomGameplayEffectEventDelegate.AddDynamic(this, &UAbilitySystemWidget::OnGameplayEffectEventCallback);
 	}
 
-	if (AbilitySystemComponent->HasAttributeSetForAttribute(ULevelAttributeSet::GetMaximumLevelAttribute()))
-	{
-		LevelChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ULevelAttributeSet::GetCurrentLevelAttribute()).AddUObject(this, &UAbilitySystemWidget::CurrentLevelChanged);
-		const float CurrentLevel = AbilitySystemComponent->GetNumericAttribute(ULevelAttributeSet::GetCurrentLevelAttribute());
-		On_LevelChanged(CurrentLevel, 0.f);
-	}
+	K2_InitializeAbilitySystemWidget(bBindingDone);
 	
 	return bBindingDone;
 }

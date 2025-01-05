@@ -24,7 +24,9 @@ public class GAS_Example : ModuleRules
 			"GameplayAbilities",
 			"GameplayTasks",
 			"GameplayTags",
-			"EnhancedInput"
+			"EnhancedInput",
+			"CommonUI",
+			"ModelViewViewModel"
 		});
 	}
 }

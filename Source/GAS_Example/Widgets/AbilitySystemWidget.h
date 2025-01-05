@@ -3,11 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffect.h"
 #include "Blueprint/UserWidget.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemWidget.generated.h"
 
+enum class ECustomEffectEventType : uint8;
+class UCustomAbilitySystemComponent;
 class UAbilitySystemComponent;
+
+USTRUCT(BlueprintType)
+struct FCustomEffectEventInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsInhibited = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayEffectSpec Spec;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<const UGameplayEffect> Def;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FActiveGameplayEffect ActiveEffect;
+};
 
 // Contains functions to get values from the Health and Stamina Attribute Sets / bind to their value change delegates.
 UCLASS()
@@ -20,12 +41,14 @@ public:
 	// Should this widget bind to Health Attribute Set events.
 	// Note: Initialization will fail if the required Attribute Set is not found!
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	bool ListenForHealthAttributeSetChanges = true;
+	bool bListenForAttributeChanges = true;
 
-	// Should this widget bind to Stamina Attribute Set events.
-	// Note: Initialization will fail if the required Attribute Set is not found!
+	// Should we subscribe for effect events (add / remove etc)
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	bool ListenForStaminaAttributeSetChanges = true;
+	bool bListenForEffectEvents = false;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_InitializeAbilitySystemWidget(const bool bBindingDone);
 	
 	// Called to initialize the User Widget and bind to Attribute change delegates
 	// Can be called again to re-initialize the values
@@ -71,10 +94,10 @@ public:
 	// Event called when the Bleeding attribute value changes.
 	UFUNCTION(BlueprintImplementableEvent, Category = "Ability System")
 	void On_BleedingChanged(const float NewValue, const float NewHealPerSecond, const float NewRemainingDuration);
-	
+
 protected:
 
-	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TWeakObjectPtr<UCustomAbilitySystemComponent> AbilitySystemComponent;
 	
 	FDelegateHandle MaximumHealthChangeDelegate;
 	FDelegateHandle CurrentHealthChangeDelegate;
@@ -106,4 +129,10 @@ protected:
 	void BleedingChanged(const FOnAttributeChangeData& Data);
 
 	static void ResetDelegateHandle(FDelegateHandle DelegateHandle, UAbilitySystemComponent* OldAbilitySystemComponent, const FGameplayAttribute& Attribute);
+
+	UFUNCTION()
+	void OnGameplayEffectEventCallback(const ECustomEffectEventType EventType, const FActiveGameplayEffect& Effect);
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_OnGameplayEffectEventCallback(const UCustomAbilitySystemComponent* const ASC, const ECustomEffectEventType EventType, const FActiveGameplayEffectHandle Handle, const FCustomEffectEventInfo Flags);
 };

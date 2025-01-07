@@ -195,6 +195,13 @@ We are using only one Resistance Attribute.
 
 ___
 ## ChangeLog:
+### 2025/01/06:
+```
+- Adding a new Custom GE Component that can have custom CanApply in BP or C++
+- Create a new GE Component to limit max instances of GEs without stacking policies
+- Create a test volume for this new Component.
+```
+
 ### 2025/01/05:
 ```
 - Now shows Effects on the UI as long as a Custom UI Component has been added.

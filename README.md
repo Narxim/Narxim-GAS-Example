@@ -67,7 +67,7 @@ Current cannot go over Max, and will be proportionnaly adjusted if the Maximum i
 
 Adjustments are done using a convenience method on the Base attribute set, called in PostAttributeChange (which is called whenever an attribute is changing, from both temporary and base adjustments).
 
-Health Regenration is used by an infinite GE, granting health back per second.
+Health Regeneration is used by an infinite GE, granting health back per second.
 
 Once Current Health attains the Maximum, we'll add a 
 ___

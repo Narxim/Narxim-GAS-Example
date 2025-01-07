@@ -75,7 +75,8 @@ void UEffectWidgetControllerBase::InitializeController_Implementation(APlayerCon
 		return;
 	}
 
-	FActiveGameplayEffectEvents* EventSet = ASC->GetActiveEffectEventSet(Handle);
+	// Subscribe to all available events on the gameplay effect event set, so that the controller can respond accordingly
+	FActiveGameplayEffectEvents* const EventSet = ASC->GetActiveEffectEventSet(Handle);
 	EventSet->OnEffectRemoved.AddUObject(this, &ThisClass::OnEffectRemoved);
 	EventSet->OnStackChanged.AddUObject(this, &ThisClass::OnStackChanged);
 	EventSet->OnInhibitionChanged.AddUObject(this, &ThisClass::OnInhibitionChanged);
@@ -126,7 +127,7 @@ void UEffectWidgetControllerBase::StartDurationUpdate()
 	
 	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
 
-	TimerManager.SetTimer(DurationUpdateTimer, this, &ThisClass::UpdateDurationOnWidget, 1.f, true, 1.f);
+	TimerManager.SetTimer(DurationUpdateTimer, this, &ThisClass::UpdateDurationOnWidget, DurationUpdateFrequency, true);
 }
 
 void UEffectWidgetControllerBase::UpdateDurationOnWidget()
@@ -139,14 +140,13 @@ void UEffectWidgetControllerBase::UpdateDurationOnWidget()
 	
 	UpdateEffectFromHandle();
 	const float RemainingDuration = EffectData->GetTimeRemaining(GetWorld()->GetTimeSeconds());
+
+	Widget->UpdateDuration(FMath::Max(RemainingDuration, 0.f));
 	
 	if (RemainingDuration <= 0.f)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(DurationUpdateTimer);
-		return;
 	}
-
-	Widget->UpdateDuration(RemainingDuration);
 }
 
 void UEffectWidgetControllerBase::UpdateFields()
@@ -224,7 +224,7 @@ void UEffectWidgetControllerBase::OnTimeChanged(FActiveGameplayEffectHandle Acti
 	if (UE_MVVM_SET_PROPERTY_VALUE(TotalDuration, CalculateDuration(NewDuration)))
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(TotalDuration);
-		K0_OnTimeChanged(NewStartTime, NewDuration);
+		K0_OnTimeChanged(NewStartTime, TotalDuration);
 
 		if (TotalDuration > 1.f)
 		{

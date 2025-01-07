@@ -36,7 +36,9 @@ class GAS_EXAMPLE_API UEffectWidgetControllerBase : public UMVVMViewModelBase
 	GENERATED_BODY()
 
 protected:
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float DurationUpdateFrequency = 0.5f;
+	
 	// Panel where we should add the widget.
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UPanelWidget> PanelWidget;

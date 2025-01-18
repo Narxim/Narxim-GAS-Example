@@ -22,6 +22,14 @@ void UAbilitySystemWidget::OnGameplayEffectEventCallback(const ECustomEffectEven
 		return;
 	}
 
+	FGameplayTagContainer AssetTags{};
+	Effect.Spec.GetAllAssetTags(AssetTags);
+
+	if (!EffectEventTagRequirements.RequirementsMet(AssetTags))
+	{
+		return;
+	}
+
 	if (!UCustomGameplayEffectUIData::GetCustomGameplayEffectUIDataFromActiveEffect(Effect))
 	{
 		return;

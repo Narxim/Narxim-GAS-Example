@@ -34,46 +34,9 @@ void UHealthAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_WITH_PARAMS_FAST(UHealthAttributeSet, BleedHealing, Params);
 }
 
-void UHealthAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
-{
-	Super::PreAttributeChange(Attribute, NewValue);
-
-	if (Attribute == GetMaximumHealthAttribute())
-	{
-		NewValue = FMath::Max(NewValue, 1.f);
-		return;
-	}
-	if (Attribute == GetCurrentHealthAttribute())
-	{
-		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaximumHealth());
-		return;
-	}
-	if (Attribute == GetBleedingAttribute() || Attribute == GetBleedHealingAttribute())
-	{
-		NewValue = FMath::Max(NewValue, 0.f);
-		return;
-	}
-}
-
 void UHealthAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
 {
 	Super::PreAttributeBaseChange(Attribute, NewValue);
-	
-	if (Attribute == GetMaximumHealthAttribute())
-	{
-		NewValue = FMath::Max(NewValue, 1.f);
-		return;
-	}
-	if (Attribute == GetCurrentHealthAttribute())
-	{
-		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaximumHealth());
-		return;
-	}
-	if (Attribute == GetBleedHealingAttribute())
-	{
-		NewValue = FMath::Max(NewValue, 0.f);
-		return;
-	}
 
 	if (const FCustomAttributeMaxValue* MaxValue = AttributeMaxValue.Find(Attribute))
 	{
@@ -180,4 +143,23 @@ void UHealthAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribut
 void UHealthAttributeSet::PostAttributeBaseChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) const
 {
 	Super::PostAttributeBaseChange(Attribute, OldValue, NewValue);
+}
+
+void UHealthAttributeSet::ClampAttributes(const FGameplayAttribute& Attribute, float& NewValue) const
+{
+	if (Attribute == GetMaximumHealthAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 1.f);
+		return;
+	}
+	if (Attribute == GetCurrentHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaximumHealth());
+		return;
+	}
+	if (Attribute == GetBleedingAttribute() || Attribute == GetBleedHealingAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 0.f);
+		return;
+	}
 }

@@ -8,18 +8,8 @@
 
 ULevelAttributeSet::ULevelAttributeSet()
 {
-	MaximumLevel = 0.0f;
-	CurrentLevel = 0.0f;
-}
-
-void ULevelAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
-{
-	Super::PreAttributeChange(Attribute, NewValue);
-}
-
-void ULevelAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
-{
-	Super::PostGameplayEffectExecute(Data);
+	InitMaximumLevel(0.f);
+	InitCurrentLevel(0.f);
 }
 
 void ULevelAttributeSet::PostAttributeBaseChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) const

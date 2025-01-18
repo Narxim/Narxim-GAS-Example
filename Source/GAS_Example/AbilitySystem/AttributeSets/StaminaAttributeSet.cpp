@@ -8,32 +8,9 @@
 
 UStaminaAttributeSet::UStaminaAttributeSet()
 {
-	MaximumStamina = 0.0f;
-	CurrentStamina = 0.0f;
+	MaximumStamina = 1.0f;
+	CurrentStamina = 1.0f;
 	StaminaRegeneration = 0.0f;
-}
-
-void UStaminaAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
-{
-	Super::PreAttributeChange(Attribute, NewValue);
-}
-
-void UStaminaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
-{
-	Super::PostGameplayEffectExecute(Data);
-
-	if (Data.EvaluatedData.Attribute == GetCurrentStaminaAttribute())
-	{
-		// This should be removed in favor of another method, as we're modifying 2 times the current stamina. (One right before post, one right after (here).
-		SetCurrentStamina(FMath::Clamp(GetCurrentStamina(), 0.0f, GetMaximumStamina()));
-		return;
-	}
-
-	if (Data.EvaluatedData.Attribute == GetStaminaRegenerationAttribute())
-	{
-		SetStaminaRegeneration(FMath::Clamp(GetStaminaRegeneration(), 0.0f, GetMaximumStamina()));
-		return;
-	}
 }
 
 void UStaminaAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue,	float NewValue)
@@ -49,6 +26,24 @@ void UStaminaAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribu
 	if (Attribute == GetMaximumStaminaAttribute())
 	{
 		AdjustAttributeForMaxChange(GetCurrentStaminaAttribute(), OldValue, NewValue);
+		return;
+	}
+}
+
+void UStaminaAttributeSet::ClampAttributes(const FGameplayAttribute& Attribute, float& NewValue) const
+{
+	Super::ClampAttributes(Attribute, NewValue);
+	
+	if (Attribute == GetCurrentStaminaAttribute())
+	{
+		// This should be removed in favor of another method, as we're modifying 2 times the current stamina. (One right before post, one right after (here).
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaximumStamina());
+		return;
+	}
+
+	if (Attribute == GetStaminaRegenerationAttribute())
+	{
+		NewValue = FMath::Max(0.f, NewValue);
 		return;
 	}
 }

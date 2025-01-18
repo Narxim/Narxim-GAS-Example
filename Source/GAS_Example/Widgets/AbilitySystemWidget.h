@@ -47,6 +47,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bListenForEffectEvents = false;
 
+	// Only Effect with those tags will be forwarded and listened too.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (EditCondition = "bListenForEffectEvents"))
+	FGameplayTagRequirements EffectEventTagRequirements;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_InitializeAbilitySystemWidget(const bool bBindingDone);
 	

@@ -30,14 +30,14 @@ void UAttributeSetBase::CheckMaxReachedForAttribute(const FGameplayAttributeData
 		return;
 	}
 
-	const float MaxHealth = MaxAttribute.GetCurrentValue();
-	const bool bHasTag = GetOwningAbilitySystemComponent()->HasMatchingGameplayTag(MaxTag);
+	const float Max = MaxAttribute.GetCurrentValue();
+	const bool bHasTag = ASC->HasMatchingGameplayTag(MaxTag);
 
 	int32 Count = -1;
-	if (NewValue < MaxHealth && bHasTag)
+	if (NewValue < Max && bHasTag)
 	{
 		Count = 0;
-	} else if (NewValue >= MaxHealth && !bHasTag)
+	} else if (NewValue >= Max && !bHasTag)
 	{
 		Count = 1;
 	}
@@ -73,4 +73,16 @@ void UAttributeSetBase::CheckStatusTagForAttribute(const FGameplayTag& StatusTag
 		ASC->SetLooseGameplayTagCount(StatusTag, Count);
 		ASC->SetReplicatedLooseGameplayTagCount(StatusTag, Count);
 	}
+}
+
+void UAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+	ClampAttributes(Attribute, NewValue);
+}
+
+void UAttributeSetBase::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
+{
+	Super::PreAttributeBaseChange(Attribute, NewValue);
+	ClampAttributes(Attribute, NewValue);
 }

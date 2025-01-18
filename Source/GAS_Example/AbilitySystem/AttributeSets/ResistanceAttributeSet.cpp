@@ -14,39 +14,19 @@ UResistanceAttributeSet::UResistanceAttributeSet()
 	Resistance = 0.0f;
 }
 
-void UResistanceAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
-{
-	Super::PreAttributeChange(Attribute, NewValue);
-	if (Attribute == GetResistanceAttribute())
-	{
-		NewValue = FMath::Clamp(NewValue, RESISTANCE_MIN, RESISTANCE_MAX);
-		return;
-	}
-}
-
-void UResistanceAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue)
-{
-	Super::PreAttributeBaseChange(Attribute, NewValue);
-	if (Attribute == GetResistanceAttribute())
-	{
-		NewValue = FMath::Clamp(NewValue, RESISTANCE_MIN, RESISTANCE_MAX);
-		return;
-	}
-}
-
-void UResistanceAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
-{
-	Super::PostGameplayEffectExecute(Data);
-}
-
-void UResistanceAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
-{
-	Super::PostAttributeChange(Attribute, OldValue, NewValue);
-}
-
 void UResistanceAttributeSet::PostAttributeBaseChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) const
 {
 	Super::PostAttributeBaseChange(Attribute, OldValue, NewValue);
+}
+
+void UResistanceAttributeSet::ClampAttributes(const FGameplayAttribute& Attribute, float& NewValue) const
+{
+	Super::ClampAttributes(Attribute, NewValue);
+	if (Attribute == GetResistanceAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, RESISTANCE_MIN, RESISTANCE_MAX);
+		return;
+	}
 }
 
 void UResistanceAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

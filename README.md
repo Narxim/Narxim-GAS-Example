@@ -39,12 +39,8 @@ ___
 ___
 
 #### Check out the **[Unreal Source Discord](https://discord.gg/unrealsource)** if you have any questions!
-___
-
-#### [**Dan's (Tranek) GAS Documentation**](https://github.com/tranek/GASDocumentation) covers all of these concepts and provides a great breakdown of GAS overall. This repo was made as a starting point for getting set up and should be used alongside Dan's documentation. My intent is for devs who may not be as familiar with C++ or are just starting with GAS to have access to a more easily digestible setup example. Cheers!
 ---
 ## Features
----
 ### Native gameplay tags
 [Gameplay tags defined in C++](https://github.com/Narxim/Narxim-GAS-Example/blob/master/Source/GAS_Example/AbilitySystem/Data/NativeGameplayTags.h) only, without the need to declare them in DefaultGameplayTag.ini
 ___
@@ -192,6 +188,74 @@ We are using only one Resistance Attribute.
 ![image](https://github.com/user-attachments/assets/66a1dd44-dbc7-4b2c-8468-36d7a2b28013)
 
 We are using only one Resistance Attribute.
+___
+### Showing Gameplay effects on the UI
+
+![image](https://github.com/user-attachments/assets/c7452ef6-72b5-428d-8982-0fe26c73f8c7)
+
+We just released a basic implementation of Effect UI elements, as seen previously.
+The concept is very simple.
+
+![image](https://github.com/user-attachments/assets/01d29705-8a77-4f76-baf6-aef1d17fba44)
+
+It starts with Gameplay effect having a special component:
+
+![image](https://github.com/user-attachments/assets/55a729d9-c19e-4797-945b-d5178d36bd47)
+
+This component allows developper to say "I want to show this Effect to the player" with some parameters:
+- Title
+- Description
+- Icon / Material
+- Specific Controller
+
+The ASC has been modded with a new delegate:
+```
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCustomGameplayEffectEventDelegate, const ECustomEffectEventType, EventType, const FActiveGameplayEffect&, Effect);
+FOnCustomGameplayEffectEventDelegate OnCustomGameplayEffectEventDelegate;
+```
+It is called whenever an effect - with a UI Component - is applied to you.
+
+UIs can now subscribe to this delegate, and that's what we've done with the UAbilitySystemWidget, with a Blueprint Effect bar
+
+![image](https://github.com/user-attachments/assets/43c32e3a-8fb7-4e89-a0f1-03e709eeb893)
+
+
+Once the Widget receives the event, it will create, or reuse, a controller.
+The controller is there to create the Effect Widget, and control ALL of its parameters whenever something changed.
+
+![image](https://github.com/user-attachments/assets/eb868be1-cc3a-4727-b7fa-6671cb1ebb39)
+
+A basic implementation is delivered:
+
+![image](https://github.com/user-attachments/assets/80865215-43c8-494b-85d1-65b19ff3fd2b)
+![image](https://github.com/user-attachments/assets/fe685d31-5e24-4920-b245-b77615f22793)
+
+The basic functions are implemented:
+- Updating Title, Desciption, Icon (on init)
+- Updating Time and stack (Periodically)
+But ... you can override them in C++ or BP if you wish.
+
+![image](https://github.com/user-attachments/assets/cf74a356-f9ea-4819-bd44-c8725d05727b)
+
+With a basic Widget class
+
+![image](https://github.com/user-attachments/assets/ce3cc672-3feb-4c06-becf-734f11ddbec6)
+![image](https://github.com/user-attachments/assets/a4cec93c-480a-48ab-9411-25bfb6161909)
+
+The Controller will spawn the Widget class it has (Base, or any you might want to create) and take ownership of it.
+
+If the effect is removed, the controller will remove the widget and gets destroyed.
+More stacks ? Update the stacks ...
+
+The controller will be listening to those updates from the ActiveEffect Event sets:
+```
+// Subscribe to all available events on the gameplay effect event set, so that the controller can respond accordingly
+	FActiveGameplayEffectEvents* const EventSet = ASC->GetActiveEffectEventSet(Handle);
+	EventSet->OnEffectRemoved.AddUObject(this, &ThisClass::OnEffectRemoved);
+	EventSet->OnStackChanged.AddUObject(this, &ThisClass::OnStackChanged);
+	EventSet->OnInhibitionChanged.AddUObject(this, &ThisClass::OnInhibitionChanged);
+	EventSet->OnTimeChanged.AddUObject(this, &ThisClass::OnTimeChanged);
+```
 
 ___
 ## ChangeLog:

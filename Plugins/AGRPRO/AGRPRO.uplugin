@@ -1,0 +1,35 @@
+{
+	"FileVersion": 3,
+	"Version": 15,
+	"VersionName": "4.2.1-UE_5.3",
+	"FriendlyName": "AGR PRO",
+	"Description": "Set of game-ready components solving common issues.",
+	"Category": "Other",
+	"CreatedBy": "Adam Grodzki, Andreas Oehlke, OneSilverLeaf, Mhmd Rida, mklabs, Manuel Noltorp",
+	"CreatedByURL": "https://discord.gg/XBJyAuDXMh",
+	"DocsURL": "https://www.youtube.com/channel/UCWZokltV5kbpOgkDZG1YQmg",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/c4f13f7fc2c048d8ad4985ecfbf4f6c6",
+	"SupportURL": "https://forums.unrealengine.com/t/plugin-agr-pro/225568",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "AGRPRO",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"IOS",
+				"Android",
+				"Linux"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Niagara",
+			"Enabled": true
+		}
+	]
+}

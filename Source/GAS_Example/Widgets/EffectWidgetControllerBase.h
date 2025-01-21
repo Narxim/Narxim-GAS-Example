@@ -22,6 +22,8 @@ enum class ETriggerUpdateStatus: uint8
 	NotValid
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnControllerOblsoleteDelegate, UEffectWidgetControllerBase*, Controller);
+
 /**
  * This class represents a Gameplay effect that have been applied to the player which REQUIRES a UI Visualization.
  * The goal is to react/handle all gameplay effect events (add, changed, removed) and ultimately CONTROL a GameplayEffect Widget (EffectWidgetBase).
@@ -91,6 +93,19 @@ protected:
 	FTimerHandle DurationUpdateTimer;
 
 public:
+	UPROPERTY(BlueprintAssignable)
+	FOnControllerOblsoleteDelegate OnControllerOblsolete;
+
+	UFUNCTION(BlueprintPure)
+	TSubclassOf<UGameplayEffect> GetEffectClass() const;
+
+	/*
+	 * Return the effect key that will be used in the UI Widget bar.
+	 * Return GetEffectClass by default
+	 */ 
+	UFUNCTION(BlueprintNativeEvent)
+	const UObject* GetEffectKey() const;
+	
 	const float& GetTotalDuration() const
 	{
 		return TotalDuration;
@@ -130,12 +145,30 @@ public:
 	UFUNCTION(BlueprintCallable)
 	ETriggerUpdateStatus TriggerUpdate();
 
+	UFUNCTION(BlueprintPure)
+	const UCustomAbilitySystemComponent* GetAbilitySystem() const;
+
+	UFUNCTION(BlueprintPure)
+	const FGameplayEffectSpec GetEffectSpec() const;
+
+	UFUNCTION(BlueprintPure)
+	const UCustomGameplayEffectUIData* GetEffectUIData() const;
+
+	UFUNCTION(BlueprintPure)
+	float GetSetByCallerMagnitude(const FGameplayTag DataTag, const bool bWarnIfNotFound = true, const float bDefaultIfNotFound = 0.f) const;
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void SetActiveHandle(FActiveGameplayEffectHandle NewHandle);
+	
+	void RegisterEvents(UAbilitySystemComponent* ASC);
+
 	// Called after a full update.
 	UFUNCTION(BlueprintNativeEvent)
 	ETriggerUpdateStatus K2_TriggerUpdate();
-
+	
 	UFUNCTION(BlueprintCallable)
-	void RemoveEffect();
+	void RemoveEffectAndController();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_RemoveEffect();
@@ -178,29 +211,37 @@ public:
 	UFUNCTION()
 	// Update the time on the widget.
 	void UpdateDurationOnWidget();
+	
 	// Update all fields.
 	void UpdateFields();
+	
 	// Extract the new active effect definition from handle.
 	void UpdateEffectFromHandle();
 
 	// Standard callback marking this controller as garbage and remove the Effect widget
 	void OnEffectRemoved(const FGameplayEffectRemovalInfo& GameplayEffectRemovalInfo);
+	
 	// Standard callback updating CurrentStack on the controller, and calling the K0
 	void OnStackChanged(FActiveGameplayEffectHandle ActiveGameplayEffectHandle, const int32 NewStackCount, const int32 OldStackCount);
+	
 	// Standard callback updating Inhibition flag on the controller, and calling the K0
 	void OnInhibitionChanged(FActiveGameplayEffectHandle ActiveGameplayEffectHandle, const bool bIsInhibited);
+	
 	// Standard callback updating Total Duration on the controller, and calling the K0. Will Reset the timer.
 	void OnTimeChanged(FActiveGameplayEffectHandle ActiveGameplayEffectHandle, const float NewStartTime, const float NewDuration);
 
 	// Called right before full removal. Can be overriden.
 	UFUNCTION(BlueprintNativeEvent)
-	void K0_OnEffectRemoved(const FGameplayEffectRemovalInfo& GameplayEffectRemovalInfo);
+	bool K0_OnEffectRemoved(const FGameplayEffectRemovalInfo& GameplayEffectRemovalInfo, FGameplayEffectSpec Spec, TSubclassOf<UGameplayEffect> EffectClass);
+	
 	// Updates the Stack on the Widget. Can be overriden.
 	UFUNCTION(BlueprintNativeEvent)
 	void K0_OnStackChanged(const int32 NewStackCount, const int32 OldStackCount);
+	
 	// Called when Inhibition changes. Can be overriden. (Doing nothing for now)
 	UFUNCTION(BlueprintNativeEvent)
 	void K0_OnInhibitionChanged(const bool bIsInhibited);
+	
 	// Updates the Duration on the Widget. Can be overriden.
 	UFUNCTION(BlueprintNativeEvent)
 	void K0_OnTimeChanged(const float NewStartTime, const float NewDuration);

@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "EffectWidgetBase.h"
+#include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomAbilitySystemComponent.h"
 #include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomGameplayEffectUIData.h"
 
 class UWorld* UEffectWidgetControllerBase::GetWorld() const
@@ -27,7 +28,7 @@ ETriggerUpdateStatus UEffectWidgetControllerBase::TriggerUpdate()
 
 	if (!ActiveEffectHandle.IsValid())
 	{
-		RemoveEffect();
+		RemoveEffectAndController();
 		return ETriggerUpdateStatus::NotValid;
 	}
 
@@ -35,7 +36,7 @@ ETriggerUpdateStatus UEffectWidgetControllerBase::TriggerUpdate()
 
 	if (!EffectData || EffectData->IsPendingRemove)
 	{
-		RemoveEffect();
+		RemoveEffectAndController();
 		return ETriggerUpdateStatus::NotValid;
 	}
 
@@ -44,11 +45,61 @@ ETriggerUpdateStatus UEffectWidgetControllerBase::TriggerUpdate()
 	return K2_TriggerUpdate();
 }
 
+const UCustomAbilitySystemComponent* UEffectWidgetControllerBase::GetAbilitySystem() const
+{
+	return Cast<UCustomAbilitySystemComponent>(ActiveEffectHandle.GetOwningAbilitySystemComponent());
+}
+
+const FGameplayEffectSpec UEffectWidgetControllerBase::GetEffectSpec() const
+{
+	if (!EffectData)
+	{
+		return FGameplayEffectSpec();
+	}
+	return EffectData->Spec;
+}
+
+const UCustomGameplayEffectUIData* UEffectWidgetControllerBase::GetEffectUIData() const
+{
+	return EffectUIData.Get();
+}
+
+float UEffectWidgetControllerBase::GetSetByCallerMagnitude(const FGameplayTag DataTag, const bool bWarnIfNotFound, const float bDefaultIfNotFound) const
+{
+	return GetEffectSpec().GetSetByCallerMagnitude(DataTag, bWarnIfNotFound, bDefaultIfNotFound);
+}
+
+void UEffectWidgetControllerBase::SetActiveHandle(FActiveGameplayEffectHandle NewHandle)
+{
+	if (!NewHandle.IsValid())
+	{
+		return;
+	}
+
+	ActiveEffectHandle = NewHandle;
+	if (!ActiveEffectHandle.IsValid())
+	{
+		RemoveEffectAndController();
+		return;
+	}
+	
+	TotalDuration = -1.f;
+	CurrentStacks = -1.f;
+
+	RegisterEvents(ActiveEffectHandle.GetOwningAbilitySystemComponent());
+	TriggerUpdate();
+}
+
 void UEffectWidgetControllerBase::InitializeController_Implementation(APlayerController* InOwningPlayer, UPanelWidget* InPanelWidget, FActiveGameplayEffectHandle Handle, const UCustomGameplayEffectUIData* const InEffectUIData)
 {
 	if (!InPanelWidget || !InOwningPlayer || !Handle.IsValid() || !InEffectUIData)
 	{
 		return;
+	}
+
+	if (Widget)
+	{
+		Widget->SetController(this);
 	}
 	
 	PanelWidget = InPanelWidget;
@@ -60,7 +111,7 @@ void UEffectWidgetControllerBase::InitializeController_Implementation(APlayerCon
 
 	if (!EffectData || EffectData->IsPendingRemove)
 	{
-		RemoveEffect();
+		RemoveEffectAndController();
 		return;
 	}
 
@@ -74,15 +125,23 @@ void UEffectWidgetControllerBase::InitializeController_Implementation(APlayerCon
 	{
 		return;
 	}
-
-	// Subscribe to all available events on the gameplay effect event set, so that the controller can respond accordingly
-	FActiveGameplayEffectEvents* const EventSet = ASC->GetActiveEffectEventSet(Handle);
-	EventSet->OnEffectRemoved.AddUObject(this, &ThisClass::OnEffectRemoved);
-	EventSet->OnStackChanged.AddUObject(this, &ThisClass::OnStackChanged);
-	EventSet->OnInhibitionChanged.AddUObject(this, &ThisClass::OnInhibitionChanged);
-	EventSet->OnTimeChanged.AddUObject(this, &ThisClass::OnTimeChanged);
-
+	RegisterEvents(ASC);
 	UpdateFields();
+}
+
+void UEffectWidgetControllerBase::RegisterEvents(UAbilitySystemComponent* const ASC)
+{
+	if (!ASC)
+	{
+		return;
+	}
+	
+	// Subscribe to all available events on the gameplay effect event set, so that the controller can respond accordingly
+    FActiveGameplayEffectEvents* const EventSet = ASC->GetActiveEffectEventSet(ActiveEffectHandle);
+    EventSet->OnEffectRemoved.AddUObject(this, &ThisClass::OnEffectRemoved);
+    EventSet->OnStackChanged.AddUObject(this, &ThisClass::OnStackChanged);
+    EventSet->OnInhibitionChanged.AddUObject(this, &ThisClass::OnInhibitionChanged);
+    EventSet->OnTimeChanged.AddUObject(this, &ThisClass::OnTimeChanged);
 }
 
 TSoftObjectPtr<UTexture2D> UEffectWidgetControllerBase::ExtractIcon_Implementation()
@@ -106,7 +165,7 @@ float UEffectWidgetControllerBase::CalculateDuration_Implementation(float NewDur
 	{
 		return NewDuration;
 	}
-	return EffectData ? EffectData->GetDuration() : -1.f;
+	return EffectData ? EffectData->GetTimeRemaining(GetWorld()->TimeSeconds) : -1.f;
 }
 
 int32 UEffectWidgetControllerBase::CalculateStackCount_Implementation(int32 NewStackCount)
@@ -126,6 +185,10 @@ void UEffectWidgetControllerBase::StartDurationUpdate()
 	}
 	
 	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+	if (DurationUpdateTimer.IsValid())
+	{
+		TimerManager.ClearTimer(DurationUpdateTimer);
+	}
 
 	TimerManager.SetTimer(DurationUpdateTimer, this, &ThisClass::UpdateDurationOnWidget, DurationUpdateFrequency, true);
 }
@@ -156,8 +219,9 @@ void UEffectWidgetControllerBase::UpdateFields()
 		return;
 	}
 	
-	OnTimeChanged(ActiveEffectHandle, EffectData->StartServerWorldTime, EffectData->GetDuration());
+	OnTimeChanged(ActiveEffectHandle, EffectData->StartServerWorldTime, EffectData->GetTimeRemaining(GetWorld()->TimeSeconds));
 	OnStackChanged(ActiveEffectHandle, EffectData->ClientCachedStackCount, 0);
+	OnInhibitionChanged(ActiveEffectHandle, EffectData->bIsInhibited);
 	
 	if (UE_MVVM_SET_PROPERTY_VALUE(Title, ExtractTitle()))
 	{
@@ -202,8 +266,21 @@ void UEffectWidgetControllerBase::UpdateEffectFromHandle()
 
 void UEffectWidgetControllerBase::OnEffectRemoved(const FGameplayEffectRemovalInfo& GameplayEffectRemovalInfo)
 {
-	K0_OnEffectRemoved(GameplayEffectRemovalInfo);
-	RemoveEffect();
+	FGameplayEffectSpec Spec{};
+	UClass* Class = nullptr;
+
+	if (GameplayEffectRemovalInfo.ActiveEffect)
+	{
+		Spec = GameplayEffectRemovalInfo.ActiveEffect->Spec;
+		Class = GameplayEffectRemovalInfo.ActiveEffect->Spec.Def.GetClass();
+	}
+	
+	if (!K0_OnEffectRemoved(GameplayEffectRemovalInfo, Spec, Class))
+	{
+		return;
+	}
+	
+	RemoveEffectAndController();
 }
 
 void UEffectWidgetControllerBase::OnStackChanged(FActiveGameplayEffectHandle ActiveGameplayEffectHandle, const int32 NewStackCount, const int32 OldStackCount)
@@ -217,6 +294,7 @@ void UEffectWidgetControllerBase::OnStackChanged(FActiveGameplayEffectHandle Act
 
 void UEffectWidgetControllerBase::OnInhibitionChanged(FActiveGameplayEffectHandle ActiveGameplayEffectHandle, const bool bIsInhibited)
 {
+	K0_OnInhibitionChanged(bIsInhibited);
 }
 
 void UEffectWidgetControllerBase::OnTimeChanged(FActiveGameplayEffectHandle ActiveGameplayEffectHandle,	const float NewStartTime, const float NewDuration)
@@ -233,8 +311,10 @@ void UEffectWidgetControllerBase::OnTimeChanged(FActiveGameplayEffectHandle Acti
 	}
 }
 
-void UEffectWidgetControllerBase::K0_OnEffectRemoved_Implementation(const FGameplayEffectRemovalInfo& GameplayEffectRemovalInfo)
+bool UEffectWidgetControllerBase::K0_OnEffectRemoved_Implementation(const FGameplayEffectRemovalInfo& GameplayEffectRemovalInfo, const FGameplayEffectSpec Spec, const TSubclassOf<
+	                                                                    UGameplayEffect> EffectClass)
 {
+	return true;
 }
 
 void UEffectWidgetControllerBase::K0_OnStackChanged_Implementation(const int32 NewStackCount, const int32 OldStackCount)
@@ -248,6 +328,12 @@ void UEffectWidgetControllerBase::K0_OnStackChanged_Implementation(const int32 N
 
 void UEffectWidgetControllerBase::K0_OnInhibitionChanged_Implementation(const bool bIsInhibited)
 {
+	if (!Widget)
+	{
+		return;
+	}
+	Widget->UpdateInhibition(bIsInhibited);
+	
 }
 
 void UEffectWidgetControllerBase::K0_OnTimeChanged_Implementation(const float NewStartTime, const float NewDuration)
@@ -259,7 +345,22 @@ void UEffectWidgetControllerBase::K0_OnTimeChanged_Implementation(const float Ne
 	Widget->UpdateDuration(TotalDuration);
 }
 
-void UEffectWidgetControllerBase::RemoveEffect()
+TSubclassOf<UGameplayEffect> UEffectWidgetControllerBase::GetEffectClass() const
+{
+	if (!EffectData)
+	{
+		return nullptr;
+	}
+	
+	return EffectData->Spec.Def.GetClass();
+}
+
+const UObject* UEffectWidgetControllerBase::GetEffectKey_Implementation() const
+{
+	return GetEffectClass();
+}
+
+void UEffectWidgetControllerBase::RemoveEffectAndController()
 {
 	if (Widget)
 	{
@@ -267,6 +368,9 @@ void UEffectWidgetControllerBase::RemoveEffect()
 		Widget = nullptr;
 	}
 	K2_RemoveEffect();
+
+	OnControllerOblsolete.Broadcast(this);
+	
 	MarkAsGarbage();
 }
 

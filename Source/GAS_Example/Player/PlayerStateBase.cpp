@@ -12,6 +12,7 @@ APlayerStateBase::APlayerStateBase()
 
 	// Create the Ability System Component sub-object.
 	AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 }
 
 UAbilitySystemComponent* APlayerStateBase::GetAbilitySystemComponent() const

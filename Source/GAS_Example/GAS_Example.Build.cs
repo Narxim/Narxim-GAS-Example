@@ -1,5 +1,6 @@
 // Copyright 2021 Joseph "Narxim" Thigpen.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class GAS_Example : ModuleRules
@@ -8,6 +9,7 @@ public class GAS_Example : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
+		// Added UE5Coro, and allow to activate it. Note: You need MSVC 14.41+ (can be tricky, won't be activated by default for now)
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core",
@@ -17,6 +19,8 @@ public class GAS_Example : ModuleRules
 			"UMG",
 			"Slate",
 			"SlateCore"
+			// "UE5Coro",
+			// "UE5CoroGAS"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
@@ -27,6 +31,8 @@ public class GAS_Example : ModuleRules
 			"EnhancedInput",
 			"CommonUI",
 			"ModelViewViewModel"
+			// "UE5Coro",
+			// "UE5CoroGAS"
 		});
 	}
 }

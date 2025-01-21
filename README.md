@@ -4,7 +4,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/Narxim/Narxim-GAS-Example?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Narxim/Narxim-GAS-Tutorial?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/Narxim/Narxim-GAS-Example?style=flat-square)
-![Unreal](https://img.shields.io/badge/Unreal_Engine_Versions-_(4.26+)_(5.0+)_Current_Version_(5.4)_-informational?style=flat-square)
+![Unreal](https://img.shields.io/badge/Unreal_Engine_Versions-_(4.26+)_(5.0+)_Current_Version_(5.5)_-informational?style=flat-square)
 
 ![image](https://github.com/user-attachments/assets/2518ffc8-ef3b-4bbf-bcce-48d00338237a)
 
@@ -259,6 +259,10 @@ The controller will be listening to those updates from the ActiveEffect Event se
 
 ___
 ## ChangeLog:
+### 2025/01/06:
+```
+
+```
 ### 2025/01/06:
 ```
 - Adding a new Custom GE Component that can have custom CanApply in BP or C++

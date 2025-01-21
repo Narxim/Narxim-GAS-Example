@@ -13,6 +13,7 @@
 
 class UCommonLazyImage;
 class UCommonTextBlock;
+class UEffectWidgetControllerBase;
 /**
  * 
  */
@@ -22,6 +23,10 @@ class GAS_EXAMPLE_API UEffectWidgetBase : public UCommonUserWidget
 	GENERATED_BODY()
 	
 protected:
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UEffectWidgetControllerBase> EffectController;
+	
 	FTimerHandle DurationUpdateTimer;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (BindWidgetOptional))
@@ -46,6 +51,9 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
+	void SetController(UEffectWidgetControllerBase* NewController);
+	
+	UFUNCTION(BlueprintCallable)
 	void UpdateTitle(const FText NewTitle);
 
 	UFUNCTION(BlueprintCallable)
@@ -54,9 +62,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateIcon(TSoftObjectPtr<UTexture2D> NewSoftTexture, TSoftObjectPtr<UMaterialInterface> SoftMaterial);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void UpdateStackCount(const int32 NewStackCount);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void UpdateDuration(const float NewDuration);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void UpdateInhibition(const bool bIsInhibited);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnSourceEffectHandleChanged();
 };

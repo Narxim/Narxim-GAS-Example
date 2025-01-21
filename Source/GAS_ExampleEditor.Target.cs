@@ -9,9 +9,13 @@ public class GAS_ExampleEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		
 		bWithPushModel = true;
 
-		ExtraModuleNames.AddRange( new string[] { "GAS_Example" } );
+		// , "UE5Coro" 
+		ExtraModuleNames.AddRange( new string[] { "GAS_Example"} );
+		
+		// EnablePlugins.Add("ue5coro");
 	}
 }

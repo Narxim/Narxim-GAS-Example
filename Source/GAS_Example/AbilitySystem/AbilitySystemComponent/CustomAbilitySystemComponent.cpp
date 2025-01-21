@@ -104,12 +104,55 @@ ACharacterBase* UCustomAbilitySystemComponent::GetCharacterBaseAvatar() const
 	return Cast<ACharacterBase>(GetAvatarActor_Direct());
 }
 
-float UCustomAbilitySystemComponent::GetFilteredAttribute(
-	const FGameplayAttribute Attribute,
-	const FGameplayTagRequirements SourceTags,
-	const FGameplayTagContainer TargetTags)
+float UCustomAbilitySystemComponent::GetFilteredAttribute(const FGameplayAttribute Attribute, const FGameplayTagRequirements SourceTags, const FGameplayTagContainer TargetTags)
 {
 	return GetFilteredAttributeValue(Attribute, SourceTags, TargetTags);
+}
+
+void UCustomAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
+{
+	Super::AbilitySpecInputPressed(Spec);
+
+	/* JeanChene 2025/01/20:
+	 * Copy from Lyra where both Pressed/Released works.
+	 * It's not needed for Pressed
+	 */
+	
+// 	// We don't support UGameplayAbility::bReplicateInputDirectly.
+// 	// Use replicated events instead so that the WaitInputPress ability task works.
+// 	if (Spec.IsActive())
+// 	{
+// PRAGMA_DISABLE_DEPRECATION_WARNINGS
+// 		const UGameplayAbility* Instance = Spec.GetPrimaryInstance();
+// 		FPredictionKey OriginalPredictionKey = Instance ? Instance->GetCurrentActivationInfo().GetActivationPredictionKey() : Spec.ActivationInfo.GetActivationPredictionKey();
+// PRAGMA_ENABLE_DEPRECATION_WARNINGS
+//
+// 		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
+// 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, OriginalPredictionKey);
+// 	}
+}
+
+void UCustomAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& Spec)
+{
+	Super::AbilitySpecInputReleased(Spec);
+
+	/* JeanChene 2025/01/20:
+	 * Copy from Lyra where both Pressed/Released works.
+	 * Needed for Released as WaitInputRelease wasn't fired.
+	 */
+	
+	// We don't support UGameplayAbility::bReplicateInputDirectly.
+	// Use replicated events instead so that the WaitInputRelease ability task works.
+	if (Spec.IsActive())
+	{
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+		const UGameplayAbility* Instance = Spec.GetPrimaryInstance();
+		FPredictionKey OriginalPredictionKey = Instance ? Instance->GetCurrentActivationInfo().GetActivationPredictionKey() : Spec.ActivationInfo.GetActivationPredictionKey();
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
+
+		// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputReleased event to the server.
+		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, OriginalPredictionKey);
+	}
 }
 
 void UCustomAbilitySystemComponent::InitializeAbilitySystemData(const FAbilitySystemInitializationData& InitializationData, AActor* InOwningActor, AActor* InAvatarActor)

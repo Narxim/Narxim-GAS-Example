@@ -62,4 +62,7 @@ public:
 	float GetFilteredAttribute(const FGameplayAttribute Attribute, const FGameplayTagRequirements SourceTags, const FGameplayTagContainer TargetTags);
 	
 	FOnCustomGameplayEffectEventDelegate OnCustomGameplayEffectEventDelegate;
+
+	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
+	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
 };

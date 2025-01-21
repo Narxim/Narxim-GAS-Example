@@ -259,18 +259,23 @@ The controller will be listening to those updates from the ActiveEffect Event se
 
 ___
 ## ChangeLog:
-### 2025/01/06:
+### 2025/01/20 (EvilHippo):
 ```
-
+- Project is now available and setup for 5.5
+- Added more features to UI Effect Bar: Inhibition, Duration, Stacks etc ....
+- Added UE5Coro (not enabled by default). Requires MSVC 14.41+
+- Added a "Very simple" Ranged Attack (Left Click) dealing damage.
+- Added New Volume to "Inhibit" Fire resistance, and show that the UI Effect will Dimmed (As in Inhibited)
+- Making more method BlueprintNativeEvent
 ```
-### 2025/01/06:
+### 2025/01/06 (EvilHippo):
 ```
 - Adding a new Custom GE Component that can have custom CanApply in BP or C++
 - Create a new GE Component to limit max instances of GEs without stacking policies
 - Create a test volume for this new Component.
 ```
 
-### 2025/01/05:
+### 2025/01/05 (EvilHippo):
 ```
 - Now shows Effects on the UI as long as a Custom UI Component has been added.
 - Shows Title, Desc, Duration (updated) and stack count
@@ -279,7 +284,7 @@ ___
 - Added a new Widget Effect Bar + Effect Widget + Effect Widget Controller. Have to add some more example.
 ```
 
-### 2024/12/28:
+### 2024/12/28 (EvilHippo):
 ```- Using one Resistance Attribute for all "Armors".
 - Introduced Fire Damage, with a simple calculation exec
 Simple: Simple Exec, no fancy things, everything handled with tags on GE "Base Kaos style"
@@ -293,7 +298,7 @@ Advanced: can specify more than one damage at the same time while retaining the 
 - Added some Gameplay cues for Damage / Armor / Fire / Bleeding
 ```
 
-### 2024/12/19:
+### 2024/12/19 (EvilHippo):
 ```General:
 - Adjusted C++ (removing Pyramids, refactoring some methods)
 - Added TEXT() Macro

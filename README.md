@@ -219,7 +219,6 @@ UIs can now subscribe to this delegate, and that's what we've done with the UAbi
 
 ![image](https://github.com/user-attachments/assets/43c32e3a-8fb7-4e89-a0f1-03e709eeb893)
 
-
 Once the Widget receives the event, it will create, or reuse, a controller.
 The controller is there to create the Effect Widget, and control ALL of its parameters whenever something changed.
 
@@ -246,6 +245,7 @@ The Controller will spawn the Widget class it has (Base, or any you might want t
 
 If the effect is removed, the controller will remove the widget and gets destroyed.
 More stacks ? Update the stacks ...
+Inhibition is also not taken in account (Widget will be dimmed).
 
 The controller will be listening to those updates from the ActiveEffect Event sets:
 ```
@@ -256,7 +256,6 @@ The controller will be listening to those updates from the ActiveEffect Event se
 	EventSet->OnInhibitionChanged.AddUObject(this, &ThisClass::OnInhibitionChanged);
 	EventSet->OnTimeChanged.AddUObject(this, &ThisClass::OnTimeChanged);
 ```
-
 ___
 ## ChangeLog:
 ### 2025/01/20 (EvilHippo):
@@ -265,7 +264,7 @@ ___
 - Added more features to UI Effect Bar: Inhibition, Duration, Stacks etc ....
 - Added UE5Coro (not enabled by default). Requires MSVC 14.41+
 - Added a "Very simple" Ranged Attack (Left Click) dealing damage.
-- Added New Volume to "Inhibit" Fire resistance, and show that the UI Effect will Dimmed (As in Inhibited)
+- Added New Volume to "Inhibit" Fire resistance, and show that the UI Effect will be dimmed (As in Inhibited)
 - Making more method BlueprintNativeEvent
 ```
 ### 2025/01/06 (EvilHippo):

@@ -34,6 +34,9 @@ public:
 	// Return damage multiplier
 	UFUNCTION(BlueprintCallable, Category = "Ability System")
 	static float CalculateEffectiveResistance(const float CurrentArmor);
+
+	UFUNCTION(BlueprintPure, Category = "Ability System", meta=(AutoCreateRefTerm="ContextString"))
+	static float GetValueAtLevel(const FScalableFloat& ScalableFloat, const float Level = 0.f, const FString& ContextString = "");
 private:
 
 	static void GetAttributeValue(const UAbilitySystemComponent* const AbilitySystemComponent, const FGameplayAttribute& Attribute, const EAttributeSearchType SearchType, OUT float& ReturnValue);

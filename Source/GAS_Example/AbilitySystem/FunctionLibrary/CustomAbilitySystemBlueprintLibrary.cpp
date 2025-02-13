@@ -41,6 +41,11 @@ float UCustomAbilitySystemBlueprintLibrary::CalculateEffectiveResistance(const f
 	return UResistanceAttributeSet::RESISTANCE_BASE > 0.f && ArmorDenominator > 0.f ? UResistanceAttributeSet::RESISTANCE_BASE / ArmorDenominator : 1.f;
 }
 
+float UCustomAbilitySystemBlueprintLibrary::GetValueAtLevel(const FScalableFloat& ScalableFloat, const float Level /* = 0.f */,	const FString& ContextString /* = "" */)
+{
+	return ScalableFloat.GetValueAtLevel(Level, &ContextString);
+}
+
 void UCustomAbilitySystemBlueprintLibrary::GetAttributeValue(const UAbilitySystemComponent* const AbilitySystemComponent, const FGameplayAttribute& Attribute, const EAttributeSearchType SearchType, OUT float& ReturnValue)
 {
 	ReturnValue = -1.0f;

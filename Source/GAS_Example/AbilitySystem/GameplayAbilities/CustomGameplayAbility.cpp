@@ -30,6 +30,22 @@ void UCustomGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorI
 	}
 }
 
+void UCustomGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+	if (!ActorInfo)
+	{
+		return;
+	}
+	
+	K0_OnGiveAbility(*ActorInfo, Spec);
+}
+
+void UCustomGameplayAbility::K0_OnGiveAbility_Implementation(const FGameplayAbilityActorInfo& ActorInfo,
+	const FGameplayAbilitySpec& Spec)
+{
+}
+
 void UCustomGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	// Check to see if the "Activation Input Action" is valid.
@@ -160,4 +176,9 @@ void UCustomGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Ac
 	}
 	
 	Super::OnRemoveAbility(ActorInfo, Spec);
+}
+
+void UCustomGameplayAbility::K0_OnRemoveAbility_Implementation(const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	K0_OnRemoveAbility(ActorInfo, Spec);
 }

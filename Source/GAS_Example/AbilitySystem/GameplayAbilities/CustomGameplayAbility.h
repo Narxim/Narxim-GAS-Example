@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputAction.h"
+#include "EnhancedInputComponent.h"
 #include "Abilities/GameplayAbility.h"
 #include "CustomGameplayAbility.generated.h"
 
@@ -47,6 +47,11 @@ protected:
 	// Think of this as "BeginPlay".
 	// Add logic here that should run when the Ability is first initialized.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	
+	UFUNCTION(BlueprintNativeEvent, DisplayName="OnGiveAbility")
+	void K0_OnGiveAbility(const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilitySpec& Spec);
 
 	// Called to bind Input Pressed and Input Released events to the Avatar Actor's Enhanced Input Component if it is reachable. 
 	void SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
@@ -59,4 +64,7 @@ protected:
 
 	// Override "OnRemoveAbility" to clean up Enhanced Input Bindings.
 	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
+	UFUNCTION(BlueprintNativeEvent, DisplayName="OnRemoveAbility")
+	void K0_OnRemoveAbility(const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilitySpec& Spec);
 };

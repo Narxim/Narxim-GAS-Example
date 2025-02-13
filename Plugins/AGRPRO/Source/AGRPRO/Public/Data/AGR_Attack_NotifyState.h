@@ -11,10 +11,9 @@ class AGRPRO_API UAGR_Attack_NotifyState : public UAnimNotifyState
 {
     GENERATED_BODY()
 
+protected:
+    
 public:
-    virtual void NotifyBegin(
-        USkeletalMeshComponent* MeshComp,
-        UAnimSequenceBase* Animation,
-        const float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
+    virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
     virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

@@ -71,7 +71,8 @@ void UCustomAbilitySystemComponent::ChangeLevel_Implementation(const float Desir
 			// Update the attribute using the new level. 
 			if (HasAttributeSetForAttribute(AttributeBaseValue.Key))
 			{
-				SetNumericAttributeBase(AttributeBaseValue.Key, AttributeBaseValue.Value.Value.GetValueAtLevel(NewLevel));
+			    const float NewValue = AttributeBaseValue.Value.Value.GetValueAtLevel(NewLevel);
+				SetNumericAttributeBase(AttributeBaseValue.Key, NewValue);
 			}
 		}
 	}

@@ -1,0 +1,5 @@
+Attribute,0
+Player.Attribute.MaxHealth,100
+Player.Ability.Dash.Strength,1500
+Player.Ability.Dash.Duration,0.5
+Player.Ability.Dash.Cooldown,1.5

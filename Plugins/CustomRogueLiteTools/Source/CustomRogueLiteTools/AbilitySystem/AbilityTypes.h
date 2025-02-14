@@ -19,14 +19,24 @@ struct FCRLChangedValue
 
 	// Can be positive or negative.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ValueChange = 0.f;
+	float Value = 0.f;
 
 	/*
 	 * Default = 1. Will not be clamped. It is the responsibility of the GA / Dev to make this value OK.
 	 * Will be applied at the end.
 	 */ 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PercentageChange = 1.f;
+	float Multiplier = 1.f;
+
+	bool IsValid(const float Tolerance = 0.1f) const
+	{
+		return FMath::IsNearlyZero(Value, Tolerance) || FMath::IsNearlyZero(Multiplier, Tolerance);
+	}
+
+	float GetMagnitude() const
+	{
+		return FMath::Sign(Value) * FMath::Max(Value, 0.f) * FMath::Max(Multiplier, 0.f);
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -42,6 +52,12 @@ struct FCRLChangedAttributeCollection
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FGameplayTag, FCRLChangedValue> ChangedAttributeCollection{};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<const UAbilitySystemComponent> TargetASC;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<const AActor> TargetActor;
 };
 
 UENUM(Blueprintable)

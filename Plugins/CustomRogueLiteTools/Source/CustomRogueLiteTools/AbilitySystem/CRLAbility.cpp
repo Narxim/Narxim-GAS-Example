@@ -29,26 +29,20 @@ void UCRLAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, co
 	Super::OnRemoveAbility(ActorInfo, Spec);
 }
 
-void UCRLAbility::ProcessChangedAttributeCollection_Implementation(UPARAM(ref) FCRLChangedAttributeCollection& Collection)
+bool UCRLAbility::ProcessChangedAttributeCollection_Implementation(UPARAM(ref) FCRLChangedAttributeCollection& Collection)
 {
+	return true;
 }
 
 bool UCRLAbility::RegisterCall(const AActor* SourceActor, const ECRLModifierEvent Event)
 {
-	const auto CRLActor_Source = Cast<ICRLActorInterface>(SourceActor);
-	
-	UCRLActorComponent* const CRLActorComponent = CRLActor_Source ? CRLActor_Source->GetCRLActorComponent() : nullptr;
-	if (!CRLActorComponent)
-	{
-		return false;
-	}
-
-	if (!CRLActorComponent->RegisterModifierAbility(this, Event))
+	UCRLActorComponent* const CRLComponent = ICRLActorInterface::Execute_GetCRLActorComponent(SourceActor);
+	if (!CRLComponent)
 	{
 		return false;
 	}
 	
-	RegisteredEvents.Add(Event);
+	CRLComponent->RegisterModifierAbility(this, Event);
 	return true;
 }
 
@@ -56,15 +50,15 @@ bool UCRLAbility::Unregister(const AActor* SourceActor)
 {
 	const auto CRLActor_Source = Cast<ICRLActorInterface>(SourceActor);
 	
-	UCRLActorComponent* const CRLActorComponent = CRLActor_Source ? CRLActor_Source->GetCRLActorComponent() : nullptr;
-	if (!CRLActorComponent)
+	UCRLActorComponent* const CRLComponent = ICRLActorInterface::Execute_GetCRLActorComponent(SourceActor);
+	if (!CRLComponent)
 	{
 		return false;
 	}
 
 	for (const ECRLModifierEvent& RegisteredEvent : RegisteredEvents)
 	{
-		CRLActorComponent->UnregisterModifierAbility(this, RegisteredEvent);
+		CRLComponent->UnregisterModifierAbility(this, RegisteredEvent);
 	}
 
 	return true;

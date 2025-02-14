@@ -27,8 +27,8 @@ protected:
 	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	void ProcessChangedAttributeCollection(UPARAM(ref) FCRLChangedAttributeCollection& Collection);
-	virtual void ProcessChangedAttributeCollection_Implementation(UPARAM(ref) FCRLChangedAttributeCollection& Collection);
+	bool ProcessChangedAttributeCollection(UPARAM(ref) FCRLChangedAttributeCollection& Collection);
+	virtual bool ProcessChangedAttributeCollection_Implementation(UPARAM(ref) FCRLChangedAttributeCollection& Collection);
 
 	bool RegisterCall(const AActor* SourceActor, ECRLModifierEvent Event);
 	bool Unregister(const AActor* SourceActor);

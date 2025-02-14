@@ -66,6 +66,8 @@ void UCRLDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	
 	AttributeCollection.SourceTags = *EvaluationParameters.SourceTags;
 	AttributeCollection.TargetTags = *EvaluationParameters.TargetTags;
+	AttributeCollection.TargetASC = TargetAbilitySystemComponent;
+	AttributeCollection.TargetActor = TargetActor;
 	
 	/*
 	 * 1 - Calculate Damage
@@ -75,24 +77,29 @@ void UCRLDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	 * 4 - Calculate final damage =
 	 * */
 
+	FCRLChangedValue& DamageStruct = AttributeCollection.ChangedAttributeCollection.Emplace(CRLTags::TAG_CRL_Identifier_Damage.GetTag());
+	FCRLChangedValue& ResistanceStruct = AttributeCollection.ChangedAttributeCollection.Emplace(CRLTags::TAG_CRL_Identifier_Resistance.GetTag());
+	ResistanceStruct.Value = 1.f;
+	
 	ProcessModifierEvent(ECRLModifierEvent::PreDamageCalculation);
 
-	float DamageRaw = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DamageDef, EvaluationParameters, DamageRaw);
-	DamageRaw = FMath::Max(DamageRaw, 0.f);
+	float DamageRawTmp = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DamageDef, EvaluationParameters, DamageRawTmp);
+	DamageRawTmp = FMath::Max(DamageRawTmp, 0.f);
+
+	DamageStruct.Value += DamageRawTmp;
 
 	ProcessModifierEvent(ECRLModifierEvent::PostDamageCalculation);
 	
-	// No Damage, we can return.
-	if (FMath::IsNearlyZero(DamageRaw, 0.f))
-	{
-		return;
-	}
+	// // No Damage, we can return.
+	// if (!DamageStruct.IsValid() || !ResistanceStruct.IsValid())
+	// {
+	// 	return;
+	// }
 	
 	FGameplayTagContainer DamageMultiplierSource = *EvaluationParameters.SourceTags;
-	float DamageMultiplier = 1.f;
-	
-	if (EvaluationParameters.SourceTags->HasTagExact(CRLTags::TAG_CRL_Buff_Backstab.GetTag()))
+	if (EvaluationParameters.SourceTags->HasTagExact(CRLTags::TAG_CRL_Buff_Backstab.GetTag()) &&
+		!EvaluationParameters.TargetTags->HasTagExact(CRLTags::TAG_CRL_Immunity_Backstab.GetTag()))
 	{
 		const float Direction = SourceActor->GetActorForwardVector().Dot(TargetActor->GetActorForwardVector());
 		if (Direction > 0.f)
@@ -107,42 +114,42 @@ void UCRLDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	// This number will be multiplied by the damage at the end.
 	float DamageResistance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->ResistanceMultiplierDef, EvaluationParameters, DamageResistance);
-	DamageResistance += 1.f;
+	ResistanceStruct.Value += DamageResistance;
 
+	float DamageMultiplierTmp = 1.f;
 	EvaluationParameters.SourceTags = &DamageMultiplierSource;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DamageMultiplierDef, EvaluationParameters, DamageMultiplier);
-	DamageMultiplier = FMath::Max(DamageMultiplier, 0.f);
-
-	// Calculate the final damage
-	const float FinalDamage = DamageRaw * DamageMultiplier * DamageResistance;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DamageMultiplierDef, EvaluationParameters, DamageMultiplierTmp);
+	DamageMultiplierTmp = FMath::Max(DamageMultiplierTmp, 0.f);
+	DamageStruct.Multiplier += (DamageMultiplierTmp - 1.f);
 
 	ProcessModifierEvent(ECRLModifierEvent::PostMitigation);
 
-	// It's too close to 0 to consider anything, return early.
-	if (FinalDamage <= 0.f || FMath::IsNearlyZero(DamageRaw, 0.f))
-	{
-		return;
-	}
+	// Calculate the final damage
+	const float FinalDamage = DamageStruct.GetMagnitude() * ResistanceStruct.GetMagnitude();
 
-	// Output the final damage to our player.
-	OutExecutionOutput.AddOutputModifier(
-		FGameplayModifierEvaluatedData(
-			DamageStatics->CurrentHealthProperty,
-			EGameplayModOp::Additive,
-			-FinalDamage
-			)
-	);
+	// Might have other damage to add, new if scope instead of early return
+	if (FinalDamage > 0.f)
+	{
+		// Output the final damage to our player.
+		OutExecutionOutput.AddOutputModifier(
+			FGameplayModifierEvaluatedData(
+				DamageStatics->CurrentHealthProperty,
+				EGameplayModOp::Additive,
+				-FinalDamage
+				)
+		);
+	}
 }
 
 void UCRLDamageExecution::ProcessModifierEvent(ECRLModifierEvent Event) const
 {
-	const FCRLModifierDefinition* Modifiers = CRLComponent->GetModifierDefinitionsForEvent(ECRLModifierEvent::PreDamageCalculation);
+	const FCRLModifierDefinition* Modifiers = CRLComponent->GetModifierDefinitionsForEvent(Event);
 	if (!Modifiers)
 	{
 		return;
 	}
 	
-	for (const TObjectPtr<UCRLAbility> Ability : Modifiers->Abilities)
+	for (const TObjectPtr<UCRLAbility>& Ability : Modifiers->Abilities)
 	{
 		if (!Ability)
 		{

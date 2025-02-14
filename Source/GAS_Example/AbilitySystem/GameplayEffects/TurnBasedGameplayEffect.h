@@ -7,7 +7,7 @@
 #include "TurnBasedGameplayEffect.generated.h"
 
 /**
- * Simplifies the creation of infinite Gameplay Effects for designers.  This class automatically sets the GE duration
+ * Simplifies the creation of Turn Based Gameplay Effects for designers.  This class automatically sets the GE duration
  * to infinite and adds/manages the required `TurnBasedGameplayEffectComponent`.
  */
 UCLASS()

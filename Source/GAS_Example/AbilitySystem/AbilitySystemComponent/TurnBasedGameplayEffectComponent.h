@@ -25,35 +25,47 @@ class GAS_EXAMPLE_API UTurnBasedGameplayEffectComponent : public UGameplayEffect
 	GENERATED_BODY()
 
 public:
-	/** The number of turns until uninhibition of the Turn-Based GE. When set to 0 the GE is uninhibited instantly*/
+	/** 
+	 * Number of turns until the effect activates (uninhibits). 
+	 * Set to 0 for immediate activation on application.
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Turn Settings", Meta = (ClampMin = 0))
 	int32 InhibitionDelayTurns = 1;
 
-	/** The number of turns, after uninhibition of the Turn-Based GE, until it is removed. When set to 0 the GE is removed immediately after inhibition*/
+	/** 
+	 * Number of turns the effect stays active after activation (uninhibition). 
+	 * Set to 0 to expire immediately after activation.
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Turn Settings", Meta = (ClampMin = 0))
 	int32 DurationTurns = 1;
 
-	/** Optional: GE to apply on uninhibition of the Turn-Based GE*/
+	/** Optional: GE applied when this effect activates (on uninhibition).*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Turn Actions")
 	TSubclassOf<UGameplayEffect> GEToApplyOnUninhibition;
 
-	/** Optional: GE to apply on removal of the Turn-Based GE*/
+	/** Optional: GE applied when this effect expires (on removal).*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Turn Actions")
 	TSubclassOf<UGameplayEffect> GEToApplyOnRemoval;
 
-	/** If enabled, applies the Periodic GE each turn, starting when the Turn-Based GE becomes uninhibited for DurationTurns*/
+	/** If enabled, applies the Periodic GE every turn while active (post-activation).*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings")
 	bool bEnablePeriodicGE = false;
 
-	/** Optional: Periodic GE to apply at the start of each uninhibited turn*/
+	/** 
+	 * Optional: GE applied at the start of each turn while this effect is active. 
+	 * Only used if "Enable Periodic GE" is enabled.
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings", Meta = (EditCondition = "bEnablePeriodicGE == true", EditConditionHides))
 	TSubclassOf<UGameplayEffect> GEToApplyPeriodically;
 
-	/** If enabled, limits how many times the periodic effect can be applied*/
+	/** Limits how many times the periodic GE can trigger.*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings", meta = (EditCondition = "bEnablePeriodicGE == true", EditConditionHides))
 	bool bLimitPeriodicApplications = false;
 
-	/** The maximum times to apply the Periodic GE throughout the duration of the Turn-Based GE*/
+	/** 
+	 * Maximum number of times the periodic GE will be applied. 
+	 * Only used if "Limit Periodic Applications" is enabled.
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings",
 		Meta = (EditCondition = "bEnablePeriodicGE == true && bLimitPeriodicApplications == true", EditConditionHides), Meta = (ClampMin = 1))
 	int32 MaxPeriodicApplications = 1;

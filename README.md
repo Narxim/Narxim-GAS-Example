@@ -260,6 +260,7 @@ The controller will be listening to those updates from the ActiveEffect Event se
 ___
 ### Turn-Based GAS Example
 This system extends the Gameplay Ability System (GAS) to support turn-based mechanics, allowing effects like damage-over-time, delayed healing, or stat buffs/debuffs that activate/expire/tick across multiple turns.
+(Developed by Steve :Mushroom: and Light)
 
 Setup Steps:
 1. Implement the Turn System Interface 
@@ -298,7 +299,7 @@ TLDR
 
 ___
 ## ChangeLog:
-### 2025/01/20 (Steve :Mushroom:):
+### 2025/02/15 (Steve :Mushroom:):
 ```
 - Added Turn-Based functionality for GAS via C++ classes (TurnSystemInterface.h, TurnExampleGameStateBase.h, TurnBasedGameplayEffectComponent.h, TurnBasedGameplayEffect.h)
 - Added 3 Turn-Based Examples

@@ -41,11 +41,11 @@ public:
 
 	/** Optional: GE applied when this effect activates (on uninhibition).*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Turn Actions")
-	TSubclassOf<UGameplayEffect> GEToApplyOnUninhibition;
+	TSubclassOf<UGameplayEffect> EffectToApplyOnUninhibition;
 
 	/** Optional: GE applied when this effect expires (on removal).*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Turn Actions")
-	TSubclassOf<UGameplayEffect> GEToApplyOnRemoval;
+	TSubclassOf<UGameplayEffect> EffectToApplyOnRemoval;
 
 	/** If enabled, applies the Periodic GE every turn while active (post-activation).*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings")
@@ -56,7 +56,7 @@ public:
 	 * Only used if "Enable Periodic GE" is enabled.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings", Meta = (EditCondition = "bEnablePeriodicGE == true", EditConditionHides))
-	TSubclassOf<UGameplayEffect> GEToApplyPeriodically;
+	TSubclassOf<UGameplayEffect> EffectToApplyPeriodically;
 
 	/** Limits how many times the periodic GE can trigger.*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings", meta = (EditCondition = "bEnablePeriodicGE == true", EditConditionHides))

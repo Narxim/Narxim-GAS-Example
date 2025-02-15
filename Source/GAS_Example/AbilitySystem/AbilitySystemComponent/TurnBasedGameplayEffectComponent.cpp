@@ -44,11 +44,11 @@ EDataValidationResult UTurnBasedGameplayEffectComponent::IsDataValid(FDataValida
 	}
 
 	// Invalid Uninhibition GE duration
-	if (IsValid(GEToApplyOnUninhibition))
+	if (IsValid(EffectToApplyOnUninhibition))
 	{
-	    const UGameplayEffect* DefaultGE = GEToApplyOnUninhibition->GetDefaultObject<UGameplayEffect>();
-	    check(DefaultGE != nullptr);
-	    if (DefaultGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
+	    const UGameplayEffect* UninhibitionGE = EffectToApplyOnUninhibition->GetDefaultObject<UGameplayEffect>();
+	    check(UninhibitionGE != nullptr);
+	    if (UninhibitionGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
 	    {
 	        Context.AddError(FText::FormatOrdered(LOCTEXT("InvalidUninhibitionGEDurationError",
 	            "[{0}] Invalid 'On Uninhibition Effect'\n"
@@ -59,11 +59,11 @@ EDataValidationResult UTurnBasedGameplayEffectComponent::IsDataValid(FDataValida
 	}
 
 	// Invalid Removal GE duration
-	if (IsValid(GEToApplyOnRemoval))
+	if (IsValid(EffectToApplyOnRemoval))
 	{
-	    const UGameplayEffect* DefaultGE = GEToApplyOnRemoval->GetDefaultObject<UGameplayEffect>();
-	    check(DefaultGE != nullptr);
-	    if (DefaultGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
+	    const UGameplayEffect* RemovalGE = EffectToApplyOnRemoval->GetDefaultObject<UGameplayEffect>();
+	    check(RemovalGE != nullptr);
+	    if (RemovalGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
 	    {
 	        Context.AddError(FText::FormatOrdered(LOCTEXT("InvalidRemovalGEDurationError",
 	        	"[{0}] Invalid 'On Removal Effect' - Infinite duration would prevent automatic removal"),
@@ -73,11 +73,11 @@ EDataValidationResult UTurnBasedGameplayEffectComponent::IsDataValid(FDataValida
 	}
 
 	// Invalid Periodic GE duration
-	if (IsValid(GEToApplyPeriodically))
+	if (IsValid(EffectToApplyPeriodically))
 	{
-	    const UGameplayEffect* DefaultGE = GEToApplyPeriodically->GetDefaultObject<UGameplayEffect>();
-	    check(DefaultGE != nullptr);
-	    if (DefaultGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
+	    const UGameplayEffect* PeriodicGE = EffectToApplyPeriodically->GetDefaultObject<UGameplayEffect>();
+	    check(PeriodicGE != nullptr);
+	    if (PeriodicGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
 	    {
 	        Context.AddError(FText::FormatOrdered(LOCTEXT("InvalidPeriodicGEDurationError",
 	            "[{0}] Invalid 'Periodic Effect' - Must use Instant/HasDuration policy to ensure removal"),
@@ -130,7 +130,7 @@ EDataValidationResult UTurnBasedGameplayEffectComponent::IsDataValid(FDataValida
 	}
 
 	// Missing periodic GE
-	if (bEnablePeriodicGE && !IsValid(GEToApplyPeriodically))
+	if (bEnablePeriodicGE && !IsValid(EffectToApplyPeriodically))
 	{
 		Context.AddError(FText::FormatOrdered(LOCTEXT("MissingPeriodicGEError",
 			"[{0}] Periodic effect enabled but no 'Periodic Effect' assigned"),
@@ -227,9 +227,9 @@ bool UTurnBasedGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGamep
 	bool bApplyUninhibited = InhibitionDelayTurns == 0;
 	if (bApplyUninhibited)
 	{
-		if (IsValid(GEToApplyOnUninhibition))
+		if (IsValid(EffectToApplyOnUninhibition))
 		{
-			ApplyGameEffect(OwnerASC, GEToApplyOnUninhibition);
+			ApplyGameEffect(OwnerASC, EffectToApplyOnUninhibition);
 		}
 
 		// Don't apply periodic effect if we're pending removal
@@ -263,9 +263,9 @@ void UTurnBasedGameplayEffectComponent::OnTurnChange(int32 NewTurn, int32 StartT
 		// Unhibit the effect if it has started inhibited
 		OwnerASC->SetActiveGameplayEffectInhibit(MoveTemp(Handle), false, true);
 
-		if (IsValid(GEToApplyOnUninhibition))
+		if (IsValid(EffectToApplyOnUninhibition))
 		{
-			ApplyGameEffect(OwnerASC, GEToApplyOnUninhibition);
+			ApplyGameEffect(OwnerASC, EffectToApplyOnUninhibition);
 		}
 			
 		// Now that we've uninhibited, check if we should remove this effect immediately 
@@ -309,9 +309,9 @@ void UTurnBasedGameplayEffectComponent::OnGameplayEffectRemoved(const FGameplayE
 		TurnSystem->GetOnTurnChangeDelegate().Remove(DelegateHandle);
 	}
 
-	if (IsValid(GEToApplyOnRemoval))
+	if (IsValid(EffectToApplyOnRemoval))
 	{
-		ApplyGameEffect(ASC, GEToApplyOnRemoval);
+		ApplyGameEffect(ASC, EffectToApplyOnRemoval);
 	}
 }
 
@@ -370,7 +370,7 @@ ITurnSystemInterface* UTurnBasedGameplayEffectComponent::GetTurnSystem(const UAb
 
 void UTurnBasedGameplayEffectComponent::ProcessPeriodicEffect(UAbilitySystemComponent* OwnerASC, const int ActiveTurns) const
 {
-	if (bEnablePeriodicGE && IsValid(GEToApplyPeriodically))
+	if (bEnablePeriodicGE && IsValid(EffectToApplyPeriodically))
 	{
 		bool bShouldApply = true;
 		if (bLimitPeriodicApplications)
@@ -381,7 +381,7 @@ void UTurnBasedGameplayEffectComponent::ProcessPeriodicEffect(UAbilitySystemComp
 
 		if (bShouldApply)
 		{
-			ApplyGameEffect(OwnerASC, GEToApplyPeriodically);
+			ApplyGameEffect(OwnerASC, EffectToApplyPeriodically);
 		}
 	}
 }

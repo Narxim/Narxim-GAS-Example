@@ -36,6 +36,7 @@ ___
 - Sample abilities
 - Player Character and Non Player Character class examples
 - Effect samples (Damage, armor buff/debuff, fire armor/damage, bleed status ...)
+- Turn-Based GAS Example
 ___
 
 #### Check out the **[Unreal Source Discord](https://discord.gg/unrealsource)** if you have any questions!
@@ -257,7 +258,58 @@ The controller will be listening to those updates from the ActiveEffect Event se
 	EventSet->OnTimeChanged.AddUObject(this, &ThisClass::OnTimeChanged);
 ```
 ___
+### Turn-Based GAS Example
+This system extends the Gameplay Ability System (GAS) to support turn-based mechanics, allowing effects like damage-over-time, delayed healing, or stat buffs/debuffs that activate/expire/tick across multiple turns.
+(Developed by Steve :Mushroom: and Light)
+
+Setup Steps:
+1. Implement the Turn System Interface 
+   - Add `TurnSystemInterface.h` to your `GameState` class, this is required to manage the "Turn" (see `TurnExampleGameStateBase.h` for reference).  
+2. Integrate Turn-Based Components
+   - Add `TurnBasedGameplayEffect.h` and `TurnBasedGameplayEffectComponent.h` to your project.  
+3. Create Turn-Based GameplayEffect
+   - Create a Blueprint class with `TurnBasedGameplayEffect` as its parent.  
+4. Configure Turn Logic
+   - Open your Turn-Based GameplayEffect Blueprint and adjust settings under `Components -> Turn Based Support` (examples: `GE_Turn_Based_Double_Heal`, `GE_Turn_Based_Fire_DoT`, `GE_Turn_Based_Fire_Resistance_Buff`).  
+
+Turn-Based Settings  
+Under `Components -> Turn Based Support`:  
+
+| Property                    | Description                                                                  |  
+|-----------------------------|------------------------------------------------------------------------------|  
+| Inhibition Delay Turns      | Turns until the effect activates (0 = instant).                              |  
+| Duration Turns              | Turns until the effect expires *after activation* (0 = expires immediately). |  
+| GE To Apply On Uninhibition | Optional GE triggered when the effect activates.                             |  
+| GE To Apply On Removal      | Optional GE triggered when the effect expires.                               |  
+| Enable Periodic GE          | If enabled, applies a GE every turn *after activation*.                      |  
+| GE To Apply Periodically    | GE to trigger each turn (e.g., damage-over-time).                            |  
+| Limit Periodic Applications | Restrict how many times the periodic GE is applied.                          |  
+| Max Periodic Applications   | Max triggers for the periodic GE.                                            |  
+
+Key Notes
+- Turn-Based GEs are **always infinite** – their lifespan is controlled by `Duration Turns`.  
+- **Modifiers are optional**: Leave them empty if no buff/debuff stat change is needed.  
+
+TLDR  
+1. Inherit `TurnBasedGameplayEffect` in a Blueprint.  
+2. Configure `Turn Based Support` settings:  
+   - Set activation delay (`Inhibition Delay Turns`) and duration (`Duration Turns`).  
+   - Add optional GEs for activation, expiry, or periodic effects (e.g., DoT).  
+3. Effects auto-manage turn tracking – just call `Increment Turn` in your game loop.  
+
+___
 ## ChangeLog:
+### 2025/02/15 (Steve :Mushroom:):
+```
+- Added Turn-Based functionality for GAS via C++ classes (TurnSystemInterface.h, TurnExampleGameStateBase.h, TurnBasedGameplayEffectComponent.h, TurnBasedGameplayEffect.h)
+- Added 3 Turn-Based Examples
+ 1. Turn-Based Fire DoT
+ 2. Turn-Based Fire Res
+ 3. Turn Based Heal
+- Added Increment Turn button + Turn Counter to UI
+- Enabled `Show Mouse Cursor` (required to be able to click the Increment Turn button) 
+```
+
 ### 2025/01/20 (EvilHippo):
 ```
 - Project is now available and setup for 5.5

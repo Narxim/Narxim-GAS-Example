@@ -37,9 +37,9 @@ ___
 - Player Character and Non Player Character class examples
 - Effect samples (Damage, armor buff/debuff, fire armor/damage, bleed status ...)
 - Turn-Based GAS Example
+- RogueLite Toolbox Plugin
 ___
-
-#### Check out the **[Unreal Source Discord](https://discord.gg/unrealsource)** if you have any questions!
+Check out the **[Unreal Source Discord](https://discord.gg/unrealsource)** if you have any questions!
 ---
 ## Features
 ### Native gameplay tags
@@ -260,9 +260,14 @@ The controller will be listening to those updates from the ActiveEffect Event se
 ___
 ### Turn-Based GAS Example
 This system extends the Gameplay Ability System (GAS) to support turn-based mechanics, allowing effects like damage-over-time, delayed healing, or stat buffs/debuffs that activate/expire/tick across multiple turns.
-(Developed by Steve :Mushroom: and Light)
+(Developed by Steve (optimisor) and Light (light04) from UnrealSource)
+![img.png](img.png)
 
-Setup Steps:
+#### Message from EvilHippo
+_Special thanks to Light for making the prototype for Steve, and Steve for going through it and accepting publishing his work on this project!
+Pretty sure this will come VERY handy for the various GAS users._
+
+#### Setup Steps:
 1. Implement the Turn System Interface 
    - Add `TurnSystemInterface.h` to your `GameState` class, this is required to manage the "Turn" (see `TurnExampleGameStateBase.h` for reference).  
 2. Integrate Turn-Based Components
@@ -272,34 +277,50 @@ Setup Steps:
 4. Configure Turn Logic
    - Open your Turn-Based GameplayEffect Blueprint and adjust settings under `Components -> Turn Based Support` (examples: `GE_Turn_Based_Double_Heal`, `GE_Turn_Based_Fire_DoT`, `GE_Turn_Based_Fire_Resistance_Buff`).  
 
-Turn-Based Settings  
+#### Turn-Based Settings  
 Under `Components -> Turn Based Support`:  
 
-| Property                    | Description                                                                  |  
-|-----------------------------|------------------------------------------------------------------------------|  
-| Inhibition Delay Turns      | Turns until the effect activates (0 = instant).                              |  
-| Duration Turns              | Turns until the effect expires *after activation* (0 = expires immediately). |  
-| GE To Apply On Uninhibition | Optional GE triggered when the effect activates.                             |  
-| GE To Apply On Removal      | Optional GE triggered when the effect expires.                               |  
-| Enable Periodic GE          | If enabled, applies a GE every turn *after activation*.                      |  
-| GE To Apply Periodically    | GE to trigger each turn (e.g., damage-over-time).                            |  
-| Limit Periodic Applications | Restrict how many times the periodic GE is applied.                          |  
-| Max Periodic Applications   | Max triggers for the periodic GE.                                            |  
+| Property                     | Description                                                                  |  
+|------------------------------|------------------------------------------------------------------------------|  
+| Inhibition Delay Turns       | Turns until the effect activates (0 = instant).                              |  
+| Duration Turns               | Turns until the effect expires *after activation* (0 = expires immediately). |  
+| GE To Apply On Uninhibition  | Optional GE triggered when the effect activates.                             |  
+| GE To Apply On Removal       | Optional GE triggered when the effect expires.                               |  
+| Enable Periodic GE           | If enabled, applies a GE every turn *after activation*.                      |  
+| GE To Apply Periodically     | GE to trigger each turn (e.g., damage-over-time).                            |  
+| Limit Periodic Applications  | Restrict how many times the periodic GE is applied.                          |  
+| Max Periodic Applications    | Max triggers for the periodic GE.                                            |  
 
-Key Notes
+#### Key Notes
 - Turn-Based GEs are **always infinite** – their lifespan is controlled by `Duration Turns`.  
 - **Modifiers are optional**: Leave them empty if no buff/debuff stat change is needed.  
 
-TLDR  
+#### TLDR  
 1. Inherit `TurnBasedGameplayEffect` in a Blueprint.  
 2. Configure `Turn Based Support` settings:  
    - Set activation delay (`Inhibition Delay Turns`) and duration (`Duration Turns`).  
    - Add optional GEs for activation, expiry, or periodic effects (e.g., DoT).  
 3. Effects auto-manage turn tracking – just call `Increment Turn` in your game loop.  
 
+#### HUD
+
+![img_1.png](img_1.png)
+
+Adding the `Custom UI Component` will automatically show the gameplay effects on the HUD with tue Turn number on top:
+- (X): Inhibition turns
+- X: Turn remaining
 ___
 ## ChangeLog:
-### 2025/02/15 (Steve :Mushroom:):
+### 2025/02/16 (EvilHippo):
+```
+- Now can be shown as "Active effect like others"
+- Inhibited effect from the start will trigger showing the effect icon (especially for Turn based effects)
+- New Icons
+- Refactor of some methods / new delegate to listen to turn changes
+- Turn changes are now replicated to all clients.
+- Changing turn by pressing T instead of clicking a button
+```
+### 2025/02/15 (Steve :Mushroom: / Light):
 ```
 - Added Turn-Based functionality for GAS via C++ classes (TurnSystemInterface.h, TurnExampleGameStateBase.h, TurnBasedGameplayEffectComponent.h, TurnBasedGameplayEffect.h)
 - Added 3 Turn-Based Examples
@@ -309,7 +330,24 @@ ___
 - Added Increment Turn button + Turn Counter to UI
 - Enabled `Show Mouse Cursor` (required to be able to click the Increment Turn button) 
 ```
+### 2025/02/13 (EvilHippo):
+```
+First version of the new Custom RogueLite Toolbox (CRL)
+- New Map
+- New effects
+- AGR Pro integrated for Melee damage
+- Base abilities (Punch / Dash)
+- Damage handling wth Backstab
+- New Attribute set
+- New TargetFinder to streamline Sphere (or other) traces using tag requirements (and more)
 
+CRL fixes
+
+- Now GA can register modifiers (from Attacker only for now)
+- GA test Enh1 has been added: add random damage
+- Various fixes
+
+```
 ### 2025/01/20 (EvilHippo):
 ```
 - Project is now available and setup for 5.5

@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActiveGameplayEffectHandle.h"
 #include "UObject/Interface.h"
 #include "TurnSystemInterface.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnChange, int32 /*NewTurn*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnChange, int32 NewTurn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTurnChangeAssignable, int32, NewTurn);
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)

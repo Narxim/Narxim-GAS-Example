@@ -17,21 +17,40 @@ class GAS_EXAMPLE_API ATurnExampleGameStateBase : public AGameStateBase, public 
 
 public:
 
+	ATurnExampleGameStateBase();
+
 	//~ Begin ITurnSystemInterface
 	virtual FOnTurnChange& GetOnTurnChangeDelegate() override { return OnTurnChange; }
 
-	UFUNCTION(BlueprintCallable)
 	virtual int32 GetCurrentTurn_Implementation() const override { return CurrentTurn; }
 	
-	UFUNCTION(BlueprintCallable)
 	virtual void IncrementTurn_Implementation() override;
 	//~ End ITurnSystemInterface
 
-private:
+	UFUNCTION(Server, Reliable)
+	virtual void Server_IncrementTurn();
+
+	UFUNCTION(BlueprintCallable, Category = "Turn System", meta = (bIgnoreSelf = "true", WorldContext = "WorldContextObject"))
+	static ATurnExampleGameStateBase* GetTurnSystem(UObject* WorldContextObject);
+
+protected:
 	// Non-dynamic delegate is not blueprint assignable. If you need Blueprint support, split the delegate into two parts:
 	// Use this non-dynamic delegate for C++ binding with extra parameters.
-	// Plus a separate dynamic delegate (DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam) for Blueprint events.
+	
 	FOnTurnChange OnTurnChange;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Turn System")
+	FOnTurnChangeAssignable OnTurnChangeDelegate;
 
-	int32 CurrentTurn = 0;		
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentTurn)
+	int32 CurrentTurn = 0;
+
+	UFUNCTION()
+	void OnRep_CurrentTurn() const
+	{
+		OnTurnChange.Broadcast(CurrentTurn);
+		OnTurnChangeDelegate.Broadcast(CurrentTurn);
+	}
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

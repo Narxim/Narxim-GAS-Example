@@ -105,6 +105,25 @@ ACharacterBase* UCustomAbilitySystemComponent::GetCharacterBaseAvatar() const
 	return Cast<ACharacterBase>(GetAvatarActor_Direct());
 }
 
+FActiveGameplayEffectHandle UCustomAbilitySystemComponent::SetActiveGameplayEffectInhibit(FActiveGameplayEffectHandle&& ActiveGEHandle, bool bInhibit, bool bInvokeGameplayCueEvents)
+{
+	FActiveGameplayEffectHandle NewHandle = Super::SetActiveGameplayEffectInhibit(MoveTemp(ActiveGEHandle), bInhibit, bInvokeGameplayCueEvents);
+
+	// Handle cases where new gameplay effect is added but disabled right away. We still want to notify the UI or any listener.
+	if (NewHandle.IsValid() && bInhibit)
+	{
+		FActiveGameplayEffect* const ActiveGE = ActiveGameplayEffects.GetActiveGameplayEffect(ActiveGEHandle);
+		if (!ActiveGE)
+		{
+			return NewHandle;
+		}
+		OnGameplayEffectAddedCallback(this, ActiveGE->Spec, NewHandle);
+	}
+
+	
+	return NewHandle;
+}
+
 float UCustomAbilitySystemComponent::GetFilteredAttribute(const FGameplayAttribute Attribute, const FGameplayTagRequirements SourceTags, const FGameplayTagContainer TargetTags)
 {
 	return GetFilteredAttributeValue(Attribute, SourceTags, TargetTags);

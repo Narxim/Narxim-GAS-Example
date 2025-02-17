@@ -19,7 +19,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTurnSystem, Log, All);
  * This class listens for turn changes via the `TurnWorldSubsystem` and determines when to uninhibit and remove the
  * Turn-Based GE, as well as when to apply the component's additional GEs.
  */
-UCLASS()
+UCLASS(BlueprintType)
 class GAS_EXAMPLE_API UTurnBasedGameplayEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
@@ -66,11 +66,13 @@ public:
 	 * Maximum number of times the periodic GE will be applied. 
 	 * Only used if "Limit Periodic Applications" is enabled.
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings",
-		Meta = (EditCondition = "bEnablePeriodicGE == true && bLimitPeriodicApplications == true", EditConditionHides), Meta = (ClampMin = 1))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Periodic Settings", Meta = (EditCondition = "bEnablePeriodicGE == true && bLimitPeriodicApplications == true", EditConditionHides), Meta = (ClampMin = 1))
 	int32 MaxPeriodicApplications = 1;
 	
 	UTurnBasedGameplayEffectComponent();
+
+	UFUNCTION(BlueprintPure)
+	static const UTurnBasedGameplayEffectComponent* ExtractTurnBasedEffectComponentFromGE(FActiveGameplayEffectHandle ActiveHandle);
 
 #if WITH_EDITOR
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
@@ -80,11 +82,10 @@ public:
 	virtual bool CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const override;
 	virtual bool OnActiveGameplayEffectAdded(FActiveGameplayEffectsContainer& ActiveGEContainer, FActiveGameplayEffect& ActiveGE) const override;
 	
-protected:
 	void OnTurnChange(int32 NewTurn, int32 StartTurn, FActiveGameplayEffectHandle Handle) const;
 	void OnGameplayEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo, UAbilitySystemComponent* ASC, FDelegateHandle DelegateHandle) const;
 
-private:
+protected:
 	static ITurnSystemInterface* GetTurnSystem(const UAbilitySystemComponent* ASC);
 	static void ApplyGameEffect(UAbilitySystemComponent* ASC, const TSubclassOf<UGameplayEffect>& GameEffectToApply);
 	void ProcessPeriodicEffect(UAbilitySystemComponent* OwnerASC, int ActiveTurns) const;	

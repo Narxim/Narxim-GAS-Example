@@ -45,6 +45,8 @@ public:
 
 	ACharacterBase* GetCharacterBaseAvatar() const;
 
+	virtual FActiveGameplayEffectHandle SetActiveGameplayEffectInhibit(FActiveGameplayEffectHandle&& ActiveGEHandle, bool bInhibit, bool bInvokeGameplayCueEvents) override;
+
 protected:
 	
 	bool AbilitySystemDataInitialized = false;

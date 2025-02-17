@@ -3,7 +3,9 @@
 
 #include "TurnBasedGameplayEffect.h"
 
-#include "GAS_Example/AbilitySystem/AbilitySystemComponent/TurnBasedGameplayEffectComponent.h"
+#include "GameplayEffectComponents/AssetTagsGameplayEffectComponent.h"
+#include "GAS_Example/AbilitySystem/AbilitySystemComponent/TurnBased/TurnBasedGameplayEffectComponent.h"
+#include "GAS_Example/AbilitySystem/Data/NativeGameplayTags.h"
 #include "Misc/DataValidation.h"
 
 #define LOCTEXT_NAMESPACE "TurnBasedGameplayEffect"
@@ -22,8 +24,15 @@ void UTurnBasedGameplayEffect::PostInitProperties()
     
 	// Clear duration magnitude values
 	DurationMagnitude = FGameplayEffectModifierMagnitude();
-	
+
+	// Always add the Turn based component
 	FindOrAddComponent<UTurnBasedGameplayEffectComponent>();
+
+	// Always add the Turn based asset tag.
+	UAssetTagsGameplayEffectComponent& AssetTagComponent = FindOrAddComponent<UAssetTagsGameplayEffectComponent>();
+	FInheritedTagContainer Tags = AssetTagComponent.GetConfiguredAssetTagChanges();
+	Tags.AddTag(NativeGameplayTags::TAG_Effect_Type_TurnBased.GetTag());
+	AssetTagComponent.SetAndApplyAssetTagChanges(Tags);
 }
 
 #if WITH_EDITOR
@@ -56,6 +65,15 @@ EDataValidationResult UTurnBasedGameplayEffect::IsDataValid(class FDataValidatio
 	{
 		Context.AddError(FText::FormatOrdered(LOCTEXT("MissingComponentError",
 			"[{0}] Missing Required Component - Add a TurnBasedGameplayEffectComponent to enable turn-based behavior"),
+			FText::FromString(GetClass()->GetName())));
+		Result = EDataValidationResult::Invalid;
+	}
+
+	const UAssetTagsGameplayEffectComponent* const AssetTags = FindComponent<UAssetTagsGameplayEffectComponent>();
+	if (!AssetTags || !AssetTags->GetConfiguredAssetTagChanges().Added.HasTag(NativeGameplayTags::TAG_Effect_Type_TurnBased.GetTag()))
+	{
+		Context.AddError(FText::FormatOrdered(LOCTEXT("AssetTag Error",
+			"[{0}] Missing asset tag component, or TurnBased Tag is not added."),
 			FText::FromString(GetClass()->GetName())));
 		Result = EDataValidationResult::Invalid;
 	}

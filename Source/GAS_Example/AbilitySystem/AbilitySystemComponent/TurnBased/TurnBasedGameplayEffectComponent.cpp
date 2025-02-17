@@ -4,7 +4,7 @@
 #include "TurnBasedGameplayEffectComponent.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/GameStateBase.h"
-#include "GAS_Example/Game/TurnSystemInterface.h"
+#include "GAS_Example/Game/TurnBased/TurnSystemInterface.h"
 #include "Misc/DataValidation.h"
 
 #define LOCTEXT_NAMESPACE "TurnBasedGameplayEffectComponent"
@@ -16,6 +16,22 @@ UTurnBasedGameplayEffectComponent::UTurnBasedGameplayEffectComponent()
 #if WITH_EDITORONLY_DATA
 	EditorFriendlyName = TEXT("Turn Based Support (behave based on turns)");
 #endif // WITH_EDITORONLY_DATA
+}
+
+const UTurnBasedGameplayEffectComponent* UTurnBasedGameplayEffectComponent::ExtractTurnBasedEffectComponentFromGE(FActiveGameplayEffectHandle ActiveHandle)
+{
+	if (!ActiveHandle.GetOwningAbilitySystemComponent())
+	{
+		return nullptr;
+	}
+
+	const UGameplayEffect* const Def = ActiveHandle.GetOwningAbilitySystemComponent()->GetGameplayEffectDefForHandle(ActiveHandle);
+	if (!Def)
+	{
+		return nullptr;
+	}
+
+	return Cast<UTurnBasedGameplayEffectComponent>(Def->FindComponent(UTurnBasedGameplayEffectComponent::StaticClass()));
 }
 
 #if WITH_EDITOR
@@ -46,7 +62,7 @@ EDataValidationResult UTurnBasedGameplayEffectComponent::IsDataValid(FDataValida
 	// Invalid Uninhibition GE duration
 	if (IsValid(EffectToApplyOnUninhibition))
 	{
-	    const UGameplayEffect* UninhibitionGE = EffectToApplyOnUninhibition->GetDefaultObject<UGameplayEffect>();
+	    const UGameplayEffect* const UninhibitionGE = EffectToApplyOnUninhibition->GetDefaultObject<UGameplayEffect>();
 	    check(UninhibitionGE != nullptr);
 	    if (UninhibitionGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
 	    {
@@ -61,7 +77,7 @@ EDataValidationResult UTurnBasedGameplayEffectComponent::IsDataValid(FDataValida
 	// Invalid Removal GE duration
 	if (IsValid(EffectToApplyOnRemoval))
 	{
-	    const UGameplayEffect* RemovalGE = EffectToApplyOnRemoval->GetDefaultObject<UGameplayEffect>();
+	    const UGameplayEffect* const RemovalGE = EffectToApplyOnRemoval->GetDefaultObject<UGameplayEffect>();
 	    check(RemovalGE != nullptr);
 	    if (RemovalGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
 	    {
@@ -75,7 +91,7 @@ EDataValidationResult UTurnBasedGameplayEffectComponent::IsDataValid(FDataValida
 	// Invalid Periodic GE duration
 	if (IsValid(EffectToApplyPeriodically))
 	{
-	    const UGameplayEffect* PeriodicGE = EffectToApplyPeriodically->GetDefaultObject<UGameplayEffect>();
+	    const UGameplayEffect* const PeriodicGE = EffectToApplyPeriodically->GetDefaultObject<UGameplayEffect>();
 	    check(PeriodicGE != nullptr);
 	    if (PeriodicGE->DurationPolicy == EGameplayEffectDurationType::Infinite)
 	    {
@@ -163,7 +179,7 @@ void UTurnBasedGameplayEffectComponent::PostEditChangeProperty(struct FPropertyC
 
 bool UTurnBasedGameplayEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
-	if (GetTurnSystem(ActiveGEContainer.Owner) != nullptr)
+	if (Super::CanGameplayEffectApply(ActiveGEContainer, GESpec) && GetTurnSystem(ActiveGEContainer.Owner) != nullptr)
 	{
 		// For now, keeping it simple: As long as we're able to access the TurnSubsystem, then the effect can always be applied
 		return true;
@@ -174,7 +190,7 @@ bool UTurnBasedGameplayEffectComponent::CanGameplayEffectApply(const FActiveGame
 
 bool UTurnBasedGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGameplayEffectsContainer& ActiveGEContainer, FActiveGameplayEffect& ActiveGE) const
 {
-    UAbilitySystemComponent* OwnerASC = ActiveGEContainer.Owner;
+    UAbilitySystemComponent* const OwnerASC = ActiveGEContainer.Owner;
 
     // Early exit if OwnerASC is invalid. Use IsValid() for UObjects.
     if (!IsValid(OwnerASC))
@@ -183,7 +199,7 @@ bool UTurnBasedGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGamep
         return false; // Inhibit the effect
     }
 
-    ITurnSystemInterface* TurnSystem = GetTurnSystem(OwnerASC);
+    ITurnSystemInterface* const TurnSystem = GetTurnSystem(OwnerASC);
 
     // Early exit if the subsystem is invalid.
     if (TurnSystem == nullptr)
@@ -248,11 +264,10 @@ bool UTurnBasedGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGamep
 
 void UTurnBasedGameplayEffectComponent::OnTurnChange(int32 NewTurn, int32 StartTurn, FActiveGameplayEffectHandle Handle) const
 {
-	UAbilitySystemComponent* OwnerASC = Handle.GetOwningAbilitySystemComponent();
+	UAbilitySystemComponent* const OwnerASC = Handle.GetOwningAbilitySystemComponent();
 	if (!IsValid(OwnerASC))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OnTurnChange: Invalid OwnerASC for handle %s"), 
-			*Handle.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("OnTurnChange: Invalid OwnerASC for handle %s"), *Handle.ToString());
 		return;
 	}
 
@@ -273,19 +288,17 @@ void UTurnBasedGameplayEffectComponent::OnTurnChange(int32 NewTurn, int32 StartT
 	}
 	
 	// Calculate activeTurn after activation delay
-	const int ActiveTurns = NewTurn - StartTurn - InhibitionDelayTurns;
+	const int32 ActiveTurns = NewTurn - StartTurn - InhibitionDelayTurns;
 	bShouldRemove = bShouldRemove || DurationTurns == ActiveTurns; 
 	
 	// Don't apply periodic effect if we're pending removal
 	if (!bShouldRemove)
 	{
 		ProcessPeriodicEffect(OwnerASC, ActiveTurns);
+		return;
 	}
 	
-	if (bShouldRemove)
-	{
-		OwnerASC->RemoveActiveGameplayEffect(Handle);
-	}
+	OwnerASC->RemoveActiveGameplayEffect(Handle);
 }
 
 void UTurnBasedGameplayEffectComponent::OnGameplayEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo, UAbilitySystemComponent* ASC, FDelegateHandle DelegateHandle) const
@@ -304,7 +317,7 @@ void UTurnBasedGameplayEffectComponent::OnGameplayEffectRemoved(const FGameplayE
 	}
 
 	// Don't forget to remove the callback from the 'global' OnTurnChange delegate
-	if (ITurnSystemInterface* TurnSystem = GetTurnSystem(ASC))
+	if (ITurnSystemInterface* const TurnSystem = GetTurnSystem(ASC))
 	{
 		TurnSystem->GetOnTurnChangeDelegate().Remove(DelegateHandle);
 	}
@@ -332,7 +345,10 @@ void UTurnBasedGameplayEffectComponent::ApplyGameEffect(UAbilitySystemComponent*
 	
 	FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
 	FGameplayEffectSpecHandle NewSpecHandle = ASC->MakeOutgoingSpec(GameEffectToApply, 1, EffectContextHandle);
-	ASC->ApplyGameplayEffectSpecToSelf(*NewSpecHandle.Data.Get());
+	if (NewSpecHandle.IsValid())
+	{
+		ASC->ApplyGameplayEffectSpecToSelf(*NewSpecHandle.Data.Get());
+	}
 }
 
 ITurnSystemInterface* UTurnBasedGameplayEffectComponent::GetTurnSystem(const UAbilitySystemComponent* ASC)
@@ -343,21 +359,21 @@ ITurnSystemInterface* UTurnBasedGameplayEffectComponent::GetTurnSystem(const UAb
 		return nullptr;
 	}
     
-	UWorld* World = ASC->GetWorld();
+	const UWorld* const World = ASC->GetWorld();
 	if (!IsValid(World))
 	{
 		UE_LOG(LogTurnSystem, Error, TEXT("ASC %s has invalid world"), *ASC->GetName());
 		return nullptr;
 	}
 	
-	AGameStateBase* GameState = World->GetGameState();
+	AGameStateBase* const GameState = World->GetGameState();
 	if (!IsValid(GameState))
 	{
 		UE_LOG(LogTurnSystem, Error, TEXT("World has no valid GameState"));
 		return nullptr;
 	}
 	
-	ITurnSystemInterface* FoundTurnSystem = Cast<ITurnSystemInterface>(GameState);
+	ITurnSystemInterface* const FoundTurnSystem = Cast<ITurnSystemInterface>(GameState);
 	if (!FoundTurnSystem)
 	{
 		UE_LOG(LogTurnSystem, Error, TEXT("GameState %s does not implement ITurnSystemInterface"), *GameState->GetName());
@@ -370,20 +386,24 @@ ITurnSystemInterface* UTurnBasedGameplayEffectComponent::GetTurnSystem(const UAb
 
 void UTurnBasedGameplayEffectComponent::ProcessPeriodicEffect(UAbilitySystemComponent* OwnerASC, const int ActiveTurns) const
 {
-	if (bEnablePeriodicGE && IsValid(EffectToApplyPeriodically))
+	if (!bEnablePeriodicGE || !IsValid(EffectToApplyPeriodically))
 	{
-		bool bShouldApply = true;
-		if (bLimitPeriodicApplications)
-		{
-			// Ensure we don't exceed the max applications
-			bShouldApply = ActiveTurns < MaxPeriodicApplications;
-		}
-
-		if (bShouldApply)
-		{
-			ApplyGameEffect(OwnerASC, EffectToApplyPeriodically);
-		}
+		return;
 	}
+	
+	bool bShouldApply = true;
+	if (bLimitPeriodicApplications)
+	{
+		// Ensure we don't exceed the max applications
+		bShouldApply = ActiveTurns < MaxPeriodicApplications;
+	}
+
+	if (!bShouldApply)
+	{
+		return;
+	}
+
+	ApplyGameEffect(OwnerASC, EffectToApplyPeriodically);
 }
 
 #undef LOCTEXT_NAMESPACE

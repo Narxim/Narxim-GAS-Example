@@ -10,6 +10,8 @@ namespace NativeGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Effect_NoLevel);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Effect_Type_Cooldown);
 	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Effect_Type_TurnBased);
+	
 	namespace CharacterTags
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Character_Type_PC);

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffect.h"
+#include "GAS_Example/AbilitySystem/GameplayEffects/CustomGameplayEffect.h"
 #include "TurnBasedGameplayEffect.generated.h"
 
 /**
@@ -11,7 +12,7 @@
  * to infinite and adds/manages the required `TurnBasedGameplayEffectComponent`.
  */
 UCLASS()
-class GAS_EXAMPLE_API UTurnBasedGameplayEffect : public UGameplayEffect
+class GAS_EXAMPLE_API UTurnBasedGameplayEffect : public UCustomGameplayEffect
 {
 	GENERATED_BODY()
 
@@ -19,7 +20,7 @@ public:
 	UTurnBasedGameplayEffect();
 
 	virtual void PostInitProperties() override;
-	
+
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 

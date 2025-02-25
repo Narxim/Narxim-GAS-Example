@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "GAS_Example/Characters/CharacterBase.h"
 
+#define LOCTEXT_NAMESPACE "GameplayAbility"
 
 UCustomGameplayAbility::UCustomGameplayAbility()
 {
@@ -119,15 +120,21 @@ void UCustomGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActor
 		return;
 	}
 	
+	if (!Spec->GetPrimaryInstance(),
+		TEXT("%hs called on the CDO. NonInstanced abilities are deprecated, thus we always expect this to be called on an instanced object."), __func__)
+	{
+		return;
+	}
+	
 	if (Spec->Ability->bReplicateInputDirectly && !AbilitySystemComponent->IsOwnerActorAuthoritative())
 	{
-		AbilitySystemComponent->ServerSetInputPressed(Spec->Ability.Get()->GetCurrentAbilitySpecHandle());
+		AbilitySystemComponent->ServerSetInputPressed(Spec->GetPrimaryInstance()->GetCurrentAbilitySpecHandle());
 	}
 
 	AbilitySystemComponent->AbilitySpecInputPressed(*Spec);
 
 	// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec->Handle, Spec->ActivationInfo.GetActivationPredictionKey());
+	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec->Handle, Spec->GetPrimaryInstance()->GetCurrentActivationInfo().GetActivationPredictionKey());
 }
 
 void UCustomGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpecHandle SpecHandle)
@@ -182,3 +189,4 @@ void UCustomGameplayAbility::K0_OnRemoveAbility_Implementation(const FGameplayAb
 {
 	K0_OnRemoveAbility(ActorInfo, Spec);
 }
+#undef LOCTEXT_NAMESPACE

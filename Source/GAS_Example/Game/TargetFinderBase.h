@@ -15,7 +15,7 @@ enum class ETargetFinder_Pins : uint8
 };
 
 UCLASS(Blueprintable, BlueprintType, Abstract)
-class CUSTOMROGUELITETOOLS_API UTargetFinderBase : public UObject
+class GAS_EXAMPLE_API UTargetFinderBase : public UObject
 {
 	GENERATED_BODY()
 

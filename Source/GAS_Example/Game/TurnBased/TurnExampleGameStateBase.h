@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayAbilitySpec.h"
 #include "TurnSystemInterface.h"
 #include "GameFramework/GameStateBase.h"
+#include "GAS_Example/AbilitySystem/Data/AbilitySystemData.h"
 #include "TurnExampleGameStateBase.generated.h"
 
 /**
@@ -22,16 +24,13 @@ public:
 	//~ Begin ITurnSystemInterface
 	virtual FOnTurnChange& GetOnTurnChangeDelegate() override { return OnTurnChange; }
 
-	virtual int32 GetCurrentTurn_Implementation() const override { return CurrentTurn; }
+	virtual int32 GetCurrentTurn() const override { return CurrentTurn; }
 	
-	virtual void IncrementTurn_Implementation() override;
+	virtual void IncrementTurn() override;
 	//~ End ITurnSystemInterface
 
 	UFUNCTION(Server, Reliable)
 	virtual void Server_IncrementTurn();
-
-	UFUNCTION(BlueprintCallable, Category = "Turn System", meta = (bIgnoreSelf = "true", WorldContext = "WorldContextObject"))
-	static ATurnExampleGameStateBase* GetTurnSystem(UObject* WorldContextObject);
 
 protected:
 	// Non-dynamic delegate is not blueprint assignable. If you need Blueprint support, split the delegate into two parts:

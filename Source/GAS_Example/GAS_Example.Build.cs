@@ -19,7 +19,8 @@ public class GAS_Example : ModuleRules
 			"UMG",
 			"Slate",
 			"SlateCore",
-			"NetCore"
+			"NetCore",
+			"StructUtils"
 			// "UE5Coro",
 			// "UE5CoroGAS"
 		});

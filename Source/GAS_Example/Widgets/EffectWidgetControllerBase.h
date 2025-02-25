@@ -9,6 +9,7 @@
 #include "UObject/Object.h"
 #include "EffectWidgetControllerBase.generated.h"
 
+enum class ECustomExecPin_Valid2 : uint8;
 class UPanelWidget;
 class UCustomAbilitySystemComponent;
 class UEffectWidgetBase;
@@ -94,7 +95,7 @@ protected:
 
 public:
 	UPROPERTY(BlueprintAssignable)
-	FOnControllerOblsoleteDelegate OnControllerOblsolete;
+	FOnControllerOblsoleteDelegate OnControllerObsolete;
 
 	UFUNCTION(BlueprintPure)
 	TSubclassOf<UGameplayEffect> GetEffectClass() const;
@@ -137,9 +138,13 @@ public:
 	}
 
 public:
-	// Initialize the Controller with the different required values.
+	// Initialize the Controller with the required values.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void InitializeController(APlayerController* InOwningPlayer, UPanelWidget* InPanelWidget, FActiveGameplayEffectHandle Handle, const UCustomGameplayEffectUIData* const InEffectUIData);
+	bool InitializeController(
+		APlayerController* InOwningPlayer,
+		UPanelWidget* InPanelWidget,
+		FActiveGameplayEffectHandle Handle,
+		const UCustomGameplayEffectUIData* InEffectUIData);
 
 	// Trigger a full update
 	UFUNCTION(BlueprintCallable)
@@ -213,7 +218,8 @@ protected:
 	void UpdateDurationOnWidget();
 	
 	// Update all fields.
-	void UpdateFields();
+	UFUNCTION(BlueprintCallable)
+	void UpdateFields(const bool bForceUpdate = false);
 	
 	// Extract the new active effect definition from handle.
 	void UpdateEffectFromHandle();

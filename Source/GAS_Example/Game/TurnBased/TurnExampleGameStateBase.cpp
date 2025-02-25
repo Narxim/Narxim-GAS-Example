@@ -2,6 +2,8 @@
 
 
 #include "TurnExampleGameStateBase.h"
+
+#include "GameplayEffect.h"
 #include "Net/UnrealNetwork.h"
 #include "Net/Core/PushModel/PushModel.h"
 
@@ -10,19 +12,9 @@ ATurnExampleGameStateBase::ATurnExampleGameStateBase()
 	SetReplicates(true);
 }
 
-void ATurnExampleGameStateBase::IncrementTurn_Implementation()
+void ATurnExampleGameStateBase::IncrementTurn()
 {
 	Server_IncrementTurn();
-}
-
-ATurnExampleGameStateBase* ATurnExampleGameStateBase::GetTurnSystem(UObject* WorldContextObject)
-{
-	if (UWorld* const World = WorldContextObject ? WorldContextObject->GetWorld() : nullptr)
-	{
-		return Cast<ATurnExampleGameStateBase>(World->GetGameState());
-	}
-
-	return nullptr;
 }
 
 void ATurnExampleGameStateBase::Server_IncrementTurn_Implementation()

@@ -8,6 +8,7 @@
 #include "EffectWidgetBase.h"
 #include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomAbilitySystemComponent.h"
 #include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomGameplayEffectUIData.h"
+#include "GAS_Example/Game/Types.h"
 
 class UWorld* UEffectWidgetControllerBase::GetWorld() const
 {
@@ -90,11 +91,13 @@ void UEffectWidgetControllerBase::SetActiveHandle(FActiveGameplayEffectHandle Ne
 	TriggerUpdate();
 }
 
-void UEffectWidgetControllerBase::InitializeController_Implementation(APlayerController* InOwningPlayer, UPanelWidget* InPanelWidget, FActiveGameplayEffectHandle Handle, const UCustomGameplayEffectUIData* const InEffectUIData)
+bool UEffectWidgetControllerBase::InitializeController_Implementation(APlayerController* InOwningPlayer, UPanelWidget* InPanelWidget, FActiveGameplayEffectHandle Handle, const UCustomGameplayEffectUIData* const InEffectUIData)
 {
+	bool bIsValid = false;
+	
 	if (!InPanelWidget || !InOwningPlayer || !Handle.IsValid() || !InEffectUIData)
 	{
-		return;
+		return bIsValid; 
 	}
 
 	if (Widget)
@@ -112,21 +115,23 @@ void UEffectWidgetControllerBase::InitializeController_Implementation(APlayerCon
 	if (!EffectData || EffectData->IsPendingRemove)
 	{
 		RemoveEffectAndController();
-		return;
+		return bIsValid;
 	}
 
 	if (!Handle.IsValid())
 	{
-		return;
+		return bIsValid;
 	}
 
 	UAbilitySystemComponent* const ASC = Handle.GetOwningAbilitySystemComponent();
 	if (!ASC)
 	{
-		return;
+		return bIsValid;
 	}
 	RegisterEvents(ASC);
 	UpdateFields();
+
+	return true;
 }
 
 void UEffectWidgetControllerBase::RegisterEvents(UAbilitySystemComponent* const ASC)
@@ -212,7 +217,7 @@ void UEffectWidgetControllerBase::UpdateDurationOnWidget()
 	}
 }
 
-void UEffectWidgetControllerBase::UpdateFields()
+void UEffectWidgetControllerBase::UpdateFields(const bool bForceUpdate /* = false */ )
 {
 	if (!EffectData)
 	{
@@ -223,7 +228,7 @@ void UEffectWidgetControllerBase::UpdateFields()
 	OnStackChanged(ActiveEffectHandle, EffectData->ClientCachedStackCount, 0);
 	OnInhibitionChanged(ActiveEffectHandle, EffectData->bIsInhibited);
 	
-	if (UE_MVVM_SET_PROPERTY_VALUE(Title, ExtractTitle()))
+	if (UE_MVVM_SET_PROPERTY_VALUE(Title, ExtractTitle()) || bForceUpdate)
 	{
 		if (Widget)
 		{
@@ -232,7 +237,7 @@ void UEffectWidgetControllerBase::UpdateFields()
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(Title);
 	}
 	
-	if (UE_MVVM_SET_PROPERTY_VALUE(Description, ExtractDescription()))
+	if (UE_MVVM_SET_PROPERTY_VALUE(Description, ExtractDescription()) || bForceUpdate)
 	{
 		if (Widget)
 		{
@@ -241,7 +246,7 @@ void UEffectWidgetControllerBase::UpdateFields()
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(Description);
 	}
 	
-	if (UE_MVVM_SET_PROPERTY_VALUE(SoftIcon, ExtractIcon()) || UE_MVVM_SET_PROPERTY_VALUE(SoftMaterial, ExtractSoftMaterial()))
+	if (UE_MVVM_SET_PROPERTY_VALUE(SoftIcon, ExtractIcon()) || UE_MVVM_SET_PROPERTY_VALUE(SoftMaterial, ExtractSoftMaterial()) || bForceUpdate)
 	{
 		if (Widget)
 		{
@@ -369,7 +374,7 @@ void UEffectWidgetControllerBase::RemoveEffectAndController()
 	}
 	K2_RemoveEffect();
 
-	OnControllerOblsolete.Broadcast(this);
+	OnControllerObsolete.Broadcast(this);
 	
 	MarkAsGarbage();
 }

@@ -35,7 +35,7 @@ void UResistanceAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 
 	FDoRepLifetimeParams Params{};
 	Params.bIsPushBased = true;
-	Params.Condition = COND_None;
+	Params.Condition = COND_OwnerOnly;
 
 	// Replicated to all
 	DOREPLIFETIME_WITH_PARAMS_FAST(UResistanceAttributeSet, Resistance, Params);

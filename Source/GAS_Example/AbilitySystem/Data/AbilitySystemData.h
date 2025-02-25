@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
+#include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
 #include "ScalableFloat.h"
+#include "StructUtils/InstancedStruct.h"
 #include "AbilitySystemData.generated.h"
 
 
@@ -74,4 +76,105 @@ enum class EAttributeSearchType : uint8
 
 	// Returns the Final Value minus the Base Value.
 	BonusValue
+};
+
+USTRUCT(BlueprintType)
+struct FCustomContextDataBase
+{
+	GENERATED_BODY()
+	
+	virtual ~FCustomContextDataBase() = default;
+	
+	/** Overridden to serialize new fields */
+	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
+	{
+		return true;
+	};
+	
+	FCustomContextDataBase() {}
+};
+
+template <>
+struct TStructOpsTypeTraits<FCustomContextDataBase> : public TStructOpsTypeTraitsBase2<FCustomContextDataBase>
+{
+	enum
+	{
+		WithNetSerializer = true,
+		WithCopy = true // Necessary so that TSharedPtr<STRUCT> Data is copied around
+	};
+};
+
+
+USTRUCT(BlueprintType)
+struct FCustomGameplayEffectContext : public FGameplayEffectContext
+{
+	GENERATED_BODY()
+	
+	const TArray<FInstancedStruct>& GetAllCustomContextData() const { return CustomContextData; }
+	TArray<FInstancedStruct>& GetMutableAllCustomContextData() { return CustomContextData; }
+
+protected:
+	UPROPERTY(EditAnywhere, meta=(ExcludeBaseStruct))
+	TArray<FInstancedStruct> CustomContextData{};
+ 
+public:
+
+	virtual bool NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess) override;
+	
+	template <typename T>
+		const T* FindCustomContextData() const
+	{
+		for (const auto& Fragment : CustomContextData)
+		{
+			if (const T* TypedFragment = Fragment.GetPtr<T>())
+				return TypedFragment;
+		}
+
+		return nullptr;
+	}
+
+	/** Adds a Context Fragment to the ContextFragments array */
+	template <typename T>
+	void AddCustomContextData(const T& Fragment)
+	{
+		TInstancedStruct<FCustomContextDataBase> InstancedStruct;
+		InstancedStruct.InitializeAs<T>();
+		T& Mutable = InstancedStruct.GetMutable<T>();
+		Mutable = Fragment;
+
+		CustomContextData.Add(MoveTemp(InstancedStruct));
+	}
+	
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// FCustomContextData_TurnBaseEffect TurnBaseEffectData{};
+	
+	/** Returns the actual struct used for serialization, subclasses must override this! */
+	virtual UScriptStruct* GetScriptStruct() const override
+	{
+		return FCustomGameplayEffectContext::StaticStruct();
+	}
+ 
+	/** Creates a copy of this context, used to duplicate for later modifications */
+	virtual FCustomGameplayEffectContext* Duplicate() const override
+	{
+		FCustomGameplayEffectContext* NewContext = new FCustomGameplayEffectContext();
+		*NewContext = *this;
+		NewContext->AddActors(Actors);
+		if (GetHitResult())
+		{
+			// Does a deep copy of the hit result
+			NewContext->AddHitResult(*GetHitResult(), true);
+		}
+		return NewContext;
+	}
+};
+ 
+template <>
+struct TStructOpsTypeTraits<FCustomGameplayEffectContext> : public TStructOpsTypeTraitsBase2<FCustomGameplayEffectContext>
+{
+	enum
+	{
+		WithNetSerializer = true,
+		WithCopy = true // Necessary so that TSharedPtr<STRUCT> Data is copied around
+	};
 };

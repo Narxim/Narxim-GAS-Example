@@ -11,7 +11,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnChange, int32 NewTurn);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTurnChangeAssignable, int32, NewTurn);
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, NotBlueprintable)
 class UTurnSystemInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -27,9 +27,9 @@ class GAS_EXAMPLE_API ITurnSystemInterface
 public:
 	virtual FOnTurnChange& GetOnTurnChangeDelegate() = 0;
 	
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Turn System")
-	int32 GetCurrentTurn() const;
+	UFUNCTION(BlueprintCallable, Category = "Turn System")
+	virtual int32 GetCurrentTurn() const { return 0; };
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Turn System")
-	void IncrementTurn();
+	UFUNCTION(BlueprintCallable, Category = "Turn System")
+	virtual void IncrementTurn() {};
 };

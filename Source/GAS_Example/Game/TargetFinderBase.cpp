@@ -1,6 +1,4 @@
 ﻿// Copyright 2021 Joseph "Narxim" Thigpen.
-
-
 #include "TargetFinderBase.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"

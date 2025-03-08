@@ -26,15 +26,16 @@ ___
 ### Includes:
 - Thoroughly commented C++ code
 - Example Blueprints
-- Sample Attribute sets: Health (Includes Damage / Healing), Stamina,  Leveling and Resistance
+- Sample Attribute sets: Health (Includes Damage / Healing), Stamina,  Leveling, Resistance and Movement
 - Stamina / Health Regeneration example (Based on Regeneration Attribute)
 - "Ability System Initialization Data" structure for initializing the Ability System Component
 - Ability Trigger / Release bindings tied directly to Enhanced Input (example)
 - Commonly used example Ability Tasks
 - Native Gameplay Tags example (NativeGameplayTags.h)
 - Example UI elements with Attribute event bindings (In Game UI / Nameplate)
-- Sample abilities
+- Sample abilities (Jump, Hitscan, Sprint ...)
 - Player Character and Non Player Character class examples
+- Custom Character Movement Component interfaced with GAS
 - Effect samples (Damage, armor buff/debuff, fire armor/damage, bleed status ...)
 - Turn-Based GAS Example
 - RogueLite Toolbox Plugin

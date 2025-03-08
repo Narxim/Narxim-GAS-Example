@@ -116,8 +116,21 @@ struct FCustomGameplayEffectContext : public FGameplayEffectContext
 protected:
 	UPROPERTY(EditAnywhere, meta=(ExcludeBaseStruct))
 	TArray<FInstancedStruct> CustomContextData{};
+
+	UPROPERTY(EditAnywhere, meta=(ExcludeBaseStruct))
+	TObjectPtr<const AActor> TargetActor;
  
 public:
+
+	void SetTargetActor(const AActor* InTargetActor)
+	{
+		TargetActor = InTargetActor;
+	}
+
+	const AActor* GetTargetActor() const
+	{
+		return TargetActor.Get();
+	}
 
 	virtual bool NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess) override;
 	
@@ -145,9 +158,6 @@ public:
 		CustomContextData.Add(MoveTemp(InstancedStruct));
 	}
 	
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	// FCustomContextData_TurnBaseEffect TurnBaseEffectData{};
-	
 	/** Returns the actual struct used for serialization, subclasses must override this! */
 	virtual UScriptStruct* GetScriptStruct() const override
 	{
@@ -160,6 +170,9 @@ public:
 		FCustomGameplayEffectContext* NewContext = new FCustomGameplayEffectContext();
 		*NewContext = *this;
 		NewContext->AddActors(Actors);
+		
+		NewContext->TargetActor = TargetActor;
+		
 		if (GetHitResult())
 		{
 			// Does a deep copy of the hit result

@@ -46,6 +46,33 @@ float UCustomAbilitySystemBlueprintLibrary::GetValueAtLevel(const FScalableFloat
 	return ScalableFloat.GetValueAtLevel(Level, &ContextString);
 }
 
+void UCustomAbilitySystemBlueprintLibrary::SetTargetOnGameplayEffectContext(FGameplayEffectContextHandle& ContextHandle,	const AActor* TargetActor)
+{
+	if (FCustomGameplayEffectContext* const EffectContext = static_cast<FCustomGameplayEffectContext*>(ContextHandle.Get()))
+	{
+		EffectContext->SetTargetActor(TargetActor);
+	}
+}
+
+void UCustomAbilitySystemBlueprintLibrary::SetTargetOnGameplayEffectContextFromSpec(FGameplayEffectSpec& EffectSpec,	const AActor* TargetActor)
+{
+	SetTargetOnGameplayEffectContext(const_cast<FGameplayEffectContextHandle&>(EffectSpec.GetEffectContext()), TargetActor);
+}
+
+const AActor* UCustomAbilitySystemBlueprintLibrary::GetTargetActorFromGameplayEffectContext(const FGameplayEffectContextHandle& ContextHandle)
+{
+	if (const FCustomGameplayEffectContext* const EffectContext = static_cast<const FCustomGameplayEffectContext*>(ContextHandle.Get()))
+	{
+		return EffectContext->GetTargetActor();
+	}
+	return nullptr;
+}
+
+const AActor* UCustomAbilitySystemBlueprintLibrary::GetTargetActorFromGameplayEffectSpec(const FGameplayEffectSpec& EffectSpec)
+{
+	return GetTargetActorFromGameplayEffectContext(EffectSpec.GetEffectContext());
+}
+
 void UCustomAbilitySystemBlueprintLibrary::GetAttributeValue(const UAbilitySystemComponent* const AbilitySystemComponent, const FGameplayAttribute& Attribute, const EAttributeSearchType SearchType, OUT float& ReturnValue)
 {
 	ReturnValue = -1.0f;

@@ -3,6 +3,7 @@
 #include "CustomAbilitySystemComponent.h"
 #include "GAS_Example/AbilitySystem/AttributeSets/LevelAttributeSet.h"
 #include "GAS_Example/AbilitySystem/Data/NativeGameplayTags.h"
+#include "GAS_Example/AbilitySystem/FunctionLibrary/CustomAbilitySystemBlueprintLibrary.h"
 #include "GAS_Example/Characters/CharacterBase.h"
 
 
@@ -173,6 +174,16 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 		// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputReleased event to the server.
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, OriginalPredictionKey);
 	}
+}
+
+FActiveGameplayEffectHandle UCustomAbilitySystemComponent::ApplyGameplayEffectSpecToTarget(const FGameplayEffectSpec& GameplayEffect, UAbilitySystemComponent* Target, FPredictionKey PredictionKey)
+{
+	if (Target->GetOwner())
+	{
+		UCustomAbilitySystemBlueprintLibrary::SetTargetOnGameplayEffectContextFromSpec(const_cast<FGameplayEffectSpec&>(GameplayEffect), Target->GetOwner());
+	}
+	
+	return Super::ApplyGameplayEffectSpecToTarget(GameplayEffect, Target, PredictionKey);
 }
 
 void UCustomAbilitySystemComponent::InitializeAbilitySystemData(const FAbilitySystemInitializationData& InitializationData, AActor* InOwningActor, AActor* InAvatarActor)

@@ -37,6 +37,18 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Ability System", meta=(AutoCreateRefTerm="ContextString"))
 	static float GetValueAtLevel(const FScalableFloat& ScalableFloat, const float Level = 0.f, const FString& ContextString = "");
+
+	UFUNCTION(BlueprintCallable, Category = "Ability System", meta=(AutoCreateRefTerm="ContextString"))
+	static void SetTargetOnGameplayEffectContext(FGameplayEffectContextHandle& ContextHandle, const AActor* TargetActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Ability System", meta=(AutoCreateRefTerm="ContextString"))
+	static void SetTargetOnGameplayEffectContextFromSpec(FGameplayEffectSpec& EffectSpec, const AActor* TargetActor);
+
+	UFUNCTION(BlueprintPure, Category = "Ability System", meta=(AutoCreateRefTerm="ContextString"))
+	static const AActor* GetTargetActorFromGameplayEffectContext(const FGameplayEffectContextHandle& ContextHandle);
+
+	UFUNCTION(BlueprintPure, Category = "Ability System", meta=(AutoCreateRefTerm="ContextString"))
+	static const AActor* GetTargetActorFromGameplayEffectSpec(const FGameplayEffectSpec& EffectSpec);
 private:
 
 	static void GetAttributeValue(const UAbilitySystemComponent* const AbilitySystemComponent, const FGameplayAttribute& Attribute, const EAttributeSearchType SearchType, OUT float& ReturnValue);

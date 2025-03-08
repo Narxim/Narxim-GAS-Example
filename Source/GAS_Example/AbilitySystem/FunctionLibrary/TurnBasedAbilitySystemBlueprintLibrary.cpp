@@ -126,11 +126,6 @@ FCustomContextData_TurnBaseEffect UTurnBasedAbilitySystemBlueprintLibrary::GetTu
 	{
 		return FCustomContextData_TurnBaseEffect();
 	}
-
-	// if (EffectContext->GetScriptStruct()->IsChildOf(FCustomGameplayEffectContext::StaticStruct()))
-	// {
-	// 	return FCustomContextData_TurnBaseEffect();
-	// }
 	
 	for (const auto& ContextData : EffectContext->GetAllCustomContextData())
 	{

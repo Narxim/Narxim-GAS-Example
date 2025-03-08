@@ -11,6 +11,7 @@ bool FCustomGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap*
     enum RepFlag
     {
         REP_CustomContextData,
+        REP_TargetActor,
         REP_MAX
     };
 
@@ -21,13 +22,21 @@ bool FCustomGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap*
         {
             RepBits |= 1 << REP_CustomContextData;
         }
+
+        if (TargetActor)
+        {
+            RepBits |= 1 << REP_TargetActor;
+        }
     }
 
     Ar.SerializeBits(&RepBits, REP_MAX);
     if (RepBits & (1 << REP_CustomContextData))
     {
         bCombinedSuccess &= SafeNetSerializeTArray_WithNetSerialize<31>(Ar, CustomContextData, Map);
-
+    }
+    if (RepBits & (1 << REP_TargetActor))
+    {
+        Ar << TargetActor;
     }
 
     return bCombinedSuccess;

@@ -311,8 +311,18 @@ Adding the `Custom UI Component` will automatically show the gameplay effects on
 - X: Turn remaining
 ___
 ## ChangeLog:
+### 2025/03/07 (EvilHippo):
+```
+Sprint + CMC Update
+- Added Custom CMC
+- Added Sprint ability + Movement Attributeset / Multipliers
+- Added GetMaxSpeed() handling of new Speed Multiplier from GAS
+
+Press Shift to Sprint.
+```
 ### 2025/02/16 (EvilHippo):
 ```
+TurnBase Update:
 - Now can be shown as "Active effect like others"
 - Inhibited effect from the start will trigger showing the effect icon (especially for Turn based effects)
 - New Icons
@@ -346,7 +356,6 @@ CRL fixes
 - Now GA can register modifiers (from Attacker only for now)
 - GA test Enh1 has been added: add random damage
 - Various fixes
-
 ```
 ### 2025/01/20 (EvilHippo):
 ```

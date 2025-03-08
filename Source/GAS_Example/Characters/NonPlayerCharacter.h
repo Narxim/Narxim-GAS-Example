@@ -14,8 +14,7 @@ class GAS_EXAMPLE_API ANonPlayerCharacter : public ACharacterBase
 	GENERATED_BODY()
 
 public:
-	
-	ANonPlayerCharacter();
+	ANonPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 

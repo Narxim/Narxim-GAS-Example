@@ -5,7 +5,7 @@
 #include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomAbilitySystemComponent.h"
 
 
-ANonPlayerCharacter::ANonPlayerCharacter()
+ANonPlayerCharacter::ANonPlayerCharacter(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
 	// Set the pointer from Character Base to the Ability System Component sub-object.
 	AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>(TEXT("AbilitySystemComponent"));

@@ -182,7 +182,7 @@ public:
 	virtual bool CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const override;
 	virtual bool OnActiveGameplayEffectAdded(FActiveGameplayEffectsContainer& ActiveGEContainer, FActiveGameplayEffect& ActiveGE) const override;
 	
-	void OnTurnChange(int32 NewTurn, int32 StartTurn, FActiveGameplayEffectHandle Handle) const;
+	void OnTurnChange(const int32 NewTurn, FActiveGameplayEffectHandle Handle) const;
 	void OnGameplayEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo, UAbilitySystemComponent* ASC, FDelegateHandle DelegateHandle) const;
 
 protected:

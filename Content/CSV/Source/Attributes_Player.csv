@@ -5,3 +5,4 @@ Player.HealthRegen,1,2,3,4
 Player.StaminaRegen,1,2,3,4
 Player.BleedHealing,0.05,0.05,0.05,0.05
 Player.Armor,0,10,25,50
+Player.Sprint.MovementSpeedBuff,0.5,0.5,0.5,0.5

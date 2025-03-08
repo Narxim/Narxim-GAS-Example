@@ -351,7 +351,6 @@ bool UTurnBasedGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGamep
 	FDelegateHandle DelegateHandle = TurnSystem->GetOnTurnChangeDelegate().AddUObject(
 		this,
 		&UTurnBasedGameplayEffectComponent::OnTurnChange,
-		Data.StartTurn,
 		ActiveGE.Handle
 	);
 
@@ -406,7 +405,7 @@ bool UTurnBasedGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGamep
 	return bApplyUninhibited; 
 }
 
-void UTurnBasedGameplayEffectComponent::OnTurnChange(int32 NewTurn, int32 StartTurn, FActiveGameplayEffectHandle Handle) const
+void UTurnBasedGameplayEffectComponent::OnTurnChange(const int32 NewTurn, FActiveGameplayEffectHandle Handle) const
 {
 	UAbilitySystemComponent* const OwnerASC = Handle.GetOwningAbilitySystemComponent();
 	if (!IsValid(OwnerASC))

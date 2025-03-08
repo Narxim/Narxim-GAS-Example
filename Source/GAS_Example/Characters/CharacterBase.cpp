@@ -2,8 +2,21 @@
 
 
 #include "CharacterBase.h"
+
+#include "CustomCharacterMovementComponent.h"
 #include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomAbilitySystemComponent.h"
 
+
+ACharacterBase::ACharacterBase(const FObjectInitializer& ObjectInitializer)
+: Super(ObjectInitializer
+		.SetDefaultSubobjectClass<UCustomCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+{
+}
+
+UCustomCharacterMovementComponent* ACharacterBase::GetCustomCharacterMovementComponent() const
+{
+	return Cast<UCustomCharacterMovementComponent>(GetCharacterMovement());
+}
 
 UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
 {

@@ -8,6 +8,7 @@
 #include "GAS_Example/AbilitySystem/Data/AbilitySystemData.h"
 #include "CharacterBase.generated.h"
 
+class UCustomCharacterMovementComponent;
 class UCustomAbilitySystemComponent;
 // Character Base is a template class that contains all shared logic for "Player Characters" and "Non Player Characters".
 // This Class is Abstract and should not be used directly! (Not-Blueprintable)
@@ -17,6 +18,11 @@ class GAS_EXAMPLE_API ACharacterBase : public ACharacter, public IAbilitySystemI
 	GENERATED_BODY()
 
 public:
+	ACharacterBase(const FObjectInitializer& ObjectInitializer);
+
+	UFUNCTION(BlueprintPure, Category = "MovementComponent")
+	UCustomCharacterMovementComponent* GetCustomCharacterMovementComponent() const;
+	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 

@@ -25,15 +25,12 @@ public:
 	UFUNCTION()
 	void OnGetDamaged(float DamageDone, float DamageDoneRatio, const FHitResult& HitResult, const FGameplayEffectSpec& Spec, const FGameplayTagContainer& SourceTags);
 
-	/** Wait until the owner of this ability gets damaged. */
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
     static UAbilityTask_WaitGetDamaged* WaitForDamage(UGameplayAbility* OwningAbility, bool TriggerOnce=true);
 
-	/** Wait until the owner of this ability gets damaged, with threshold requirements. */
 	UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
     static UAbilityTask_WaitGetDamaged* WaitForDamageWithThreshold(UGameplayAbility* OwningAbility, float Threshold, bool TriggerOnce = true);
 
-	/** Wait until the owner of this ability gets damaged, with ratio threshold requirements. */
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
     static UAbilityTask_WaitGetDamaged* WaitForDamageWithThresholdRatio(UGameplayAbility* OwningAbility, float ThresholdRatio, bool TriggerOnce=true);
 

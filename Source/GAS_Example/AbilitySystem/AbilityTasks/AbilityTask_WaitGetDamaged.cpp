@@ -1,22 +1,11 @@
 // Copyright 2021 Joseph "Narxim" Thigpen.
 
-
 #include "AbilityTask_WaitGetDamaged.h"
 #include "AbilitySystemComponent.h"
 
 void UAbilityTask_WaitGetDamaged::Activate()
 {
-	// if (AbilitySystemComponent.IsValid())
-	// {
-	// 	if (AIBaseCharacter* BaseChar = Cast<AIBaseCharacter>(AbilitySystemComponent->GetOwner()))
-	// 	{
-	// 		BaseChar->OnTakeDamage.AddDynamic(this, &UAbilityTask_WaitGetDamaged::OnGetDamaged);
-	//
-	// 		AbilitySystemComponent->AbilityReplicatedEventDelegate(REPLICATED_DAMAGE_EVENT, 
-	// 			GetAbilitySpecHandle(), GetActivationPredictionKey()).AddUObject(this, 
-	// 				&UAbilityTask_WaitGetDamaged::OnReplicatedDamageEvent);
-	// 	}
-	// }
+	// Not finished, won't do anything.
 }
 
 void UAbilityTask_WaitGetDamaged::OnGetDamaged(float DamageDone, float DamageDoneRatio, const FHitResult& HitResult, const FGameplayEffectSpec& Spec, const FGameplayTagContainer& SourceTags)
@@ -34,13 +23,6 @@ void UAbilityTask_WaitGetDamaged::OnGetDamaged(float DamageDone, float DamageDon
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
 		OnGetDamagedDelegate.Broadcast(DamageDone, DamageDoneRatio, HitResult, Spec, SourceTags);
-
-		if (IsForRemoteClient())
-		{
-			// Check to see if there is pending data, this may call the callback we just set
-			// AbilitySystemComponent->CallReplicatedEventDelegateIfSet(REPLICATED_DAMAGE_EVENT,
-			// 	GetAbilitySpecHandle(), GetActivationPredictionKey());
-		}
 	}
 
 	if (TriggerOnce)
@@ -78,14 +60,6 @@ UAbilityTask_WaitGetDamaged* UAbilityTask_WaitGetDamaged::WaitForDamageWithThres
 
 void UAbilityTask_WaitGetDamaged::OnDestroy(bool AbilityEnded)
 {
-	// if (AbilitySystemComponent.IsValid())
-	// {
-	// 	if (AIBaseCharacter* BaseChar = Cast<AIBaseCharacter>(AbilitySystemComponent->GetOwner()))
-	// 	{
-	// 		BaseChar->OnTakeDamage.RemoveAll(this);
-	// 	}
-	// }
-
 	Super::OnDestroy(AbilityEnded);
 }
 

@@ -9,6 +9,11 @@
 #include "GAS_Example/AbilitySystem/Data/AbilitySystemData.h"
 
 
+AActor* UCustomAbilitySystemBlueprintLibrary::GetInstigatorFromGameplayEffectSpec(const FGameplayEffectSpec& Spec)
+{
+	return Spec.GetEffectContext().GetInstigator();
+}
+
 float UCustomAbilitySystemBlueprintLibrary::GetAttributeValueFromActor(const AActor* const Actor, const FGameplayAttribute Attribute, const EAttributeSearchType SearchType)
 {
 	const UAbilitySystemComponent* const AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor);

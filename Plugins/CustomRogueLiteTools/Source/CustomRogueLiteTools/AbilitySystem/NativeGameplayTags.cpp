@@ -11,4 +11,4 @@ namespace CRLTags
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CRL_Identifier_Damage, "CRL.Identifier.Damage", "")
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CRL_Identifier_Resistance, "CRL.Identifier.Resistance", "")
-}
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CRL_Identifier_Critic, "CRL.Identifier.Critic", "")}

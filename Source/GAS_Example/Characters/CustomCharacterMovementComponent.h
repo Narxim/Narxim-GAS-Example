@@ -8,11 +8,15 @@
 #include "CustomCharacterMovementComponent.generated.h"
 
 
+class ACharacterBase;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class GAS_EXAMPLE_API UCustomCharacterMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
 
+	friend ACharacterBase;
+	
 public:
 	// Sets default values for this component's properties
 	UCustomCharacterMovementComponent();
@@ -23,8 +27,4 @@ public:
 
 protected:
 	float MovementSpeedMultiplier = 1.f;
-	FDelegateHandle MovemementSpeedChangeDelegateHandle;
-
-	void MovementSpeedMultiplierChanged(const FOnAttributeChangeData& OnAttributeChangeData);
-
 };

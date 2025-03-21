@@ -23,14 +23,34 @@ void UCRLActorComponent::BeginPlay()
 	
 }
 
-bool UCRLActorComponent::RegisterModifierAbility(UCRLAbility* Ability, ECRLModifierEvent Event)
+bool UCRLActorComponent::RegisterModifierAbility(UCRLAbility* Ability, const ECRLModifierEvent Event, const ECRLTargetType TargetType)
 {
 	FCRLModifierDefinition& Def = Modifiers.FindOrAdd(Event);
-	Def.Abilities.Add(Ability);
+	
+	switch (TargetType) {
+		case ECRLTargetType::Instigator:
+			{
+				Def.InstigatorAbilities.Add(Ability);
+				break;
+			}
+		case ECRLTargetType::Target:
+			{
+				Def.TargetAbilities.Add(Ability);
+				break;
+			}
+		default:
+		case ECRLTargetType::All:
+			{
+				Def.TargetAbilities.Add(Ability);
+				Def.InstigatorAbilities.Add(Ability);
+				break;
+			}
+	}
+
 	return true;
 }
 
-bool UCRLActorComponent::UnregisterModifierAbility(UCRLAbility* Ability, ECRLModifierEvent Event)
+bool UCRLActorComponent::UnregisterModifierAbility(UCRLAbility* Ability, const ECRLModifierEvent Event, const ECRLTargetType TargetType)
 {
 	FCRLModifierDefinition* const Def = Modifiers.Find(Event);
 	if (!Def)
@@ -38,7 +58,27 @@ bool UCRLActorComponent::UnregisterModifierAbility(UCRLAbility* Ability, ECRLMod
 		return false;
 	}
 
-	return Def->Abilities.Remove(Ability) >= 0;
+	switch (TargetType) {
+	case ECRLTargetType::Instigator:
+		{
+			Def->InstigatorAbilities.Remove(Ability);
+			break;
+		}
+	case ECRLTargetType::Target:
+		{
+			Def->TargetAbilities.Remove(Ability);
+			break;
+		}
+	default:
+	case ECRLTargetType::All:
+		{
+			Def->TargetAbilities.Remove(Ability);
+			Def->InstigatorAbilities.Remove(Ability);
+			break;
+		}
+	}
+
+	return true;
 }
 
 const FCRLModifierDefinition* UCRLActorComponent::GetModifierDefinitionsForEvent(const ECRLModifierEvent Event) const

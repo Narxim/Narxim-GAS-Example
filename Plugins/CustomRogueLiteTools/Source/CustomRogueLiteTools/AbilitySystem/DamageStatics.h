@@ -17,6 +17,8 @@ struct FCRLDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Multiplier);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageMultiplier);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(ResistanceMultiplier);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDamageMultiplier);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalChance);
 	
 	FCRLDamageStatics()
 	{
@@ -29,6 +31,8 @@ struct FCRLDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UHealthAttributeSet, Damage, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCRLAttributeSet, Multiplier, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCRLAttributeSet, DamageMultiplier, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UCRLAttributeSet, CriticalDamageMultiplier, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UCRLAttributeSet, CriticalChance, Source, false);
 	}
 
 	static const FCRLDamageStatics& CRLDamageStatics()

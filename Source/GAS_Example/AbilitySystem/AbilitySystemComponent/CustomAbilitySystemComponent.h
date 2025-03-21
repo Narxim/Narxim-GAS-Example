@@ -26,6 +26,8 @@ class GAS_EXAMPLE_API UCustomAbilitySystemComponent : public UAbilitySystemCompo
 public:
 
 	UCustomAbilitySystemComponent();
+
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	
 	// Called to initialize an Ability System Component with the supplied data. (Can be found in "AbilitySystemData.h")
 	// Call this on the Server and Client to properly init references / values.

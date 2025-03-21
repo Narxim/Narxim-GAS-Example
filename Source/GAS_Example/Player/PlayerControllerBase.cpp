@@ -2,9 +2,13 @@
 
 
 #include "PlayerControllerBase.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
+#include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomAbilitySystemComponent.h"
+#include "GAS_Example/Characters/CharacterBase.h"
 
 UAbilitySystemComponent* APlayerControllerBase::GetAbilitySystemComponent() const
 {
-	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
+	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner.Get());
 }

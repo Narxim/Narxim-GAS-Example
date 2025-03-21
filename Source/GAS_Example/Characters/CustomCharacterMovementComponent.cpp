@@ -27,26 +27,4 @@ float UCustomCharacterMovementComponent::GetMaxAcceleration() const
 void UCustomCharacterMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AActor* const Owner = GetOwner();
-	if (!Owner || Owner->GetLocalRole() <= ROLE_SimulatedProxy)
-	{
-		// Don't do it for Simulated proxies as their movement speed are precalculated and sent by server.
-		return;
-	}
-	
-	UAbilitySystemComponent* const ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Owner);
-	
-	if (!ASC || !ASC->HasAttributeSetForAttribute(UMovementAttributeSet::GetMovementSpeedMultiplierAttribute()))
-	{
-		return;
-	}
-	
-	MovemementSpeedChangeDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(UMovementAttributeSet::GetMovementSpeedMultiplierAttribute()).AddUObject(this, &UCustomCharacterMovementComponent::MovementSpeedMultiplierChanged);
-	MovementSpeedMultiplier = ASC->GetNumericAttribute(UMovementAttributeSet::GetMovementSpeedMultiplierAttribute());
-}
-
-void UCustomCharacterMovementComponent::MovementSpeedMultiplierChanged(const FOnAttributeChangeData& OnAttributeChangeData)
-{
-	MovementSpeedMultiplier = OnAttributeChangeData.NewValue;
 }

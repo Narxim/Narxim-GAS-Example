@@ -34,12 +34,12 @@ void UEffectWidgetBase::UpdateStackCount_Implementation(const int32 NewStackCoun
 
 void UEffectWidgetBase::UpdateDuration_Implementation(const float NewDuration)
 {
-	if (!GetWorld())
+	if (!GetWorld() || !T_Duration)
 	{
 		return;
 	}
 	
-	T_Duration->SetCurrentValue(NewDuration);
+	T_Duration->SetCurrentValue(FMath::Max(NewDuration, 0.f));
 	ESlateVisibility NewVisibility = ESlateVisibility::Collapsed;
 	
 	if (NewDuration > 0.f)

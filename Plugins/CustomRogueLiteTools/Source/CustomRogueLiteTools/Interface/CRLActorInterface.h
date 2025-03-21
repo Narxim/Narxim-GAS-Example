@@ -24,5 +24,5 @@ public:
 
 	// Direct access to the Component.
 	UFUNCTION(BlueprintNativeEvent)
-	UCRLCombatManager * GetCRLCombatManager() const;
+	UCRLCombatManager* GetCRLCombatManager() const;
 };

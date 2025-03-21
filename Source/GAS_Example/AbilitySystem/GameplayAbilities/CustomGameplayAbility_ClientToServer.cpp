@@ -13,6 +13,11 @@ void UCustomGameplayAbility_ClientToServer::ActivateAbility(const FGameplayAbili
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	if (!bUseClientServerFeature)
+	{
+		return;
+	}
 	
 	if (GetActorInfo().IsLocallyControlled())
 	{
@@ -36,11 +41,15 @@ void UCustomGameplayAbility_ClientToServer::EndAbility(const FGameplayAbilitySpe
 void UCustomGameplayAbility_ClientToServer::ActivateAbilityWithTargetData_Implementation(
 	const FGameplayAbilityTargetDataHandle& TargetDataHandle, FGameplayTag ApplicationTag)
 {
-	
 }
 
 void UCustomGameplayAbility_ClientToServer::NotifyTargetDataReady(const FGameplayAbilityTargetDataHandle& InData, FGameplayTag ApplicationTag)
 {
+	if (!bUseClientServerFeature)
+	{
+		return;
+	}
+	
 	UAbilitySystemComponent* const ASC = CurrentActorInfo->AbilitySystemComponent.Get();
 	check(ASC);
 
@@ -75,6 +84,11 @@ void UCustomGameplayAbility_ClientToServer::NotifyTargetDataReady(const FGamepla
 
 void UCustomGameplayAbility_ClientToServer::ActivateServerAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	if (!bUseClientServerFeature)
+	{
+		return;
+	}
+	
 	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
 	check(ASC);
 
@@ -84,6 +98,11 @@ void UCustomGameplayAbility_ClientToServer::ActivateServerAbility(const FGamepla
 
 void UCustomGameplayAbility_ClientToServer::EndAbilityCleanup(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	if (!bUseClientServerFeature)
+	{
+		return;
+	}
+	
 	UAbilitySystemComponent* const ASC = CurrentActorInfo->AbilitySystemComponent.Get();
 	check(ASC);
 

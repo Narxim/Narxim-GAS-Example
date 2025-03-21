@@ -15,9 +15,6 @@ class GAS_EXAMPLE_API APlayerCharacter : public ACharacterBase
 
 protected:
 
-	//
-	virtual void InitializeAbilitySystem();
-
 	// Convenience function to handle Enhanced Input movement events 
 	UFUNCTION(BlueprintCallable)
 	void HandleMovementInput(const float InputX, const float InputY);
@@ -28,7 +25,4 @@ protected:
 
 	// Called on the server to acknowledge possession of this Character.
 	virtual void PossessedBy(AController* NewController) override;
-
-	// Called on the client when the Character is assigned its Player State.
-	virtual void OnRep_PlayerState() override;
 };

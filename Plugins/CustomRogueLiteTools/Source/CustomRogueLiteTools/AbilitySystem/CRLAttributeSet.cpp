@@ -9,6 +9,32 @@ UCRLAttributeSet::UCRLAttributeSet()
 	Multiplier = 1.f;
 	DamageMultiplier = 1.f;
 	ResistanceMultiplier = 0.f;
+	CriticalChance = 0.f;
+	CriticalDamageMultiplier = 0.f;
+}
+
+void UCRLAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
+{
+	// BaseValues can never be changed (because it would mean applying something for ALL attacks.)
+	
+	if (Attribute == GetMultiplierAttribute())
+	{
+		NewValue = 1.f;
+	}
+	else if (Attribute == GetResistanceMultiplierAttribute())
+	{
+		NewValue = 1.f;
+	}
+	else if (Attribute == GetCriticalChanceAttribute())
+	{
+		NewValue = 0.f;
+	}
+	else if (Attribute == GetCriticalDamageMultiplierAttribute())
+	{
+		NewValue = 0.f;
+	}
+	
+	Super::PreAttributeBaseChange(Attribute, NewValue);
 }
 
 void UCRLAttributeSet::PostAttributeBaseChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) const
@@ -21,6 +47,24 @@ void UCRLAttributeSet::ClampAttributes(const FGameplayAttribute& Attribute, floa
 	Super::ClampAttributes(Attribute, NewValue);
 
 	if (Attribute == GetMultiplierAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 0.f);
+		return;
+	}
+
+	if (Attribute == GetResistanceMultiplierAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 0.f);
+		return;
+	}
+
+	if (Attribute == GetCriticalChanceAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, 1.f);
+		return;
+	}
+
+	if (Attribute == GetCriticalDamageMultiplierAttribute())
 	{
 		NewValue = FMath::Max(NewValue, 0.f);
 		return;

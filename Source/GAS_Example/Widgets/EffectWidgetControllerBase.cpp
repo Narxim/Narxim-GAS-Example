@@ -142,7 +142,12 @@ void UEffectWidgetControllerBase::RegisterEvents(UAbilitySystemComponent* const 
 	}
 	
 	// Subscribe to all available events on the gameplay effect event set, so that the controller can respond accordingly
-    FActiveGameplayEffectEvents* const EventSet = ASC->GetActiveEffectEventSet(ActiveEffectHandle);
+	FActiveGameplayEffectEvents* const EventSet = ASC->GetActiveEffectEventSet(ActiveEffectHandle);
+	if (!EventSet)
+	{
+		return;
+	}
+	
     EventSet->OnEffectRemoved.AddUObject(this, &ThisClass::OnEffectRemoved);
     EventSet->OnStackChanged.AddUObject(this, &ThisClass::OnStackChanged);
     EventSet->OnInhibitionChanged.AddUObject(this, &ThisClass::OnInhibitionChanged);

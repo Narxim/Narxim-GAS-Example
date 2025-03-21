@@ -16,6 +16,11 @@ UCustomAbilitySystemComponent::UCustomAbilitySystemComponent()
 	SetIsReplicatedByDefault(true);
 }
 
+void UCustomAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
+{
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+}
+
 void UCustomAbilitySystemComponent::OnGameplayEffectAddedCallback(UAbilitySystemComponent* const ASC, const FGameplayEffectSpec& Spec, FActiveGameplayEffectHandle Handle)
 {
 	// Getting the Effect information, if they exist (which should work) and broadast them as "Added"

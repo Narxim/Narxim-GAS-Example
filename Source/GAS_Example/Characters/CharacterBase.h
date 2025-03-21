@@ -28,9 +28,11 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Ability System")
 	UCustomAbilitySystemComponent* GetCustomAbilitySystemComponent() const;
+	
+	void InitializeAbilitySystem();
 
 	// This event is fired after Ability System Component initialization is finished.
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 	void PostInitializeAbilitySystem();
 
 	UFUNCTION(BlueprintPure)
@@ -44,9 +46,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System", Meta = (ShowOnlyInnerProperties))
 	FAbilitySystemInitializationData AbilitySystemInitializationData;
 	
-	// Creates a pointer to the Ability System Component associated with this Character.
-	// Player Characters will set this in OnRep_PlayerState() locally, and in OnPossessed() server side.
-	// Non Player Characters will set this in its constructor.
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UCustomAbilitySystemComponent> AbilitySystemComponent;
+
+	void MovementSpeedMultiplierChanged(const FOnAttributeChangeData& OnAttributeChangeData);
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_Controller() override;
 };

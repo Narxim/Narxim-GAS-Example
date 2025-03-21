@@ -11,9 +11,48 @@ USTRUCT(BlueprintType)
 struct FCRLModifierDefinition
 {
 	GENERATED_BODY()
-
+	
+	/**
+	 * Abilities that will be called if you are the instigator
+	 */
 	UPROPERTY(BlueprintReadOnly)
-	TSet<TObjectPtr<UCRLAbility>> Abilities;
+	TSet<TObjectPtr<UCRLAbility>> InstigatorAbilities;
+
+	/**
+	 * Abilities that will be called if you are the Target
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	TSet<TObjectPtr<UCRLAbility>> TargetAbilities;
+
+	TSet<TObjectPtr<UCRLAbility>>& GetAbilitiesMutable(const ECRLTargetType TargetType)
+	{
+		switch (TargetType) {
+		default:
+		case ECRLTargetType::Instigator:
+			{
+				return InstigatorAbilities;
+			}
+		case ECRLTargetType::Target:
+			{
+				return TargetAbilities;
+			}
+		}
+	}
+	
+	const TSet<TObjectPtr<UCRLAbility>>& GetAbilities(const ECRLTargetType TargetType) const
+	{
+		switch (TargetType) {
+		default:
+		case ECRLTargetType::Instigator:
+			{
+				return InstigatorAbilities;
+			}
+		case ECRLTargetType::Target:
+			{
+				return TargetAbilities;
+			}
+		}
+	}
 };
 
 class UCRLAbility;
@@ -34,13 +73,10 @@ protected:
 
 	UPROPERTY()
 	TMap<ECRLModifierEvent, FCRLModifierDefinition> Modifiers;
-
-	UPROPERTY()
-	TArray<FCRLModifierDefinition> Modifiers1{};
+	
 public:
-
-	bool RegisterModifierAbility(UCRLAbility* Ability, ECRLModifierEvent Event);
-	bool UnregisterModifierAbility(UCRLAbility* Ability, ECRLModifierEvent Event);
+	bool RegisterModifierAbility(UCRLAbility* Ability, const ECRLModifierEvent Event, const ECRLTargetType TargetType = ECRLTargetType::All);
+	bool UnregisterModifierAbility(UCRLAbility* Ability, const ECRLModifierEvent Event, const ECRLTargetType TargetType = ECRLTargetType::All);
 
 	const FCRLModifierDefinition* GetModifierDefinitionsForEvent(const ECRLModifierEvent Event) const;
 };

@@ -2,20 +2,14 @@
 
 
 #include "PlayerStateBase.h"
-#include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomAbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 
 APlayerStateBase::APlayerStateBase()
 {
-	// If the NetUpdateFrequency is too low, there will be a delay on Ability activation / Effect application on the client.
-	SetNetUpdateFrequency(100.0f);
-
-	// Create the Ability System Component sub-object.
-	AbilitySystemComponent = CreateDefaultSubobject<UCustomAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 }
 
 UAbilitySystemComponent* APlayerStateBase::GetAbilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn());
 }

@@ -22,7 +22,24 @@ public:
 	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	
 protected:
+
+	/**
+	 * If off, will be behaving like a regular Ability:
+	 * Those methods will never be fired:
+	 * - ActivateAbilityWithTargetData
+	 * - ActivateServerAbility
+	 * - ActivateLocalPlayerAbility
+	 *
+	 * NotifyTargetDataReady will do nothing either.
+	 *
+	 * Note: Montage will always be played BEFORE any of those methods are called.
+	 * Make it manual to 
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bUseClientServerFeature = true;
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void ActivateAbilityWithTargetData(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FGameplayTag ApplicationTag);
 
@@ -33,8 +50,7 @@ protected:
 	virtual void EndAbilityCleanup(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled);
 
 	UFUNCTION(BlueprintCallable)
-	FGameplayAbilityTargetDataHandle MakeAbilityTargetLocationHandle(const FGameplayAbilityTargetingLocationInfo& SourceLocation, const FGameplayAbilityTargetingLocationInfo&
-		TargetLocation);
+	FGameplayAbilityTargetDataHandle MakeAbilityTargetLocationHandle(const FGameplayAbilityTargetingLocationInfo& SourceLocation, const FGameplayAbilityTargetingLocationInfo& TargetLocation);
 	
 	FDelegateHandle NotifyTargetDataReadyDelegateHandle;
 };

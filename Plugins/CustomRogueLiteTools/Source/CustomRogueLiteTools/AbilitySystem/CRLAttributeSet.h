@@ -15,6 +15,8 @@ class CUSTOMROGUELITETOOLS_API UCRLAttributeSet : public UAttributeSetBase
 public:
 	
 	UCRLAttributeSet();
+	
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 
 	// Attribute Set Overrides.
 	virtual void PostAttributeBaseChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) const override;
@@ -31,6 +33,14 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData DamageMultiplier;
 	ATTRIBUTE_ACCESSORS(UCRLAttributeSet, DamageMultiplier)
+
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData CriticalChance;
+	ATTRIBUTE_ACCESSORS(UCRLAttributeSet, CriticalChance)
+
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData CriticalDamageMultiplier;
+	ATTRIBUTE_ACCESSORS(UCRLAttributeSet, CriticalDamageMultiplier)
 
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData ResistanceMultiplier;

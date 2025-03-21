@@ -312,6 +312,26 @@ Adding the `Custom UI Component` will automatically show the gameplay effects on
 - X: Turn remaining
 ___
 ## ChangeLog:
+### 2025/03/20 (EvilHippo):
+```
+Substential update:
+- Migrated ASC ownership to Character (fixed an issue with ActorInfo not in sync at start)
+- Refactored CustomAbility:
+Now includes variables for Montage to play + options
+- Refactored CustomAbililty_ClientToServer
+- Fixed deprecated input mapping using CurrentActivationInfo from CDO (not supported in 5.5): using primary instance. Might not work with InstancePerExecution.
+- Fixed Sprint not working in MP (Still one issue: stays ON even if you don't have the stamina)
+
+# CustomRogueLite:
+- Refactored abilities, now using Montages from CustomAbility
+- Melee attack now works in MP:
+Trace will be done on client, and sent to server for processing using ClientToServer ability + TargetData
+- Added Critical Damage/Chance + buff (missing the actual % for critical damage)
+- Reworked Modifier listenen to include source (Instigator / Target / All)
+- Fixed Melee + Dash working in MP
+- Press E will grant a Critical Damage buff to the player
+- Added a modifier to Melee: +X damage (random) to each hit.
+```
 ### 2025/03/07 (EvilHippo):
 ```
 Sprint + CMC Update

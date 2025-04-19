@@ -20,7 +20,9 @@ public class GAS_Example : ModuleRules
 			"Slate",
 			"SlateCore",
 			"NetCore",
-			"StructUtils"
+			"StructUtils",
+			"NetCommon",
+			"Networking"
 			// "UE5Coro",
 			// "UE5CoroGAS"
 		});

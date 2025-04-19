@@ -10,7 +10,7 @@ public class GAS_ExampleTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
-		
+		bOverrideBuildEnvironment = true;
 		bWithPushModel = true;
 
 		ExtraModuleNames.AddRange( new string[] { "GAS_Example" } );

@@ -101,7 +101,14 @@ void UTargetFinderBase::FindTargets(const AActor* SourceActor, TArray<AActor*>& 
 	Pins = OutHitResults.IsEmpty() && OutActors.IsEmpty() ? ETargetFinder_Pins::NoTargets : ETargetFinder_Pins::TargetsFound;
 }
 
+#if WITH_EDITOR
+bool UTargetFinderBase::ImplementsGetWorld() const
+{
+	return true;
+}
+
 class UWorld* UTargetFinderBase::GetWorld() const
 {
 	return GetOuter() ? GetOuter()->GetWorld() : nullptr;
 }
+#endif

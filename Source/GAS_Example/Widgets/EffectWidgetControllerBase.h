@@ -178,14 +178,12 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_RemoveEffect();
 
+#if WITH_EDITOR
 	// Override GetWorld
-	virtual bool ImplementsGetWorld() const override
-	{
-		return true;
-	}
+	virtual bool ImplementsGetWorld() const override;
 	
 	virtual class UWorld* GetWorld() const override;
-
+#endif
 	// Extract the Icon we're supposed to use from the UI Effect Component. Can be overriden.
 	UFUNCTION(BlueprintNativeEvent)
 	TSoftObjectPtr<UTexture2D> ExtractIcon();

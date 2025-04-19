@@ -217,7 +217,13 @@ EDataValidationResult UTurnBasedGameplayEffect::IsDataValid(class FDataValidatio
 			FText::FromString(GetClass()->GetName())));
 		Result = EDataValidationResult::Invalid;
 	}
-
+	
+	if (HasAnyFlags(RF_ClassDefaultObject))
+	{
+		// CDO, cannot validate it.
+		return EDataValidationResult::Valid;
+	}
+		
 	// Check for required component
 	if (FindComponent<UTurnBasedGameplayEffectComponent>() == nullptr)
 	{

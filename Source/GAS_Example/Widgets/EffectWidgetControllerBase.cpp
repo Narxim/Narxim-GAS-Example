@@ -10,6 +10,12 @@
 #include "GAS_Example/AbilitySystem/AbilitySystemComponent/CustomGameplayEffectUIData.h"
 #include "GAS_Example/Game/Types.h"
 
+#if WITH_EDITOR
+bool UEffectWidgetControllerBase::ImplementsGetWorld() const
+{
+	return true;
+}
+
 class UWorld* UEffectWidgetControllerBase::GetWorld() const
 {
 	if (GetOuter())
@@ -19,6 +25,7 @@ class UWorld* UEffectWidgetControllerBase::GetWorld() const
 
 	return nullptr;
 }
+#endif
 
 ETriggerUpdateStatus UEffectWidgetControllerBase::TriggerUpdate()
 {

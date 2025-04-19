@@ -4,6 +4,7 @@
 #include "TurnExampleGameStateBase.h"
 
 #include "GameplayEffect.h"
+#include "Net/NetPushModelHelpers.h"
 #include "Net/UnrealNetwork.h"
 #include "Net/Core/PushModel/PushModel.h"
 
@@ -20,7 +21,8 @@ void ATurnExampleGameStateBase::IncrementTurn()
 void ATurnExampleGameStateBase::Server_IncrementTurn_Implementation()
 {
 	CurrentTurn++;
-	MARK_PROPERTY_DIRTY_FROM_NAME(ATurnExampleGameStateBase, CurrentTurn, this);
+	// MARK_PROPERTY_DIRTY_FROM_NAME(ATurnExampleGameStateBase, CurrentTurn, this);
+	UNetPushModelHelpers::MarkPropertyDirty(this, FName("CurrentTurn"));
 	OnRep_CurrentTurn();
 }
 

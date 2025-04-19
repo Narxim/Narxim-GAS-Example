@@ -42,7 +42,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void K0_FindTargets(const AActor* SourceActor, TArray<AActor*>& OutActors, TArray<FHitResult>& OutHitResults);
 
-	virtual bool ImplementsGetWorld() const override { return true;};
-
+#if WITH_EDITOR
+	virtual bool ImplementsGetWorld() const override;
 	virtual class UWorld* GetWorld() const override;
+#endif
 };

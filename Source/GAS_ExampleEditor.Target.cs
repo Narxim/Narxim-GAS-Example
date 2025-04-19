@@ -11,6 +11,7 @@ public class GAS_ExampleEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		
+		bOverrideBuildEnvironment = true;
 		bWithPushModel = true;
 
 		// , "UE5Coro" 

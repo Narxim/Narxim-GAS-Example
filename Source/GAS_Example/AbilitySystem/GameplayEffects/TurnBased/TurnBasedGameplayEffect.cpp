@@ -207,6 +207,12 @@ void UTurnBasedGameplayEffect::PostEditChangeProperty(FPropertyChangedEvent& Pro
 
 EDataValidationResult UTurnBasedGameplayEffect::IsDataValid(class FDataValidationContext& Context) const
 {
+	if (HasAnyFlags(RF_ClassDefaultObject))
+	{
+		// CDO, cannot validate it.
+		return EDataValidationResult::Valid;
+	}
+	
 	EDataValidationResult Result = Super::IsDataValid(Context);
 
 	// Validate duration policy
@@ -216,12 +222,6 @@ EDataValidationResult UTurnBasedGameplayEffect::IsDataValid(class FDataValidatio
 			"[{0}] Requires Infinite Duration - Parent GE must use 'Infinite' duration policy to work with turn-based components"),
 			FText::FromString(GetClass()->GetName())));
 		Result = EDataValidationResult::Invalid;
-	}
-	
-	if (HasAnyFlags(RF_ClassDefaultObject))
-	{
-		// CDO, cannot validate it.
-		return EDataValidationResult::Valid;
 	}
 		
 	// Check for required component

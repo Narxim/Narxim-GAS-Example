@@ -51,7 +51,7 @@ We are providing different attribute sets, with a BP implementation for each.
 
 ![image](https://github.com/user-attachments/assets/7b7146fd-9e43-4921-a85c-7064595d0f2b)
 
-That's a best practice (Based on working experience), that's not only for ATs, but for any C++ class that might get reference by another object.
+That's a best practice (Based on working experience), that's not only for Attributes Sets, but for any C++ class that might get reference by another object.
 
 If you have a BP implementation, and for example, you add some config variable on your C++ class, you'll be able to adjust them in the editor without even changing the reference from the C++ class to the new BP.
 ___

@@ -117,6 +117,51 @@ You can specify:
 - Starting Gameplay Abilities
 - Starting Gameplay effects
 ___
+### GE Levels and Curve tables
+You'll notice GEs are using Scalable floats for almost parameter: Duration, modifiers ...
+Because Scalable float can be just a static value, or, use a curve table that will be matched with the level.
+
+#### First: What is the Curve table ?
+{{Curve Tables are another one of Unreal Engine's hidden gems. They are an excellent tool that can help bridge the gap between designer-created data and programmer-driven gameplay. It is heavily used by the gameplay abilities system.
+...
+- Curve Tables for defining two-dimensional numerical data. A series of X and Y points that define a curve that can be read at any point. For example a power curve that defines how a Ship's Hit Points increase as they level up.
+- Curve Tables allow for reading interpolated values. Like curves in the rest of Unreal, they are a series of keys with X/Y positions and interpolation settings (constant, linear or cubic).
+- A single Curve Table can have many rows each of which can be interpreted as float/integer/boolean. In comparison when creating a Data Tables, you must choose a struct that will be used for the data in each row.
+- Both Curve Tables and Data Tables have separate composite varieties.
+- Both Curve Tables and Data Tables support Blueprints, but Curve Tables' support is a little basic.
+|text=Quoted material.
+|author=[First M. Last](https://unreal-garden.com/tutorials/curve-tables/)
+}}
+
+This article will explain how to create, but not really how to use them in the GAS setting
+#### Using a Curve table in a GE
+IN PROGRESS.
+
+#### Updating values in Curve table
+Updating a Curve table is a manual step:
+![image](https://github.com/user-attachments/assets/234d7cc5-7964-43ac-b8b6-633df7e0d441)
+You can use a new file too. The source CSV (optional) can be stored anywhere ... your desktop etc ... BUT I STRONGLY ADVISE TO NOT DO THAT.
+
+The reason is explained right now: You can set up your editor to always auto reimport from your CSV ...
+First, configure your editor:
+
+![image](https://github.com/user-attachments/assets/0684b32a-8c93-48cb-ac14-2cac42f45a8b)
+You can turn on auto create / delete if you wish, your choice.
+
+Second, create a CSV folder at the root (or wherever ... just update the auto loading)
+
+![image](https://github.com/user-attachments/assets/c9428e23-9aa0-417e-8087-c29dccb71aea)
+
+You can reate a subfolder if you wish, but it's optional.
+Now, any change you make on the csv will be loaded automatically: you curve table will be updated.
+
+You can see how the Curve table and the CSV are linked like this:
+
+![image](https://github.com/user-attachments/assets/77224fab-c38b-47be-bfae-95352b73b35c)
+
+The fact that the "source path" is relative tell me it's stored in the project.
+
+___
 ### Damage
 
 The project comes with:

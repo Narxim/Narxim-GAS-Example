@@ -139,7 +139,9 @@ IN PROGRESS.
 
 #### Updating values in Curve table
 Updating a Curve table is a manual step:
+
 ![image](https://github.com/user-attachments/assets/234d7cc5-7964-43ac-b8b6-633df7e0d441)
+
 You can use a new file too. The source CSV (optional) can be stored anywhere ... your desktop etc ... BUT I STRONGLY ADVISE TO NOT DO THAT.
 
 The reason is explained right now: You can set up your editor to always auto reimport from your CSV ...

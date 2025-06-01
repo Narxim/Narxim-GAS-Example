@@ -122,16 +122,16 @@ You'll notice GEs are using Scalable floats for almost parameter: Duration, modi
 Because Scalable float can be just a static value, or, use a curve table that will be matched with the level.
 
 #### First: What is the Curve table ?
-{{Curve Tables are another one of Unreal Engine's hidden gems. They are an excellent tool that can help bridge the gap between designer-created data and programmer-driven gameplay. It is heavily used by the gameplay abilities system.
+```
+Curve Tables are another one of Unreal Engine's hidden gems. They are an excellent tool that can help bridge the gap between designer-created data and programmer-driven gameplay. It is heavily used by the gameplay abilities system.
 ...
 - Curve Tables for defining two-dimensional numerical data. A series of X and Y points that define a curve that can be read at any point. For example a power curve that defines how a Ship's Hit Points increase as they level up.
 - Curve Tables allow for reading interpolated values. Like curves in the rest of Unreal, they are a series of keys with X/Y positions and interpolation settings (constant, linear or cubic).
 - A single Curve Table can have many rows each of which can be interpreted as float/integer/boolean. In comparison when creating a Data Tables, you must choose a struct that will be used for the data in each row.
 - Both Curve Tables and Data Tables have separate composite varieties.
 - Both Curve Tables and Data Tables support Blueprints, but Curve Tables' support is a little basic.
-|text=Quoted material.
-|author=[First M. Last](https://unreal-garden.com/tutorials/curve-tables/)
-}}
+```
+Source: https://unreal-garden.com/tutorials/curve-tables/
 
 This article will explain how to create, but not really how to use them in the GAS setting
 #### Using a Curve table in a GE

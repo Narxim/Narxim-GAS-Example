@@ -35,7 +35,7 @@ ___
 - Example UI elements with Attribute event bindings (In Game UI / Nameplate)
 - Sample abilities (Jump, Hitscan, Sprint ...)
 - Sample damages (Direct, Fire ...), Healing, Armor,
-**- BLUEPRINT READY Gameplay Effect Execution Calc (Exec / Calc) !!! (NEW)**
+- **BLUEPRINT READY Gameplay Effect Execution Calc (Exec / Calc) !!! (NEW)**
 - Player Character and Non Player Character class examples
 - Custom Character Movement Component interfaced with GAS
 - Effect samples (Damage, armor buff/debuff, fire armor/damage, bleed status ...)

@@ -22,6 +22,7 @@ namespace NativeGameplayTags
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_DamageType_DirectDamage);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Resistance_Modifier_DirectDamage);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Resistance_Ignore_DirectDamage);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Immunity_DirectDamage);
 	}
 	
 	namespace State

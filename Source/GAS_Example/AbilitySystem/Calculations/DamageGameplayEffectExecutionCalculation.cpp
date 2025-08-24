@@ -72,7 +72,7 @@ void UDamageGameplayEffectExecutionCalculation::Execute_Implementation(const FGa
 		NativeGameplayTags::BasicAttack::TAG_DamageType_DirectDamage.GetTag(),
 		NativeGameplayTags::BasicAttack::TAG_Resistance_Modifier_DirectDamage.GetTag(),
 		NativeGameplayTags::BasicAttack::TAG_Resistance_Ignore_DirectDamage.GetTag(),
-		NativeGameplayTags::Statuses::TAG_Immunity_Bleeding.GetTag()
+		NativeGameplayTags::BasicAttack::TAG_Immunity_DirectDamage.GetTag()
 	);
 	
 

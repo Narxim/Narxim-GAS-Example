@@ -21,12 +21,13 @@ class GAS_EXAMPLE_API UCustomAbilitySystemBlueprintLibrary : public UAbilitySyst
 	GENERATED_BODY()
 
 public:
-
 	UFUNCTION(BlueprintPure, Category = "Ability System")
 	static AActor* GetInstigatorFromGameplayEffectSpec(const FGameplayEffectSpec& Spec);
 	
-	// Tries to find the Actor's Ability System Component using the IAbilitySystemInterface.
-	// If the Ability System Component is found; attempts to find the value of the Attribute supplied.
+	/*
+	* Tries to find the Actor's Ability System Component using the IAbilitySystemInterface.
+	* If the Ability System Component is found; attempts to find the value of the Attribute supplied.
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Ability System")
 	static float GetAttributeValueFromActor(const AActor* const Actor, const FGameplayAttribute Attribute, const EAttributeSearchType SearchType);
 	

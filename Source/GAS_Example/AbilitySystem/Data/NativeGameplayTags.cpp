@@ -19,6 +19,7 @@ namespace NativeGameplayTags
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_DamageType_DirectDamage, "DamageType.DirectDamage", "Basic Damage Type. Used to calculated Resistance to Basic Damage.")
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Resistance_Modifier_DirectDamage, "Resistance.Modifier.DirectDamage", "Granting Resistance to basic Damage")
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Resistance_Ignore_DirectDamage, "Resistance.Ignore.DirectDamage", "Ignore Resistance to basic Damage. Will deal true damage.")
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Immunity_DirectDamage, "Immunity.DirectDamage", "Immune to DirectDamage");
 	}
 
 	namespace State

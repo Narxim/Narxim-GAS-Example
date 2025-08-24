@@ -34,6 +34,8 @@ ___
 - Native Gameplay Tags example (NativeGameplayTags.h)
 - Example UI elements with Attribute event bindings (In Game UI / Nameplate)
 - Sample abilities (Jump, Hitscan, Sprint ...)
+- Sample damages (Direct, Fire ...), Healing, Armor,
+**- BLUEPRINT READY Gameplay Effect Execution Calc (Exec / Calc) !!! (NEW)**
 - Player Character and Non Player Character class examples
 - Custom Character Movement Component interfaced with GAS
 - Effect samples (Damage, armor buff/debuff, fire armor/damage, bleed status ...)
@@ -359,6 +361,12 @@ Adding the `Custom UI Component` will automatically show the gameplay effects on
 - X: Turn remaining
 ___
 ## ChangeLog:
+### 2025/08/23 (EvilHippo):
+```
+- 5.6 Migration
+- BP Ready Execution
+- Removed UE5_Coro for now.
+```
 ### 2025/03/20 (EvilHippo):
 ```
 Substential update:

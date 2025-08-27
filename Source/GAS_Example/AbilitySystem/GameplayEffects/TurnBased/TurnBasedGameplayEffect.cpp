@@ -215,14 +215,14 @@ EDataValidationResult UTurnBasedGameplayEffect::IsDataValid(class FDataValidatio
 	
 	EDataValidationResult Result = Super::IsDataValid(Context);
 
-	// Validate duration policy
-	if (DurationPolicy != EGameplayEffectDurationType::Infinite)
-	{
-		Context.AddError(FText::FormatOrdered(LOCTEXT("InvalidDurationPolicyError",
-			"[{0}] Requires Infinite Duration - Parent GE must use 'Infinite' duration policy to work with turn-based components"),
-			FText::FromString(GetClass()->GetName())));
-		Result = EDataValidationResult::Invalid;
-	}
+	// // Validate duration policy
+	// if (DurationPolicy != EGameplayEffectDurationType::Infinite
+	// {
+	// 	Context.AddError(FText::FormatOrdered(LOCTEXT("InvalidDurationPolicyError",
+	// 		"[{0}] Requires Infinite Duration - Parent GE must use 'Infinite' duration policy to work with turn-based components"),
+	// 		FText::FromString(GetClass()->GetName())));
+	// 	Result = EDataValidationResult::Invalid;
+	// }
 		
 	// Check for required component
 	if (FindComponent<UTurnBasedGameplayEffectComponent>() == nullptr)

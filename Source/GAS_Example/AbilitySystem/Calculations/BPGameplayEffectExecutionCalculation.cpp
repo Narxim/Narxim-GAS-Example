@@ -29,38 +29,8 @@ void UBPGameplayEffectExecutionCalculation::Execute_Implementation(const FGamepl
         Spec.GetEffectContext(),
         *Spec.CapturedSourceTags.GetAggregatedTags(), // Always valid
         *Spec.CapturedSourceTags.GetAggregatedTags(), // Always valid
-        BlueprintModifiers
+        OutExecutionOutput
         );
-
-    if (BlueprintModifiers.IsEmpty())
-    {
-        return;
-    }
-
-    for (const auto& BpMod : BlueprintModifiers)
-    {
-        if (!BpMod.Key.IsValid())
-        {
-            UE_LOG(LogAbilitySystemComponent, Warning, TEXT("%s::Execute_Implementation - Attr %s: Invalid attribute, ignore"), *this->GetName(), *BpMod.Key.GetName());
-            continue;
-        }
-        
-        // Validate Magnitude
-        if (!FMath::IsFinite(BpMod.Value.Magnitude))
-        {
-            UE_LOG(LogAbilitySystemComponent, Warning, TEXT("%s::Execute_Implementation - Attr %s: Magnitude is not finite, ignore"), *this->GetName(), *BpMod.Key.GetName());
-            continue;
-        }
-
-        // Output values
-        OutExecutionOutput.AddOutputModifier(
-            FGameplayModifierEvaluatedData(
-                BpMod.Key,
-                BpMod.Value.ModifierOp,
-                BpMod.Value.Magnitude
-            )
-        );
-    }
 }
 
 void UBPGameplayEffectExecutionCalculation::ConvertExecutionParams(const FGameplayEffectCustomExecutionParameters& ExecutionParams, UPARAM(ref) FBP_ExecutionParams& OutParams)
@@ -117,13 +87,18 @@ const TMap<FGameplayAttribute, FBP_CapturedAttribute>& UBPGameplayEffectExecutio
     return Exec->CapturedAttributeValues;
 }
 
+void UBPGameplayEffectExecutionCalculation::AddOutputModifier(UPARAM(ref) FGameplayEffectCustomExecutionOutput& ExecutionOutput, FGameplayAttribute Attribute, TEnumAsByte<EGameplayModOp::Type> ModifierOp, float Magnitude)
+{
+    ExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(Attribute, ModifierOp, Magnitude));
+}
+
 void UBPGameplayEffectExecutionCalculation::BPExecute_Implementation(
     const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-    const FBP_ExecutionParams& InParams,
+    const FBP_ExecutionParams& BPExecutionParams,
     const FGameplayEffectSpec& Spec,
     const FGameplayEffectContextHandle& EffectContextHandle,
     const FGameplayTagContainer& SourceTags,
     const FGameplayTagContainer& TargetTags,
-    UPARAM(ref) TMap<FGameplayAttribute, FBP_ModifierInfo>& OutModifiers) const
+    FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 }

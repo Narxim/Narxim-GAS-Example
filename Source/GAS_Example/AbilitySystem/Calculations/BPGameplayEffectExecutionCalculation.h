@@ -113,6 +113,7 @@ public:
 protected:
 	// Updated by GetCapturedAttributeValues to avoid sending a copy of the map.
 	mutable TMap<FGameplayAttribute,FBP_CapturedAttribute> CapturedAttributeValues{};
+	
 public:
 	/**
 	 * @brief Extracts the values of the captured attributes and returns them in a Blueprint-friendly format.
@@ -128,7 +129,6 @@ public:
 		const TArray<FGameplayEffectAttributeCaptureDefinition>& AttributesToCapture);
 
 protected:
-	
 	UFUNCTION(BlueprintNativeEvent, Category = "ExecutionCalculation")
 	void BPExecute(
 		const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -137,6 +137,14 @@ protected:
 		const FGameplayEffectContextHandle& EffectContextHandle,
 		const FGameplayTagContainer& SourceTags,
 		const FGameplayTagContainer& TargetTags,
-		UPARAM(ref) TMap<FGameplayAttribute, FBP_ModifierInfo>& OutModifiers
+		UPARAM(ref) FGameplayEffectCustomExecutionOutput& OutExecutionOutput
 		) const;
+	
+	UFUNCTION(BlueprintCallable, Category = "ExecutionCalculation")
+	static void AddOutputModifier(
+		UPARAM(ref) FGameplayEffectCustomExecutionOutput& ExecutionOutput,
+		FGameplayAttribute Attribute,
+		TEnumAsByte<EGameplayModOp::Type> ModifierOp,
+		float Magnitude
+		);
 };
